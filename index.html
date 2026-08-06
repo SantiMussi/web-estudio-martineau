@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Estudio de diseño especializado en esculturas y chimeneas de autor. Diseño, fabricación e instalación de piezas únicas.">
+  <title>MartinEau Studio — Esculturas & Chimeneas de Autor</title>
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <!-- Estilos -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Header y Navegación -->
+  <header class="site-header" id="header">
+    <div class="container header-inner">
+
+      <a href="#" class="logo" aria-label="MartinEau Studio - Ir al inicio">
+        MartinEau
+      </a>
+
+      <!-- Menú Desktop -->
+      <nav class="main-nav" aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li><a href="#nosotros" class="nav-link">Nosotros</a></li>
+          <li><a href="#catalogo" class="nav-link">Catálogo</a></li>
+          <li><a href="#portfolio" class="nav-link">Portfolio</a></li>
+          <li><a href="#contacto" class="nav-link">Contacto</a></li>
+        </ul>
+      </nav>
+
+      <!-- Botón Menú Móvil -->
+      <button class="nav-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+
+    <!-- Menú Móvil Overlay -->
+    <nav class="mobile-nav" aria-label="Navegación móvil" aria-hidden="true">
+      <ul class="mobile-nav-list">
+        <li><a href="#nosotros" class="mobile-nav-link">Nosotros</a></li>
+        <li><a href="#catalogo" class="mobile-nav-link">Catálogo</a></li>
+        <li><a href="#portfolio" class="mobile-nav-link">Portfolio</a></li>
+        <li><a href="#contacto" class="mobile-nav-link">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+
+  <!-- Sección Hero -->
+  <section class="hero" id="inicio">
+    <div class="hero-parallax" aria-hidden="true"></div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+
+    <div class="hero-content">
+      <p class="hero-subtitle reveal">Esculturas & Chimeneas de Autor</p>
+      <h1 class="hero-title reveal">
+        Donde el fuego<br>
+        se convierte en arte
+      </h1>
+      <a href="#catalogo" class="btn btn-outline-light reveal">
+        Explorar Colección
+      </a>
+    </div>
+
+    <!-- Indicador de Scroll -->
+    <div class="scroll-indicator" aria-hidden="true">
+      <span class="scroll-line"></span>
+    </div>
+  </section>
+
+
+  <!-- Sección El Estudio -->
+  <section class="about section" id="nosotros">
+    <div class="container">
+
+      <div class="about-grid">
+        <!-- Columna de Imagen -->
+        <div class="about-image reveal">
+          <div class="about-image-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80"
+              alt="Interior del taller del estudio con herramientas y piezas en proceso"
+              loading="lazy"
+            >
+          </div>
+        </div>
+
+        <!-- Columna de Texto -->
+        <div class="about-text">
+          <span class="section-label reveal">El Estudio</span>
+          <h2 class="reveal">Filosofía de<br>diseño artesanal</h2>
+          <p class="reveal">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent
+            vel tortor facilisis, dignissim nulla at, consequat risus. Sed
+            pharetra justo at urna sodales, in volutpat lectus venenatis.
+            Suspendisse potenti.
+          </p>
+          <p class="reveal">
+            Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
+            posuere cubilia curae; Donec velit neque, auctor sit amet aliquam
+            vel, ullamcorper sit amet ligula. Nulla porttitor accumsan
+            tincidunt. Curabitur aliquet quam id dui posuere blandit.
+          </p>
+          <p class="reveal">
+            Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a.
+            Proin eget tortor risus. Vivamus suscipit tortor eget felis
+            porttitor volutpat. Curabitur non nulla sit amet nisl tempus
+            convallis quis ac lectus.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- Catálogo de Productos -->
+  <section class="catalog section" id="catalogo">
+    <div class="container">
+
+      <div class="section-header reveal">
+        <span class="section-label">Colección</span>
+        <h2>Catálogo de piezas</h2>
+      </div>
+
+      <div class="catalog-grid">
+
+        <!-- Producto 1 -->
+        <article class="product-card reveal">
+          <div class="product-image-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80"
+              alt="Chimenea contemporánea de diseño lineal en piedra natural"
+              loading="lazy"
+            >
+          </div>
+          <div class="product-body">
+            <span class="product-category">Chimeneas</span>
+            <h3 class="product-title">Modelo Atria</h3>
+            <p class="product-description">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+              eiusmod tempor incididunt.
+            </p>
+          </div>
+        </article>
+
+        <!-- Producto 2 -->
+        <article class="product-card reveal">
+          <div class="product-image-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1544967882-a350434262e8?w=600&q=80"
+              alt="Escultura abstracta en metal y piedra para interiores"
+              loading="lazy"
+            >
+          </div>
+          <div class="product-body">
+            <span class="product-category">Esculturas</span>
+            <h3 class="product-title">Pieza Monolith</h3>
+            <p class="product-description">
+              Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
+              posuere cubilia curae.
+            </p>
+          </div>
+        </article>
+
+        <!-- Producto 3 -->
+        <article class="product-card reveal">
+          <div class="product-image-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80"
+              alt="Chimenea suspendida de acero negro en living moderno"
+              loading="lazy"
+            >
+          </div>
+          <div class="product-body">
+            <span class="product-category">Chimeneas</span>
+            <h3 class="product-title">Modelo Ignis</h3>
+            <p class="product-description">
+              Praesent vel tortor facilisis, dignissim nulla at, consequat risus
+              pharetra justo.
+            </p>
+          </div>
+        </article>
+
+        <!-- Producto 4 -->
+        <article class="product-card reveal">
+          <div class="product-image-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80"
+              alt="Escultura orgánica de gran formato en piedra"
+              loading="lazy"
+            >
+          </div>
+          <div class="product-body">
+            <span class="product-category">Esculturas</span>
+            <h3 class="product-title">Pieza Erosión</h3>
+            <p class="product-description">
+              Donec velit neque, auctor sit amet aliquam vel, ullamcorper sit
+              amet ligula nulla porttitor.
+            </p>
+          </div>
+        </article>
+
+        <!-- Producto 5 -->
+        <article class="product-card reveal">
+          <div class="product-image-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80"
+              alt="Chimenea de esquina integrada en pared de hormigón"
+              loading="lazy"
+            >
+          </div>
+          <div class="product-body">
+            <span class="product-category">Chimeneas</span>
+            <h3 class="product-title">Modelo Ember</h3>
+            <p class="product-description">
+              Curabitur aliquet quam id dui posuere blandit nulla porttitor
+              accumsan tincidunt.
+            </p>
+          </div>
+        </article>
+
+        <!-- Producto 6 -->
+        <article class="product-card reveal">
+          <div class="product-image-wrapper">
+            <img
+              src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80"
+              alt="Escultura geométrica minimalista en acero corten"
+              loading="lazy"
+            >
+          </div>
+          <div class="product-body">
+            <span class="product-category">Esculturas</span>
+            <h3 class="product-title">Pieza Vértice</h3>
+            <p class="product-description">
+              Mauris blandit aliquet elit, eget tincidunt nibh pulvinar a proin
+              eget tortor risus.
+            </p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Portfolio / Proyectos -->
+  <section class="portfolio section" id="portfolio">
+    <div class="container">
+
+      <div class="section-header reveal">
+        <span class="section-label">Proyectos</span>
+        <h2>Obras realizadas</h2>
+      </div>
+
+      <div class="portfolio-masonry">
+
+        <!-- Proyecto 1 (alto) -->
+        <figure class="portfolio-item portfolio-item--tall reveal">
+          <img
+            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80"
+            alt="Chimenea contemporánea instalada en residencia de montaña"
+            loading="lazy"
+          >
+          <figcaption class="portfolio-overlay">
+            <h3 class="portfolio-title">Residencia Montaña</h3>
+            <p class="portfolio-context">Buenos Aires, Argentina — 2024</p>
+          </figcaption>
+        </figure>
+
+        <!-- Proyecto 2 -->
+        <figure class="portfolio-item reveal">
+          <img
+            src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80"
+            alt="Escultura en hall de ingreso corporativo"
+            loading="lazy"
+          >
+          <figcaption class="portfolio-overlay">
+            <h3 class="portfolio-title">Torre Madero</h3>
+            <p class="portfolio-context">Corporativo — 2024</p>
+          </figcaption>
+        </figure>
+
+        <!-- Proyecto 3 -->
+        <figure class="portfolio-item reveal">
+          <img
+            src="https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=600&q=80"
+            alt="Chimenea central doble cara en loft industrial"
+            loading="lazy"
+          >
+          <figcaption class="portfolio-overlay">
+            <h3 class="portfolio-title">Loft Palermo</h3>
+            <p class="portfolio-context">Residencial — 2023</p>
+          </figcaption>
+        </figure>
+
+        <!-- Proyecto 4 (alto) -->
+        <figure class="portfolio-item portfolio-item--tall reveal">
+          <img
+            src="https://images.unsplash.com/photo-1544967882-a350434262e8?w=800&q=80"
+            alt="Escultura monumental en jardín privado"
+            loading="lazy"
+          >
+          <figcaption class="portfolio-overlay">
+            <h3 class="portfolio-title">Jardín Escultórico</h3>
+            <p class="portfolio-context">Pilar, Buenos Aires — 2023</p>
+          </figcaption>
+        </figure>
+
+        <!-- Proyecto 5 -->
+        <figure class="portfolio-item reveal">
+          <img
+            src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80"
+            alt="Chimenea de diseño en suite principal"
+            loading="lazy"
+          >
+          <figcaption class="portfolio-overlay">
+            <h3 class="portfolio-title">Suite Nordelta</h3>
+            <p class="portfolio-context">Residencial — 2023</p>
+          </figcaption>
+        </figure>
+
+        <!-- Proyecto 6 -->
+        <figure class="portfolio-item reveal">
+          <img
+            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80"
+            alt="Escultura exterior en acero corten para espacio público"
+            loading="lazy"
+          >
+          <figcaption class="portfolio-overlay">
+            <h3 class="portfolio-title">Plaza del Arte</h3>
+            <p class="portfolio-context">Espacio Público — 2022</p>
+          </figcaption>
+        </figure>
+
+        <!-- Proyecto 7 -->
+        <figure class="portfolio-item reveal">
+          <img
+            src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80"
+            alt="Chimenea bioetanol en restaurante de alta cocina"
+            loading="lazy"
+          >
+          <figcaption class="portfolio-overlay">
+            <h3 class="portfolio-title">Restaurante Austral</h3>
+            <p class="portfolio-context">Gastronomía — 2022</p>
+          </figcaption>
+        </figure>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Sección Contacto -->
+  <section class="contact section" id="contacto">
+    <div class="container">
+
+      <div class="contact-grid">
+
+        <!-- Formulario -->
+        <div class="contact-form-wrapper reveal">
+          <span class="section-label section-label--light">Contacto</span>
+          <h2>Hablemos de<br>su proyecto</h2>
+
+          <form class="contact-form" id="contactForm" novalidate>
+            <div class="form-group">
+              <input
+                type="text"
+                id="name"
+                name="name"
+                class="form-input"
+                required
+                autocomplete="name"
+              >
+              <label for="name" class="form-label">Nombre completo</label>
+            </div>
+
+            <div class="form-group">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-input"
+                required
+                autocomplete="email"
+              >
+              <label for="email" class="form-label">Correo electrónico</label>
+            </div>
+
+            <div class="form-group">
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                class="form-input"
+                autocomplete="tel"
+              >
+              <label for="phone" class="form-label">Teléfono</label>
+            </div>
+
+            <div class="form-group">
+              <textarea
+                id="message"
+                name="message"
+                class="form-input form-textarea"
+                rows="4"
+                required
+              ></textarea>
+              <label for="message" class="form-label">Mensaje</label>
+            </div>
+
+            <button type="submit" class="btn btn-outline-light btn-submit">
+              Enviar Mensaje
+            </button>
+
+            <div class="form-feedback" id="formFeedback" aria-live="polite"></div>
+          </form>
+        </div>
+
+        <!-- Información de contacto -->
+        <div class="contact-info reveal">
+          <div class="contact-info-block">
+            <h3>Ubicación</h3>
+            <p>
+              Av. Lorem Ipsum 1234, Piso 5<br>
+              C1425 — Buenos Aires<br>
+              Argentina
+            </p>
+          </div>
+
+          <div class="contact-info-block">
+            <h3>Comunicación</h3>
+            <p>
+              <a href="tel:+5411XXXXXXXX">+54 11 XXXX-XXXX</a><br>
+              <a href="https://wa.me/5411XXXXXXXX" target="_blank" rel="noopener">WhatsApp</a><br>
+              <a href="mailto:info@martineau.studio">info@martineau.studio</a>
+            </p>
+          </div>
+
+          <div class="contact-info-block">
+            <h3>Horario</h3>
+            <p>
+              Lunes a Viernes<br>
+              09:00 — 18:00
+            </p>
+          </div>
+
+          <div class="contact-social">
+            <a href="#" class="social-link" aria-label="Instagram" target="_blank" rel="noopener">Instagram</a>
+            <a href="#" class="social-link" aria-label="Pinterest" target="_blank" rel="noopener">Pinterest</a>
+            <a href="#" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-copy">
+        &copy; 2024 MartinEau Studio. Todos los derechos reservados.
+      </p>
+      <p class="footer-credit">
+        Diseño y desarrollo con pasión artesanal.
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="script.js"></script>
+</body>
+</html>
