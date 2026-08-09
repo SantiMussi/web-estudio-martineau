@@ -246,6 +246,105 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // Antes y Después Slider
+    const initBeforeAfter = () => {
+        const container = document.querySelector('.ba-container');
+        const slider = document.querySelector('.ba-slider');
+        const afterImage = document.querySelector('.ba-after');
+        
+        if (!container || !slider || !afterImage) return;
+
+        let isDragging = false;
+        let isDemoing = false;
+
+        const moveSlider = (e) => {
+            if (!isDragging && e.type !== 'mousedown' && e.type !== 'touchstart') return;
+            isDemoing = false; // Cancelar demo si el usuario interactúa activamente
+            
+            const rect = container.getBoundingClientRect();
+            let x = 0;
+            
+            if (e.type.startsWith('touch')) {
+                x = e.touches[0].clientX;
+            } else {
+                x = e.clientX;
+            }
+            
+            x = x - rect.left;
+            
+            // Limit bounds
+            let percentage = (x / rect.width) * 100;
+            if (percentage < 0) percentage = 0;
+            if (percentage > 100) percentage = 100;
+
+            slider.style.left = `${percentage}%`;
+            afterImage.style.clipPath = `polygon(0 0, ${percentage}% 0, ${percentage}% 100%, 0 100%)`;
+        };
+
+        // Permite hacer clic en cualquier parte del contenedor para mover el slider
+        container.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            moveSlider(e);
+        });
+        
+        container.addEventListener('touchstart', (e) => {
+            isDragging = true;
+            moveSlider(e);
+        }, { passive: true });
+
+        window.addEventListener('mouseup', () => isDragging = false);
+        window.addEventListener('touchend', () => isDragging = false);
+
+        window.addEventListener('mousemove', moveSlider);
+        window.addEventListener('touchmove', moveSlider, { passive: true });
+
+        // Animación de Demo Automática (2 segundos)
+        const playDemo = () => {
+            if (container.classList.contains('demo-played')) return;
+            container.classList.add('demo-played');
+            isDemoing = true;
+            
+            const start = performance.now();
+            const duration = 2000;
+            
+            const animateDemo = (time) => {
+                if (!isDemoing) return; // Se detiene si el usuario interactúa
+                
+                let elapsed = time - start;
+                let progress = elapsed / duration;
+                
+                if (progress > 1) {
+                    isDemoing = false;
+                    
+                    // Asegurar que termine exactamente en el centro (50%)
+                    slider.style.left = `50%`;
+                    afterImage.style.clipPath = `polygon(0 0, 50% 0, 50% 100%, 0 100%)`;
+                    return;
+                }
+                
+                // Función seno: oscila desde 50% a 70%, baja a 30% y vuelve a 50%
+                const percentage = 50 + Math.sin(progress * Math.PI * 2) * 20;
+                
+                slider.style.left = `${percentage}%`;
+                afterImage.style.clipPath = `polygon(0 0, ${percentage}% 0, ${percentage}% 100%, 0 100%)`;
+                
+                requestAnimationFrame(animateDemo);
+            };
+            
+            requestAnimationFrame(animateDemo);
+        };
+
+        // Observar cuando entra en pantalla
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                setTimeout(playDemo, 400); // Pequeño retraso para mayor impacto
+                observer.disconnect();
+            }
+        }, { threshold: 0.6 });
+        
+        observer.observe(container);
+    };
+
     // Loader Premium
     const initLoader = () => {
         const loader = document.querySelector('.loader-wrapper');
@@ -269,6 +368,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initScrollReveal();
         initSmoothScroll();
         initFormHandling();
+        initBeforeAfter();
     };
 
     init();
