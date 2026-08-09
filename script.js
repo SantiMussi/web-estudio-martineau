@@ -32,15 +32,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const header = document.querySelector('.site-header');
         if (!header) return;
 
+        let ticking = false;
+
         const handleScroll = () => {
-            if (window.scrollY > 100) {
+            if (window.scrollY > 50) {
                 header.classList.add('scrolled');
             } else {
                 header.classList.remove('scrolled');
             }
+            ticking = false;
         };
 
-        window.addEventListener('scroll', throttle(handleScroll, 100), { passive: true });
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                window.requestAnimationFrame(handleScroll);
+                ticking = true;
+            }
+        }, { passive: true });
+        
         handleScroll();
     };
 
@@ -237,8 +246,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // Loader Premium
+    const initLoader = () => {
+        const loader = document.querySelector('.loader-wrapper');
+        if (!loader) return;
+        
+        // Simular tiempo de carga
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                setTimeout(() => loader.style.display = 'none', 1000);
+            }, 800);
+        });
+    };
+
     // Inicialización de componentes
     const init = () => {
+        initLoader();
         initHeader();
         initMobileNav();
         initParallax();
