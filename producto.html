@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Detalle de producto - MartinEau Studio.">
+  <title>Modelo Atria — MartinEau Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Header y Navegación -->
+  <header class="site-header" id="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="MartinEau Studio - Ir al inicio">MartinEau</a>
+      <nav class="main-nav" aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li><a href="index.html#nosotros" class="nav-link">Nosotros</a></li>
+          <li><a href="catalogo.html" class="nav-link">Catálogo</a></li>
+          <li><a href="portfolio.html" class="nav-link">Portfolio</a></li>
+          <li><a href="index.html#contacto" class="nav-link">Contacto</a></li>
+        </ul>
+      </nav>
+      <button class="nav-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+    <nav class="mobile-nav" aria-label="Navegación móvil" aria-hidden="true">
+      <ul class="mobile-nav-list">
+        <li><a href="index.html#nosotros" class="mobile-nav-link">Nosotros</a></li>
+        <li><a href="catalogo.html" class="mobile-nav-link">Catálogo</a></li>
+        <li><a href="portfolio.html" class="mobile-nav-link">Portfolio</a></li>
+        <li><a href="index.html#contacto" class="mobile-nav-link">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Product Detail Section -->
+  <main class="product-detail-page container">
+    
+    <div class="back-link-wrapper reveal">
+      <a href="catalogo.html" class="back-link">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Volver al Catálogo
+      </a>
+    </div>
+
+    <div class="product-detail-grid">
+      <!-- Gallery -->
+      <div class="product-gallery reveal">
+        <div class="gallery-main">
+          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&q=80" alt="Modelo Atria - Vista principal" id="main-product-image">
+        </div>
+        <div class="gallery-thumbnails">
+          <div class="gallery-thumb active" onclick="document.getElementById('main-product-image').src=this.querySelector('img').src">
+            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80" alt="Vista 1">
+          </div>
+          <div class="gallery-thumb" onclick="document.getElementById('main-product-image').src=this.querySelector('img').src">
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80" alt="Vista 2">
+          </div>
+          <div class="gallery-thumb" onclick="document.getElementById('main-product-image').src=this.querySelector('img').src">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Vista 3">
+          </div>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="product-info reveal">
+        <span class="product-info-category">Chimeneas</span>
+        <h1 class="product-info-title">Modelo Atria</h1>
+        <p class="product-info-desc">
+          El Modelo Atria redefine la experiencia del fuego en espacios interiores. Con un diseño escultórico y minimalista, esta chimenea central se convierte en el corazón del hogar, ofreciendo calidez y una estética incomparable. Su estructura de acero forjado a mano resalta la belleza cruda del material.
+        </p>
+
+        <div class="product-specs">
+          <div class="spec-item">
+            <span class="spec-label">Dimensiones</span>
+            <span class="spec-value">120cm Alto x 80cm Diámetro</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Materiales</span>
+            <span class="spec-value">Acero al carbono, Acero inoxidable, Cristal templado</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Combustión</span>
+            <span class="spec-value">Bioetanol (Eco-friendly, sin humo)</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Peso aprox.</span>
+            <span class="spec-value">45 kg</span>
+          </div>
+          <div class="spec-item">
+            <span class="spec-label">Acabado</span>
+            <span class="spec-value">Pátina natural oxidada con sellador mate</span>
+          </div>
+        </div>
+
+        <div class="product-actions">
+          <a href="index.html#contacto" class="btn">Solicitar Cotización</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-copy">&copy; 2024 MartinEau Studio. Todos los derechos reservados.</p>
+      <p class="footer-credit">Diseño y desarrollo con pasión artesanal.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Simple script to handle thumbnail clicks for gallery
+    document.querySelectorAll('.gallery-thumb').forEach(thumb => {
+      thumb.addEventListener('click', function() {
+        document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+  <script src="script.js"></script>
+</body>
+</html>
