@@ -130,6 +130,14 @@
             DB.delete('productos', id);
             renderProducts();
         }
+
+        function resetDatabase() {
+            if (confirm('¿Estás seguro de que querés borrar todos los cambios locales y recargar desde data.json?')) {
+                localStorage.removeItem('martineau_db');
+                alert('Base de datos reseteada. Redirigiendo al inicio...');
+                window.location.href = '../index.html';
+            }
+        }
     </script>
 </body>
 
