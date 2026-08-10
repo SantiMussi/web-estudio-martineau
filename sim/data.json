@@ -5,11 +5,9 @@
             "titulo": "Modelo Atria",
             "categoria": "chimeneas",
             "descripcion": "Chimenea de diseño lineal en piedra París, hecha a mano. Ideal para interiores y exteriores.",
-            "imagen": "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80",
+            "imagen": "assets/modelo_atria.png",
             "imagenes": [
-                "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&q=80",
-                "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80",
-                "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80"
+                "assets/modelo_atria.png"
             ],
             "specs": [
                 { "label": "Material", "value": "Piedra París reconstituida" },
@@ -24,10 +22,9 @@
             "titulo": "Pieza Monolith",
             "categoria": "esculturas",
             "descripcion": "Escultura clásica en yeso para interiores, inspirada en la antigüedad clásica.",
-            "imagen": "https://images.unsplash.com/photo-1544967882-a350434262e8?w=600&q=80",
+            "imagen": "assets/pieza_monolith.png",
             "imagenes": [
-                "https://images.unsplash.com/photo-1544967882-a350434262e8?w=1200&q=80",
-                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80"
+                "assets/pieza_monolith.png"
             ],
             "specs": [
                 { "label": "Material", "value": "Yeso de alta calidad" },
@@ -72,9 +69,9 @@
             "titulo": "Macetero Roma",
             "categoria": "jardineras",
             "descripcion": "Macetero de gran formato para exteriores.",
-            "imagen": "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80",
+            "imagen": "assets/macetero_roma.png",
             "imagenes": [
-                "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&q=80"
+                "assets/macetero_roma.png"
             ],
             "specs": [
                 { "label": "Material", "value": "Piedra París" }
@@ -163,9 +160,9 @@
             "categoria": "residencial",
             "ubicacion": "Palermo, Buenos Aires",
             "anio": "2023",
-            "imagen": "https://images.unsplash.com/photo-1544967882-a350434262e8?w=800&q=80",
+            "imagen": "assets/loft_palermo.png",
             "imagenes": [
-                "https://images.unsplash.com/photo-1544967882-a350434262e8?w=1200&q=80"
+                "assets/loft_palermo.png"
             ],
             "descripcion": "Chimenea central doble cara en loft industrial.",
             "specs": [
