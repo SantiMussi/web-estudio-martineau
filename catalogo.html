@@ -129,7 +129,7 @@
       grid.innerHTML = productos.map(producto => `
         <a href="producto.html?id=${producto.id}" class="product-card filter-item" data-category="${producto.categoria}">
           <div class="product-image-wrapper">
-            <img src="${producto.imagen}" alt="${producto.titulo}" loading="lazy">
+            <img src="${producto.imagen}" alt="${producto.titulo}">
           </div>
           <div class="product-body">
             <span class="product-category">${capitalizar(producto.categoria)}</span>

@@ -127,7 +127,7 @@
         const tallClass = esTall ? 'portfolio-item--tall' : '';
         return `
           <a href="proyecto.html?id=${proyecto.id}" class="portfolio-item ${tallClass} filter-item" data-category="${proyecto.categoria}">
-            <img src="${proyecto.imagen}" alt="${proyecto.titulo}" loading="lazy">
+            <img src="${proyecto.imagen}" alt="${proyecto.titulo}">
             <figcaption class="portfolio-overlay">
               <h3 class="portfolio-title">${proyecto.titulo}</h3>
               <p class="portfolio-context">${capitalizar(proyecto.categoria)} — ${proyecto.anio}</p>

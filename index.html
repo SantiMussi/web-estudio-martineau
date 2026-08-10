@@ -325,7 +325,7 @@
         grid.innerHTML = destacados.map(producto => `
           <a href="producto.html?id=${producto.id}" class="product-card reveal">
             <div class="product-image-wrapper">
-              <img src="${producto.imagen}" alt="${producto.titulo}" loading="lazy">
+              <img src="${producto.imagen}" alt="${producto.titulo}">
             </div>
             <div class="product-body">
               <span class="product-category">${capitalizar(producto.categoria)}</span>
@@ -349,7 +349,7 @@
           const tallClass = esTall ? 'portfolio-item--tall' : '';
           return `
             <a href="proyecto.html?id=${proyecto.id}" class="portfolio-item ${tallClass} reveal">
-              <img src="${proyecto.imagen}" alt="${proyecto.titulo}" loading="lazy">
+              <img src="${proyecto.imagen}" alt="${proyecto.titulo}">
               <figcaption class="portfolio-overlay">
                 <h3 class="portfolio-title">${proyecto.titulo}</h3>
                 <p class="portfolio-context">${capitalizar(proyecto.categoria)} — ${proyecto.anio}</p>

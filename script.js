@@ -85,34 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Efecto Parallax en sección Hero (solo desktop)
+    // Efecto Parallax en sección Hero — DESACTIVADO
+    // Para reactivar: descomentar el cuerpo de la función
     const initParallax = () => {
-        const hero = document.querySelector('.hero');
-        const parallaxLayer = document.querySelector('.hero-parallax') || hero;
-
-        if (!hero || !parallaxLayer) return;
-
-        let ticking = false;
-
-        const updateParallax = () => {
-            if (window.innerWidth > 1024) {
-                const scrolled = window.scrollY;
-                parallaxLayer.style.transform = `translateY(${scrolled * 0.4}px)`;
-            } else {
-                parallaxLayer.style.transform = 'translateY(0)';
-            }
-            ticking = false;
-        };
-
-        const onScroll = () => {
-            if (!ticking) {
-                window.requestAnimationFrame(updateParallax);
-                ticking = true;
-            }
-        };
-
-        window.addEventListener('scroll', onScroll, { passive: true });
-        window.addEventListener('resize', debounce(updateParallax, 150));
+        // Parallax desactivado intencionalmente
     };
 
     let scrollObserver = null;
@@ -469,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initLoader();
         initHeader();
         initMobileNav();
-        initParallax();
+        // initParallax(); // Parallax desactivado
         window.initScrollReveal();
         initSmoothScroll();
         initFormHandling();
