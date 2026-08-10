@@ -1,0 +1,82 @@
+{
+    "productos": [
+        {
+            "id": 1,
+            "titulo": "Modelo Atria",
+            "categoria": "chimeneas",
+            "descripcion": "Chimenea de diseño lineal en piedra París, hecha a mano. Ideal para interiores y exteriores.",
+            "imagen": "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80",
+            "imagenes": [
+                "https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&q=80",
+                "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80",
+                "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80"
+            ],
+            "specs": [
+                { "label": "Material", "value": "Piedra París reconstituida" },
+                { "label": "Uso", "value": "Interior y exterior" },
+                { "label": "Acabado", "value": "Terminación artesanal a mano" },
+                { "label": "Patina", "value": "Se desarrolla naturalmente con el tiempo" }
+            ],
+            "destacar": true
+        },
+        {
+            "id": 2,
+            "titulo": "Pieza Monolith",
+            "categoria": "esculturas",
+            "descripcion": "Escultura clásica en yeso para interiores, inspirada en la antigüedad clásica.",
+            "imagen": "https://images.unsplash.com/photo-1544967882-a350434262e8?w=600&q=80",
+            "imagenes": [
+                "https://images.unsplash.com/photo-1544967882-a350434262e8?w=1200&q=80",
+                "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80"
+            ],
+            "specs": [
+                { "label": "Material", "value": "Yeso de alta calidad" },
+                { "label": "Uso", "value": "Interior" },
+                { "label": "Acabado", "value": "Pintado o natural" }
+            ],
+            "destacar": true
+        },
+        {
+            "id": 3,
+            "titulo": "Ménsula Clásica",
+            "categoria": "mensulas",
+            "descripcion": "Ménsula decorativa en piedra París, diseñada para sostener cornisas o como elemento ornamental.",
+            "imagen": "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=600&q=80",
+            "imagenes": [
+                "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80"
+            ],
+            "specs": [
+                { "label": "Material", "value": "Piedra París reconstituida" },
+                { "label": "Uso", "value": "Interior y exterior" },
+                { "label": "Personalización", "value": "Bajo plano del arquitecto" }
+            ],
+            "destacar": true
+        }
+    ],
+    "proyectos": [
+        {
+            "id": 1,
+            "titulo": "Residencia Montaña",
+            "categoria": "residencial",
+            "ubicacion": "Buenos Aires, Argentina",
+            "anio": "2024",
+            "imagen": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80"
+        },
+        {
+            "id": 2,
+            "titulo": "Torre Madero",
+            "categoria": "corporativo",
+            "ubicacion": "Puerto Madero, Buenos Aires",
+            "anio": "2023",
+            "imagen": "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=800&q=80"
+        },
+        {
+            "id": 3,
+            "titulo": "Basílica San Nicolás",
+            "categoria": "publico",
+            "ubicacion": "Buenos Aires, Argentina",
+            "anio": "2022",
+            "imagen": "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80"
+        }
+    ]
+}

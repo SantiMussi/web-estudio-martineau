@@ -1,141 +1,147 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Detalle de producto - MartinEau Studio.">
-  <title>Modelo Atria — MartinEau Studio</title>
+  <meta name="description" content="Detalle de producto - AR Martineau.">
+  <title>Producto — AR Martineau</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Header y Navegación -->
+  <!-- Header y Navegacion -->
   <header class="site-header" id="header">
     <div class="container header-inner">
-      <a href="index.html" class="logo" aria-label="MartinEau Studio - Ir al inicio">MartinEau</a>
-      <nav class="main-nav" aria-label="Navegación principal">
+      <a href="index.html" class="logo" aria-label="AR Martineau - Ir al inicio">MartinEau</a>
+      <nav class="main-nav" aria-label="Navegacion principal">
         <ul class="nav-list">
-          <li><a href="index.html#nosotros" class="nav-link">Nosotros</a></li>
-          <li><a href="catalogo.html" class="nav-link">Catálogo</a></li>
+          <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
+          <li><a href="catalogo.html" class="nav-link">Catalogo</a></li>
           <li><a href="portfolio.html" class="nav-link">Portfolio</a></li>
           <li><a href="index.html#contacto" class="nav-link">Contacto</a></li>
         </ul>
       </nav>
-      <button class="nav-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+      <button class="nav-toggle" aria-label="Abrir menu de navegacion" aria-expanded="false">
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
       </button>
     </div>
-    <nav class="mobile-nav" aria-label="Navegación móvil" aria-hidden="true">
+    <nav class="mobile-nav" aria-label="Navegacion movil" aria-hidden="true">
       <ul class="mobile-nav-list">
-        <li><a href="index.html#nosotros" class="mobile-nav-link">Nosotros</a></li>
-        <li><a href="catalogo.html" class="mobile-nav-link">Catálogo</a></li>
+        <li><a href="nosotros.html" class="mobile-nav-link">Nosotros</a></li>
+        <li><a href="catalogo.html" class="mobile-nav-link">Catalogo</a></li>
         <li><a href="portfolio.html" class="mobile-nav-link">Portfolio</a></li>
         <li><a href="index.html#contacto" class="mobile-nav-link">Contacto</a></li>
       </ul>
     </nav>
   </header>
 
-  <!-- Product Detail Section -->
-  <main class="product-detail-page container">
-    
-    <div class="back-link-wrapper reveal">
-      <a href="catalogo.html" class="back-link">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="19" y1="12" x2="5" y2="12"></line>
-          <polyline points="12 19 5 12 12 5"></polyline>
-        </svg>
-        Volver al Catálogo
-      </a>
-    </div>
-
-    <div class="product-detail-grid">
-      <!-- Gallery -->
-      <div class="product-gallery reveal">
-        <div class="gallery-main">
-          <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=1200&q=80" alt="Modelo Atria - Vista principal" id="main-product-image">
-        </div>
-        <div class="gallery-thumbnails">
-          <div class="gallery-thumb active" onclick="document.getElementById('main-product-image').src=this.querySelector('img').src">
-            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80" alt="Vista 1">
-          </div>
-          <div class="gallery-thumb" onclick="document.getElementById('main-product-image').src=this.querySelector('img').src">
-            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80" alt="Vista 2">
-          </div>
-          <div class="gallery-thumb" onclick="document.getElementById('main-product-image').src=this.querySelector('img').src">
-            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Vista 3">
-          </div>
-        </div>
-      </div>
-
-      <!-- Info -->
-      <div class="product-info reveal">
-        <span class="product-info-category">Chimeneas</span>
-        <h1 class="product-info-title">Modelo Atria</h1>
-        <p class="product-info-desc">
-          El Modelo Atria redefine la experiencia del fuego en espacios interiores. Con un diseño escultórico y minimalista, esta chimenea central se convierte en el corazón del hogar, ofreciendo calidez y una estética incomparable. Su estructura de acero forjado a mano resalta la belleza cruda del material.
-        </p>
-
-        <div class="product-specs">
-          <div class="spec-item">
-            <span class="spec-label">Dimensiones</span>
-            <span class="spec-value">120cm Alto x 80cm Diámetro</span>
-          </div>
-          <div class="spec-item">
-            <span class="spec-label">Materiales</span>
-            <span class="spec-value">Acero al carbono, Acero inoxidable, Cristal templado</span>
-          </div>
-          <div class="spec-item">
-            <span class="spec-label">Combustión</span>
-            <span class="spec-value">Bioetanol (Eco-friendly, sin humo)</span>
-          </div>
-          <div class="spec-item">
-            <span class="spec-label">Peso aprox.</span>
-            <span class="spec-value">45 kg</span>
-          </div>
-          <div class="spec-item">
-            <span class="spec-label">Acabado</span>
-            <span class="spec-value">Pátina natural oxidada con sellador mate</span>
-          </div>
-        </div>
-
-        <div class="product-actions">
-          <a href="index.html#contacto" class="btn">Solicitar Cotización</a>
-        </div>
-      </div>
-    </div>
+  <!-- Product Detail: rellena dinamicamente por JS -->
+  <main class="product-detail-page container" id="product-detail-root">
+    <!-- Generado por renderProducto() -->
   </main>
 
   <!-- Footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p class="footer-copy">&copy; 2024 MartinEau Studio. Todos los derechos reservados.</p>
-      <p class="footer-credit">Diseño y desarrollo con pasión artesanal.</p>
+      <p class="footer-copy">&copy; Todos los derechos reservados, AR Martineau</p>
+      <p class="footer-credit">Desarrollo Drops design.</p>
     </div>
   </footer>
 
-  <script>
-    // Simple script to handle thumbnail clicks for gallery
-    document.querySelectorAll('.gallery-thumb').forEach(thumb => {
-      thumb.addEventListener('click', function() {
-        document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
-        this.classList.add('active');
-      });
-    });
-  </script>
-  <script src="script.js"></script>
-  <!-- WhatsApp Floating Button -->
-  <a href="https://wa.me/5491100000000" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
+  <!-- WhatsApp -->
+  <a href="https://wa.me/541131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
     <div class="whatsapp-pulse"></div>
     <div class="whatsapp-icon-wrapper">
       <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
         <path fill="currentColor" d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zM223.9 414.8c-32 0-63.1-8.4-90.6-24.3l-6.5-3.8-67.4 17.7 18-65.7-4.2-6.7c-17.5-27.9-26.7-60.2-26.7-93.1 0-103.5 84.3-187.8 187.9-187.8 50.1 0 97.2 19.5 132.6 55 35.4 35.4 55 82.5 55 132.7 0 103.5-84.3 187.8-187.9 187.8zm102.7-140.2c-5.6-2.8-33.4-16.5-38.6-18.4-5.2-1.9-9-2.8-12.8 2.8-3.8 5.6-14.7 18.4-18 22.1-3.3 3.8-6.6 4.2-12.2 1.4-5.6-2.8-23.8-8.8-45.3-27.9-16.7-14.9-28-33.3-31.3-38.9-3.3-5.6-.4-8.6 2.4-11.4 2.5-2.5 5.6-6.6 8.4-9.9 2.8-3.3 3.8-5.6 5.6-9.4 1.9-3.8.9-7.1-.4-9.9-1.4-2.8-12.8-30.9-17.5-42.3-4.6-11.1-9.3-9.6-12.8-9.8-3.3-.2-7.1-.2-10.9-.2-3.8 0-9.9 1.4-15.2 7.1-5.2 5.6-20 19.5-20 47.4 0 27.9 20.4 55 23.3 58.8 2.8 3.8 40 61.1 96.9 85.6 13.5 5.8 24.1 9.3 32.3 11.9 13.6 4.3 26 3.7 35.8 2.2 11-1.7 33.4-13.6 38.1-26.8 4.7-13.2 4.7-24.5 3.3-26.8-1.4-2.3-5.2-3.8-10.8-6.6z"/>
       </svg>
     </div>
-    <span class="whatsapp-text">¡Hablemos!</span>
+    <span class="whatsapp-text">Hablemos!</span>
   </a>
+
+  <!-- Store compartido -->
+  <script src="store.js"></script>
+  <script>
+    /**
+     * producto.html: render de detalle
+     * Lee ?id= de la URL, busca con Store.getProductoById(id) y renderiza.
+     * NO cambies esto al conectar el backend. Solo cambia store.js.
+     */
+    document.addEventListener('DOMContentLoaded', async () => {
+      await Store.init();
+      renderProducto();
+    });
+
+    function renderProducto() {
+      const root = document.getElementById('product-detail-root');
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+
+      if (!id) { root.innerHTML = notFound('No se especifico ningun producto.'); return; }
+
+      const producto = Store.getProductoById(id);
+      if (!producto) { root.innerHTML = notFound('Producto no encontrado.'); return; }
+
+      document.title = producto.titulo + ' - AR Martineau';
+
+      const imagenes = producto.imagenes || [producto.imagen];
+
+      const thumbsHTML = imagenes.map((src, i) =>
+        '<div class="gallery-thumb ' + (i === 0 ? 'active' : '') + '" onclick="cambiarImagen(this,\'' + src + '\')">' +
+        '<img src="' + src + '" alt="Vista ' + (i+1) + '"></div>'
+      ).join('');
+
+      const specsHTML = (producto.specs || []).map(s =>
+        '<div class="spec-item"><span class="spec-label">' + s.label + '</span><span class="spec-value">' + s.value + '</span></div>'
+      ).join('');
+
+      root.innerHTML =
+        '<div class="back-link-wrapper reveal">' +
+          '<a href="catalogo.html" class="back-link">' +
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+              '<line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>' +
+            '</svg> Volver al Catalogo' +
+          '</a>' +
+        '</div>' +
+        '<div class="product-detail-grid">' +
+          '<div class="product-gallery reveal">' +
+            '<div class="gallery-main"><img src="' + imagenes[0] + '" alt="' + producto.titulo + '" id="main-product-image"></div>' +
+            '<div class="gallery-thumbnails">' + thumbsHTML + '</div>' +
+          '</div>' +
+          '<div class="product-info reveal">' +
+            '<span class="product-info-category">' + capitalizar(producto.categoria) + '</span>' +
+            '<h1 class="product-info-title">' + producto.titulo + '</h1>' +
+            '<p class="product-info-desc">' + producto.descripcion + '</p>' +
+            (specsHTML ? '<div class="product-specs">' + specsHTML + '</div>' : '') +
+            '<div class="product-actions"><a href="index.html#contacto" class="btn">Solicitar Cotizacion</a></div>' +
+          '</div>' +
+        '</div>';
+
+      document.querySelectorAll('.gallery-thumb').forEach(thumb => {
+        thumb.addEventListener('click', function() {
+          document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+    }
+
+    function cambiarImagen(thumb, src) {
+      document.getElementById('main-product-image').src = src;
+    }
+
+    function capitalizar(str) {
+      return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+    }
+
+    function notFound(msg) {
+      return '<div style="text-align:center;padding:8rem 2rem"><p style="color:var(--color-text-muted)">' + msg + '</p>' +
+             '<a href="catalogo.html" class="btn btn-outline-light" style="margin-top:2rem;display:inline-block">Ver catalogo</a></div>';
+    }
+  </script>
+  <script src="script.js"></script>
 </body>
 </html>

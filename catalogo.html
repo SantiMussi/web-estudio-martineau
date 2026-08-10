@@ -17,7 +17,7 @@
       <a href="index.html" class="logo" aria-label="MartinEau Studio - Ir al inicio">MartinEau</a>
       <nav class="main-nav" aria-label="Navegación principal">
         <ul class="nav-list">
-          <li><a href="index.html#nosotros" class="nav-link">Nosotros</a></li>
+          <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
           <li><a href="catalogo.html" class="nav-link">Catálogo</a></li>
           <li><a href="portfolio.html" class="nav-link">Portfolio</a></li>
           <li><a href="index.html#contacto" class="nav-link">Contacto</a></li>
@@ -31,7 +31,7 @@
     </div>
     <nav class="mobile-nav" aria-label="Navegación móvil" aria-hidden="true">
       <ul class="mobile-nav-list">
-        <li><a href="index.html#nosotros" class="mobile-nav-link">Nosotros</a></li>
+        <li><a href="nosotros.html" class="mobile-nav-link">Nosotros</a></li>
         <li><a href="catalogo.html" class="mobile-nav-link">Catálogo</a></li>
         <li><a href="portfolio.html" class="mobile-nav-link">Portfolio</a></li>
         <li><a href="index.html#contacto" class="mobile-nav-link">Contacto</a></li>
@@ -48,6 +48,7 @@
     </div>
   </section>
 
+
   <!-- Catálogo -->
   <section class="catalog section page-catalog" id="catalogo-page">
     <div class="container">
@@ -59,97 +60,8 @@
         <button class="filter-btn" data-filter="esculturas">Esculturas</button>
       </div>
 
+      <!-- Grid: se rellena dinámicamente por JS -->
       <div class="catalog-grid filter-container" id="catalog-grid" data-per-page="6">
-        <!-- Productos -->
-        <a href="producto.html" class="product-card filter-item" data-category="chimeneas">
-          <div class="product-image-wrapper">
-            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80" alt="Chimenea contemporánea" loading="lazy">
-          </div>
-          <div class="product-body">
-            <span class="product-category">Chimeneas</span>
-            <h3 class="product-title">Modelo Atria</h3>
-          </div>
-        </a>
-        
-        <a href="producto.html" class="product-card filter-item" data-category="esculturas">
-          <div class="product-image-wrapper">
-            <img src="https://images.unsplash.com/photo-1544967882-a350434262e8?w=600&q=80" alt="Escultura abstracta" loading="lazy">
-          </div>
-          <div class="product-body">
-            <span class="product-category">Esculturas</span>
-            <h3 class="product-title">Pieza Monolith</h3>
-          </div>
-        </a>
-        
-        <a href="producto.html" class="product-card filter-item" data-category="chimeneas">
-          <div class="product-image-wrapper">
-            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Chimenea suspendida" loading="lazy">
-          </div>
-          <div class="product-body">
-            <span class="product-category">Chimeneas</span>
-            <h3 class="product-title">Modelo Ignis</h3>
-          </div>
-        </a>
-        
-        <a href="producto.html" class="product-card filter-item" data-category="esculturas">
-          <div class="product-image-wrapper">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80" alt="Escultura orgánica" loading="lazy">
-          </div>
-          <div class="product-body">
-            <span class="product-category">Esculturas</span>
-            <h3 class="product-title">Pieza Erosión</h3>
-          </div>
-        </a>
-        
-        <a href="producto.html" class="product-card filter-item" data-category="chimeneas">
-          <div class="product-image-wrapper">
-            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80" alt="Chimenea de esquina" loading="lazy">
-          </div>
-          <div class="product-body">
-            <span class="product-category">Chimeneas</span>
-            <h3 class="product-title">Modelo Ember</h3>
-          </div>
-        </a>
-
-        <a href="producto.html" class="product-card filter-item" data-category="esculturas">
-          <div class="product-image-wrapper">
-            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80" alt="Escultura geométrica" loading="lazy">
-          </div>
-          <div class="product-body">
-            <span class="product-category">Esculturas</span>
-            <h3 class="product-title">Pieza Vértice</h3>
-          </div>
-        </a>
-        
-        <a href="producto.html" class="product-card filter-item" data-category="chimeneas">
-          <div class="product-image-wrapper">
-            <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?w=600&q=80" alt="Chimenea minimalista" loading="lazy">
-          </div>
-          <div class="product-body">
-            <span class="product-category">Chimeneas</span>
-            <h3 class="product-title">Modelo Petra</h3>
-          </div>
-        </a>
-
-        <a href="producto.html" class="product-card filter-item" data-category="esculturas">
-          <div class="product-image-wrapper">
-            <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?w=600&q=80" alt="Escultura acero" loading="lazy">
-          </div>
-          <div class="product-body">
-            <span class="product-category">Esculturas</span>
-            <h3 class="product-title">Pieza Flama</h3>
-          </div>
-        </a>
-
-        <a href="producto.html" class="product-card filter-item" data-category="chimeneas">
-          <div class="product-image-wrapper">
-            <img src="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80" alt="Chimenea bioetanol" loading="lazy">
-          </div>
-          <div class="product-body">
-            <span class="product-category">Chimeneas</span>
-            <h3 class="product-title">Modelo Aura</h3>
-          </div>
-        </a>
       </div>
 
       <!-- Paginación -->
@@ -163,14 +75,13 @@
   <!-- Footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p class="footer-copy">&copy; 2024 MartinEau Studio. Todos los derechos reservados.</p>
-      <p class="footer-credit">Diseño y desarrollo con pasión artesanal.</p>
+      <p class="footer-copy">&copy; Todos los derechos reservados, AR Martineau</p>
+      <p class="footer-credit">Desarrollo Drops design.</p>
     </div>
   </footer>
 
-  <script src="script.js"></script>
   <!-- WhatsApp Floating Button -->
-  <a href="https://wa.me/5491100000000" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
+  <a href="https://wa.me/541131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
     <div class="whatsapp-pulse"></div>
     <div class="whatsapp-icon-wrapper">
       <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
@@ -179,5 +90,58 @@
     </div>
     <span class="whatsapp-text">¡Hablemos!</span>
   </a>
+
+  <!-- Store compartido (capa de datos / simulación) -->
+  <script src="store.js"></script>
+
+  <script>
+    /**
+     * ── catalogo.html: lógica de render ──
+     *
+     * Esta sección NO necesita modificarse al conectar un backend real.
+     * Solo cambiá Store.getProductos() en store.js.
+     */
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Inicializa el store (solo necesario mientras se use la simulación)
+      await Store.init();
+      renderCatalogo();
+    });
+
+    function renderCatalogo() {
+      const grid = document.getElementById('catalog-grid');
+
+      // ── Obtiene los datos (de simulación o API, según store.js) ──
+      const productos = Store.getProductos();
+
+      if (productos.length === 0) {
+        grid.innerHTML = '<p style="color:var(--color-text-muted); text-align:center; padding: 3rem 0;">No hay productos disponibles.</p>';
+        return;
+      }
+
+      // ── forEach: construye una tarjeta por cada producto ──
+      grid.innerHTML = productos.map(producto => `
+        <a href="producto.html?id=${producto.id}" class="product-card filter-item" data-category="${producto.categoria}">
+          <div class="product-image-wrapper">
+            <img src="${producto.imagen}" alt="${producto.titulo}" loading="lazy">
+          </div>
+          <div class="product-body">
+            <span class="product-category">${capitalizar(producto.categoria)}</span>
+            <h3 class="product-title">${producto.titulo}</h3>
+          </div>
+        </a>
+      `).join('');
+
+      // Re-inicializa los filtros y la paginación del script principal
+      if (typeof initFilters === 'function') initFilters();
+      if (typeof initPagination === 'function') initPagination();
+    }
+
+    function capitalizar(str) {
+      return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+    }
+  </script>
+
+  <script src="script.js"></script>
 </body>
 </html>
+

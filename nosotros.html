@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Conocé la historia de AR Martineau, fundada en 1922 por Agustín Martineau. Empresa líder en fabricación de piedra reconstituida y yeso para arquitectura y decoración.">
+  <title>Quiénes Somos — AR Martineau</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── Estilos específicos de la página Nosotros ── */
+
+    .about-hero {
+      position: relative;
+      height: 70vh;
+      min-height: 480px;
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+      background-image: url('https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1600&q=80');
+      background-size: cover;
+      background-position: center 30%;
+    }
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.35) 60%, transparent 100%);
+    }
+    .about-hero-content {
+      position: relative;
+      z-index: 1;
+      padding-bottom: 5rem;
+    }
+    .about-hero-content .section-label {
+      display: block;
+      margin-bottom: 1rem;
+    }
+    .about-hero-content h1 {
+      color: var(--color-white);
+      margin-bottom: 1.25rem;
+    }
+    .about-hero-content p {
+      font-family: var(--font-serif);
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      color: var(--color-text-muted);
+      max-width: 56ch;
+      font-style: italic;
+    }
+
+    /* ── Sección Empresa ── */
+    .about-empresa {
+      padding: 7rem 0;
+      background: var(--color-bg);
+    }
+    .about-empresa-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: center;
+    }
+    .about-empresa-text .section-label {
+      display: block;
+      margin-bottom: 1.5rem;
+    }
+    .about-empresa-text h2 {
+      margin-bottom: 2rem;
+    }
+    .about-empresa-text p {
+      color: var(--color-text-muted);
+      margin-bottom: 1.25rem;
+      font-size: 0.975rem;
+      line-height: 1.85;
+    }
+    .about-empresa-text p:last-of-type {
+      margin-bottom: 0;
+    }
+    .about-empresa-image {
+      position: relative;
+    }
+    .about-empresa-image img {
+      width: 100%;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+      display: block;
+    }
+    .about-empresa-image::after {
+      content: '';
+      position: absolute;
+      bottom: -1.5rem;
+      right: -1.5rem;
+      width: 60%;
+      height: 60%;
+      border: 1px solid var(--color-accent);
+      opacity: 0.25;
+      pointer-events: none;
+    }
+    .about-founded-badge {
+      position: absolute;
+      top: 2rem;
+      left: -2rem;
+      background: var(--color-accent);
+      color: var(--color-black);
+      padding: 1.25rem 1.5rem;
+      text-align: center;
+      font-family: var(--font-serif);
+      line-height: 1.1;
+      z-index: 2;
+    }
+    .about-founded-badge span:first-child {
+      display: block;
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-family: var(--font-sans);
+      margin-bottom: 0.25rem;
+    }
+    .about-founded-badge strong {
+      font-size: 2rem;
+      font-weight: 300;
+    }
+
+    /* ── Frase destacada ── */
+    .about-quote-section {
+      padding: 6rem 0;
+      background: var(--color-bg-alt);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
+    }
+    .about-quote {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    .about-quote blockquote {
+      font-family: var(--font-serif);
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      font-weight: 300;
+      font-style: italic;
+      color: var(--color-accent);
+      line-height: 1.3;
+      margin-bottom: 1.5rem;
+      position: relative;
+      padding-top: 3rem;
+    }
+    .about-quote blockquote::before {
+      content: '\201C';
+      font-size: 6rem;
+      color: var(--color-accent);
+      opacity: 0.2;
+      position: absolute;
+      top: -1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-style: normal;
+      line-height: 1;
+    }
+
+    /* ── Historia ── */
+    .about-historia {
+      padding: 7rem 0;
+      background: var(--color-bg);
+    }
+    .about-historia-header {
+      margin-bottom: 4rem;
+    }
+    .about-historia-header .section-label {
+      display: block;
+      margin-bottom: 1rem;
+    }
+    .about-historia-header h2 {
+      max-width: 18ch;
+    }
+    .historia-blocks {
+      display: grid;
+      gap: 0;
+    }
+    .historia-block {
+      display: grid;
+      grid-template-columns: 120px 1fr;
+      gap: 2.5rem;
+      align-items: start;
+      padding: 3rem 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .historia-block:first-child {
+      border-top: 1px solid var(--color-border);
+    }
+    .historia-year {
+      font-family: var(--font-serif);
+      font-size: 3rem;
+      font-weight: 300;
+      color: var(--color-accent);
+      line-height: 1;
+      padding-top: 0.25rem;
+    }
+    .historia-block-content h3 {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 400;
+      text-transform: none;
+      letter-spacing: 0;
+      margin-bottom: 1rem;
+      color: var(--color-text);
+    }
+    .historia-block-content p {
+      color: var(--color-text-muted);
+      font-size: 0.975rem;
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+    .historia-block-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── Obras destacadas ── */
+    .obras-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+    .obra-tag {
+      display: inline-block;
+      padding: 0.4rem 1rem;
+      border: 1px solid var(--color-border);
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      color: var(--color-text-muted);
+      transition: border-color 0.3s, color 0.3s;
+    }
+    .obra-tag:hover {
+      border-color: var(--color-accent);
+      color: var(--color-accent);
+    }
+
+    /* ── Testimonios ── */
+    .about-testimonios {
+      padding: 7rem 0;
+      background: var(--color-bg-alt);
+      border-top: 1px solid var(--color-border);
+    }
+    .testimonios-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+    .testimonios-header .section-label {
+      display: block;
+      margin-bottom: 1rem;
+    }
+    .testimonios-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+    .testimonio-card {
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      padding: 2.5rem;
+      position: relative;
+      transition: border-color 0.4s;
+    }
+    .testimonio-card:hover {
+      border-color: var(--color-accent);
+    }
+    .testimonio-card::before {
+      content: '\201C';
+      font-family: var(--font-serif);
+      font-size: 5rem;
+      color: var(--color-accent);
+      opacity: 0.15;
+      position: absolute;
+      top: 1rem;
+      left: 1.75rem;
+      line-height: 1;
+    }
+    .testimonio-text {
+      font-family: var(--font-serif);
+      font-size: 1.15rem;
+      font-style: italic;
+      font-weight: 300;
+      color: var(--color-text);
+      line-height: 1.6;
+      margin-bottom: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    .testimonio-autor {
+      border-top: 1px solid var(--color-border);
+      padding-top: 1.25rem;
+    }
+    .testimonio-autor strong {
+      display: block;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: 0.9rem;
+      letter-spacing: 0.05em;
+      color: var(--color-text);
+      margin-bottom: 0.2rem;
+    }
+    .testimonio-autor span {
+      font-size: 0.8rem;
+      color: var(--color-accent);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .about-empresa-grid {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+      .about-empresa-image {
+        order: -1;
+      }
+      .about-empresa-image::after {
+        display: none;
+      }
+      .about-founded-badge {
+        left: 1rem;
+        top: 1rem;
+      }
+      .historia-block {
+        grid-template-columns: 80px 1fr;
+        gap: 1.5rem;
+      }
+      .historia-year {
+        font-size: 2.25rem;
+      }
+      .testimonios-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 600px) {
+      .historia-block {
+        grid-template-columns: 1fr;
+        gap: 0.25rem;
+      }
+      .historia-year {
+        font-size: 1.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header y Navegación -->
+  <header class="site-header" id="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="AR Martineau - Ir al inicio">MartinEau</a>
+      <nav class="main-nav" aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li><a href="nosotros.html" class="nav-link active">Nosotros</a></li>
+          <li><a href="catalogo.html" class="nav-link">Catálogo</a></li>
+          <li><a href="portfolio.html" class="nav-link">Portfolio</a></li>
+          <li><a href="index.html#contacto" class="nav-link">Contacto</a></li>
+        </ul>
+      </nav>
+      <button class="nav-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+    <nav class="mobile-nav" aria-label="Navegación móvil" aria-hidden="true">
+      <ul class="mobile-nav-list">
+        <li><a href="nosotros.html" class="mobile-nav-link">Nosotros</a></li>
+        <li><a href="catalogo.html" class="mobile-nav-link">Catálogo</a></li>
+        <li><a href="portfolio.html" class="mobile-nav-link">Portfolio</a></li>
+        <li><a href="index.html#contacto" class="mobile-nav-link">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="about-hero">
+    <div class="about-hero-content container reveal">
+      <span class="section-label">Quiénes Somos</span>
+      <h1>Más de un siglo<br>de artesanía</h1>
+      <p>Desde 1922, creando piezas únicas de piedra reconstituida y yeso para los mejores arquitectos y decoradores del mundo.</p>
+    </div>
+  </section>
+
+  <!-- Nuestra Empresa -->
+  <section class="about-empresa section" id="empresa">
+    <div class="container">
+      <div class="about-empresa-grid">
+
+        <div class="about-empresa-text reveal">
+          <span class="section-label">Nuestra Empresa</span>
+          <h2>Excelencia artesanal desde 1922</h2>
+          <p>
+            Fundada por Agustín Martineau, somos una empresa líder en la fabricación de productos tipo piedra París: frentes de chimeneas, ménsulas, maceteros, jardineras, pisos, escaleras según planos, bordes de piletas y mucho más.
+          </p>
+          <p>
+            También elaboramos productos en yeso para interiores. La empresa ha trabajado —y trabaja— con los mejores arquitectos y decoradores no solo de la Argentina, sino también de Brasil, Uruguay y Estados Unidos.
+          </p>
+          <p>
+            Todo esto gracias a la excelencia de nuestros productos, hechos en moldes y terminados a mano. Todas las piezas de piedra pueden usarse en exterior bajo cualquier clima, así como en interior. En exteriores, la piedra desarrolla con el tiempo una atrayente pátina natural.
+          </p>
+          <p>
+            Ubicada en el corazón de Las Cañitas, cerca del hipódromo y las canchas de polo, la Casa Martineau cuenta con estacionamiento propio para sus clientes.
+          </p>
+        </div>
+
+        <div class="about-empresa-image reveal">
+          <div class="about-founded-badge">
+            <span>Fundado en</span>
+            <strong>1922</strong>
+          </div>
+          <img
+            src="https://images.unsplash.com/photo-1613977257365-aaae5a9817ff?w=800&q=80"
+            alt="Taller de moldeo y fabricación de piedra reconstituida AR Martineau"
+            loading="lazy"
+          >
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Frase destacada -->
+  <section class="about-quote-section">
+    <div class="container">
+      <div class="about-quote reveal">
+        <blockquote>Las piezas están hechas para durar toda una vida.</blockquote>
+      </div>
+    </div>
+  </section>
+
+  <!-- Nuestra Historia -->
+  <section class="about-historia section" id="historia">
+    <div class="container">
+
+      <div class="about-historia-header reveal">
+        <span class="section-label">Nuestra Historia</span>
+        <h2>AR Martineau<br>Piedra Reconstituida</h2>
+      </div>
+
+      <div class="historia-blocks">
+
+        <div class="historia-block reveal">
+          <div class="historia-year">1900</div>
+          <div class="historia-block-content">
+            <h3>El auge de una nación</h3>
+            <p>
+              El auge económico que llevó a la Argentina a ocupar un lugar entre los 7 países más ricos del mundo entre 1900 y 1930, produjo una explosión en la construcción de edificios públicos y privados, que pronto convirtieron a la «gran aldea» en una metrópolis europea.
+            </p>
+            <p>
+              Atraídos por la magnitud y la cantidad de los emprendimientos, artistas, arquitectos y artesanos europeos instalaron sus talleres en Buenos Aires para dar abasto al ininterrumpido flujo de encargos de gran importancia.
+            </p>
+          </div>
+        </div>
+
+        <div class="historia-block reveal">
+          <div class="historia-year">1922</div>
+          <div class="historia-block-content">
+            <h3>La fundación del taller</h3>
+            <p>
+              Uno de ellos, el francés A. Martineau, instaló en 1922 un taller de moldeado, diseño y producción de elementos arquitectónicos, decorativos y esculturas. Su trabajo lo convirtió rápidamente en el proveedor de los principales estudios de arquitectura de Argentina, gracias a la cuidada calidad de los materiales empleados y el exquisito acabado de su artesanía.
+            </p>
+          </div>
+        </div>
+
+        <div class="historia-block reveal">
+          <div class="historia-year">Hoy</div>
+          <div class="historia-block-content">
+            <h3>Un museo vivo</h3>
+            <p>
+              El juicioso manejo económico de la empresa, y la acumulación de diseños y moldes de los mejores arquitectos, y copias de obras de la antigüedad clásica, han convertido al taller de Martineau en un verdadero museo, como lo calificó una revista especializada de Brasil.
+            </p>
+            <p>
+              Tres obras ilustran la envergadura y calidad de la firma: la Basílica de San Nicolás de Bari, la residencia Ivry en los alrededores de Buenos Aires y la Catedral de La Plata.
+            </p>
+            <div class="obras-list">
+              <span class="obra-tag">Basílica de San Nicolás de Bari</span>
+              <span class="obra-tag">Residencia Ivry</span>
+              <span class="obra-tag">Catedral de La Plata</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="historia-block reveal">
+          <div class="historia-year" style="font-size: 1.5rem; padding-top: 0.5rem; line-height: 1.2;">Misión</div>
+          <div class="historia-block-content">
+            <h3>Al servicio del mundo</h3>
+            <p>
+              El deseo de la empresa es poner su capacidad técnica y artesanal —casi única en la sociedad industrializada contemporánea— al servicio de decoradores, arquitectos y particulares de todo el mundo, para que puedan apreciar y encargar la vasta cantidad de productos que pueden ejecutarse en nuestros talleres.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonios -->
+  <section class="about-testimonios section" id="testimonios">
+    <div class="container">
+
+      <div class="testimonios-header reveal">
+        <span class="section-label">Testimonios</span>
+        <h2>Lo que dicen nuestros clientes</h2>
+      </div>
+
+      <div class="testimonios-grid">
+
+        <div class="testimonio-card reveal">
+          <p class="testimonio-text">
+            Excelente terminación y calidad de los productos. Las piezas de piedra pueden ser usadas en el exterior bajo cualquier clima.
+          </p>
+          <div class="testimonio-autor">
+            <strong>José María Del Bonnis</strong>
+            <span>Arquitecto</span>
+          </div>
+        </div>
+
+        <div class="testimonio-card reveal">
+          <p class="testimonio-text">
+            Navegando por internet encontré esta empresa que me aconsejó en el tipo de producto. No tengo otra cosa que palabras de agradecimiento por el asesoramiento.
+          </p>
+          <div class="testimonio-autor">
+            <strong>Agustín Sacco</strong>
+            <span>Particular</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-copy">&copy; 2024 AR Martineau. Todos los derechos reservados.</p>
+      <p class="footer-credit">Diseño y desarrollo con pasión artesanal.</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/541131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
+    <div class="whatsapp-pulse"></div>
+    <div class="whatsapp-icon-wrapper">
+      <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        <path fill="currentColor" d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zM223.9 414.8c-32 0-63.1-8.4-90.6-24.3l-6.5-3.8-67.4 17.7 18-65.7-4.2-6.7c-17.5-27.9-26.7-60.2-26.7-93.1 0-103.5 84.3-187.8 187.9-187.8 50.1 0 97.2 19.5 132.6 55 35.4 35.4 55 82.5 55 132.7 0 103.5-84.3 187.8-187.9 187.8zm102.7-140.2c-5.6-2.8-33.4-16.5-38.6-18.4-5.2-1.9-9-2.8-12.8 2.8-3.8 5.6-14.7 18.4-18 22.1-3.3 3.8-6.6 4.2-12.2 1.4-5.6-2.8-23.8-8.8-45.3-27.9-16.7-14.9-28-33.3-31.3-38.9-3.3-5.6-.4-8.6 2.4-11.4 2.5-2.5 5.6-6.6 8.4-9.9 2.8-3.3 3.8-5.6 5.6-9.4 1.9-3.8.9-7.1-.4-9.9-1.4-2.8-12.8-30.9-17.5-42.3-4.6-11.1-9.3-9.6-12.8-9.8-3.3-.2-7.1-.2-10.9-.2-3.8 0-9.9 1.4-15.2 7.1-5.2 5.6-20 19.5-20 47.4 0 27.9 20.4 55 23.3 58.8 2.8 3.8 40 61.1 96.9 85.6 13.5 5.8 24.1 9.3 32.3 11.9 13.6 4.3 26 3.7 35.8 2.2 11-1.7 33.4-13.6 38.1-26.8 4.7-13.2 4.7-24.5 3.3-26.8-1.4-2.3-5.2-3.8-10.8-6.6z"/>
+      </svg>
+    </div>
+    <span class="whatsapp-text">¡Hablemos!</span>
+  </a>
+
+</body>
+</html>
