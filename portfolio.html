@@ -126,7 +126,7 @@
         const esTall = index % 3 === 0; // cada 3 items uno es "tall"
         const tallClass = esTall ? 'portfolio-item--tall' : '';
         return `
-          <a href="producto.html?id=${proyecto.id}" class="portfolio-item ${tallClass} filter-item" data-category="${proyecto.categoria}">
+          <a href="proyecto.html?id=${proyecto.id}" class="portfolio-item ${tallClass} filter-item" data-category="${proyecto.categoria}">
             <img src="${proyecto.imagen}" alt="${proyecto.titulo}" loading="lazy">
             <figcaption class="portfolio-overlay">
               <h3 class="portfolio-title">${proyecto.titulo}</h3>

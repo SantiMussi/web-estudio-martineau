@@ -54,6 +54,15 @@ const Store = {
   },
 
   /**
+   * Devuelve solo los proyectos marcados como destacados (destacar: true).
+   * → REEMPLAZAR por: const res = await fetch('/api/proyectos?destacar=true'); return res.json();
+   * @returns {Array}
+   */
+  getProyectosDestacados() {
+    return this.getProyectos().filter(p => p.destacar === true);
+  },
+
+  /**
    * Devuelve solo los productos marcados como destacados (destacar: true).
    * → REEMPLAZAR por: const res = await fetch('/api/productos?destacar=true'); return res.json();
    * @returns {Array}
@@ -70,6 +79,16 @@ const Store = {
    */
   getProductoById(id) {
     return this.getProductos().find(p => p.id === parseInt(id)) || null;
+  },
+
+  /**
+   * Devuelve un proyecto por su ID.
+   * → REEMPLAZAR por: const res = await fetch(`/api/proyectos/${id}`); return res.json();
+   * @param {number|string} id
+   * @returns {Object|null}
+   */
+  getProyectoById(id) {
+    return this.getProyectos().find(p => p.id === parseInt(id)) || null;
   },
 
 };
