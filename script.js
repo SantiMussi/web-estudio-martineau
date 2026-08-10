@@ -115,9 +115,10 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('resize', debounce(updateParallax, 150));
     };
 
-    // Animaciones de aparición al hacer scroll
+    let scrollObserver = null;
     window.initScrollReveal = () => {
-        const revealElements = document.querySelectorAll('.reveal');
+        // Solo buscamos los elementos que no han sido revelados ni observados
+        const revealElements = document.querySelectorAll('.reveal:not(.revealed):not([data-observed])');
         if (revealElements.length === 0) return;
 
         const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -127,26 +128,33 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const observerOptions = {
-            root: null,
-            rootMargin: '0px',
-            threshold: 0.15
-        };
+        // Usamos un patrón Singleton: creamos el observer solo una vez
+        if (!scrollObserver) {
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.15
+            };
 
-        const observer = new IntersectionObserver((entries, observer) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const delay = entry.target.getAttribute('data-delay');
-                    if (delay) {
-                        entry.target.style.transitionDelay = `${delay}ms`;
+            scrollObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const delay = entry.target.getAttribute('data-delay');
+                        if (delay) {
+                            entry.target.style.transitionDelay = `${delay}ms`;
+                        }
+                        entry.target.classList.add('revealed');
+                        observer.unobserve(entry.target);
                     }
-                    entry.target.classList.add('revealed');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
+                });
+            }, observerOptions);
+        }
 
-        revealElements.forEach(el => observer.observe(el));
+        // Asignamos el observer solo a los elementos nuevos
+        revealElements.forEach(el => {
+            el.setAttribute('data-observed', 'true');
+            scrollObserver.observe(el);
+        });
     };
 
     // Scroll suave a secciones del menú
