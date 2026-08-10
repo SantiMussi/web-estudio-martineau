@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -127,6 +127,9 @@
           this.classList.add('active');
         });
       });
+      
+      // Reinicializar animaciones
+      if (window.initScrollReveal) window.initScrollReveal();
     }
 
     function cambiarImagen(thumb, src) {

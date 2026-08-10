@@ -116,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Animaciones de aparición al hacer scroll
-    const initScrollReveal = () => {
+    window.initScrollReveal = () => {
         const revealElements = document.querySelectorAll('.reveal');
         if (revealElements.length === 0) return;
 
@@ -462,7 +462,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initHeader();
         initMobileNav();
         initParallax();
-        initScrollReveal();
+        window.initScrollReveal();
         initSmoothScroll();
         initFormHandling();
         initBeforeAfter();

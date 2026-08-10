@@ -136,6 +136,9 @@
         `;
       }).join('');
 
+      // Reinicializar las animaciones para los elementos recién creados
+      if (window.initScrollReveal) window.initScrollReveal();
+
       // Re-inicializa los filtros y la paginación del script principal
       if (typeof initFilters === 'function') initFilters();
       if (typeof initPagination === 'function') initPagination();

@@ -105,13 +105,17 @@
           <span class="section-label reveal">Quiénes somos</span>
           <h2 class="reveal">Más de un siglo<br>haciendo historia</h2>
           <p class="reveal">
-            Fundada en 1922 por Agustín Martineau, somos una empresa líder en la fabricación de productos tipo piedra París: frentes de chimeneas, ménsulas, maceteros, jardineras, pisos, escaleras según planos, bordes de piletas y piezas de yeso para interiores.
+            Fundada en 1922 por Agustín Martineau, somos una empresa líder en la fabricación de productos tipo piedra
+            París: frentes de chimeneas, ménsulas, maceteros, jardineras, pisos, escaleras según planos, bordes de
+            piletas y piezas de yeso para interiores.
           </p>
           <p class="reveal">
-            La empresa trabaja con los mejores arquitectos y decoradores de Argentina, Brasil, Uruguay y Estados Unidos. Todo gracias a la excelencia de nuestros productos, hechos en moldes y terminados completamente a mano.
+            La empresa trabaja con los mejores arquitectos y decoradores de Argentina, Brasil, Uruguay y Estados Unidos.
+            Todo gracias a la excelencia de nuestros productos, hechos en moldes y terminados completamente a mano.
           </p>
           <p class="reveal">
-            Todas las piezas de piedra pueden usarse en exterior bajo cualquier clima. Con el tiempo, desarrollan una atrayente pátina natural que las hace únicas.
+            Todas las piezas de piedra pueden usarse en exterior bajo cualquier clima. Con el tiempo, desarrollan una
+            atrayente pátina natural que las hace únicas.
           </p>
           <div class="reveal" style="margin-top: 2.5rem;">
             <a href="nosotros.html" class="btn btn-outline-light">Saber más</a>
@@ -270,9 +274,9 @@
           </span>
           <h3>Redes</h3>
           <div class="contact-social">
-            <a href="#" class="social-link" aria-label="Instagram" target="_blank" rel="noopener">Instagram</a>
-            <a href="#" class="social-link" aria-label="Pinterest" target="_blank" rel="noopener">Pinterest</a>
-            <a href="#" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener">LinkedIn</a>
+            <a href="https://www.instagram.com/armartineau/" class="social-link" aria-label="Instagram" target="_blank"
+              rel="noopener">Instagram</a>
+            <a href="#" class="social-link" aria-label="Facebook" target="_blank" rel="noopener">Facebook</a>
           </div>
         </div>
 
@@ -336,7 +340,7 @@
       const gridProyectos = document.getElementById('home-portfolio-grid');
       // Obtenemos solo los proyectos destacados
       const proyectosDestacados = Store.getProyectosDestacados();
-      
+
       if (proyectosDestacados.length === 0) {
         gridProyectos.innerHTML = '<p style="color:var(--color-text-muted); text-align:center; padding: 3rem 0; grid-column: 1/-1;">No hay proyectos destacados.</p>';
       } else {
@@ -354,6 +358,9 @@
           `;
         }).join('');
       }
+      
+      // Reinicializar las animaciones para los elementos recién creados
+      if (window.initScrollReveal) window.initScrollReveal();
     }
 
     function capitalizar(str) {
