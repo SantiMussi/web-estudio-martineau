@@ -221,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <p class="login-footer">
-            <a href="../index.html">← Volver al sitio</a>
+            <a href="../">← Volver al sitio</a>
         </p>
     </div>
 </body>

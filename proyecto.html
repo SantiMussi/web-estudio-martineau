@@ -15,13 +15,13 @@
   <!-- Header -->
   <header class="site-header" id="header">
     <div class="container header-inner">
-      <a href="index.html" class="logo" aria-label="AR Martineau - Ir al inicio">MartinEau</a>
+      <a href="/" class="logo" aria-label="AR Martineau - Ir al inicio">MartinEau</a>
       <nav class="main-nav" aria-label="Navegacion principal">
         <ul class="nav-list">
-          <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
-          <li><a href="catalogo.html" class="nav-link">Catalogo</a></li>
-          <li><a href="portfolio.html" class="nav-link active">Portfolio</a></li>
-          <li><a href="index.html#contacto" class="nav-link">Contacto</a></li>
+          <li><a href="nosotros" class="nav-link">Nosotros</a></li>
+          <li><a href="catalogo" class="nav-link">Catalogo</a></li>
+          <li><a href="portfolio" class="nav-link active">Portfolio</a></li>
+          <li><a href="/#contacto" class="nav-link">Contacto</a></li>
         </ul>
       </nav>
       <button class="nav-toggle" aria-label="Abrir menu de navegacion" aria-expanded="false">
@@ -32,10 +32,10 @@
     </div>
     <nav class="mobile-nav" aria-label="Navegacion movil" aria-hidden="true">
       <ul class="mobile-nav-list">
-        <li><a href="nosotros.html" class="mobile-nav-link">Nosotros</a></li>
-        <li><a href="catalogo.html" class="mobile-nav-link">Catalogo</a></li>
-        <li><a href="portfolio.html" class="mobile-nav-link">Portfolio</a></li>
-        <li><a href="index.html#contacto" class="mobile-nav-link">Contacto</a></li>
+        <li><a href="nosotros" class="mobile-nav-link">Nosotros</a></li>
+        <li><a href="catalogo" class="mobile-nav-link">Catalogo</a></li>
+        <li><a href="portfolio" class="mobile-nav-link">Portfolio</a></li>
+        <li><a href="/#contacto" class="mobile-nav-link">Contacto</a></li>
       </ul>
     </nav>
   </header>
@@ -107,7 +107,7 @@
 
       root.innerHTML =
         '<div class="back-link-wrapper reveal">' +
-          '<a href="portfolio.html" class="back-link">' +
+          '<a href="portfolio" class="back-link">' +
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
               '<line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>' +
             '</svg> Volver al Portfolio' +
@@ -123,7 +123,7 @@
             '<h1 class="product-info-title">' + proyecto.titulo + '</h1>' +
             '<p class="product-info-desc">' + (proyecto.descripcion || '') + '</p>' +
             (specsHTML ? '<div class="product-specs">' + specsHTML + '</div>' : '') +
-            '<div class="product-actions"><a href="index.html#contacto" class="btn">Consultar por este proyecto</a></div>' +
+            '<div class="product-actions"><a href="/#contacto" class="btn">Consultar por este proyecto</a></div>' +
           '</div>' +
         '</div>';
 
@@ -149,7 +149,7 @@
 
     function notFound(msg) {
       return '<div style="text-align:center;padding:8rem 2rem"><p style="color:var(--color-text-muted)">' + msg + '</p>' +
-             '<a href="portfolio.html" class="btn btn-outline-light" style="margin-top:2rem;display:inline-block">Ver portfolio</a></div>';
+             '<a href="portfolio" class="btn btn-outline-light" style="margin-top:2rem;display:inline-block">Ver portfolio</a></div>';
     }
   </script>
 

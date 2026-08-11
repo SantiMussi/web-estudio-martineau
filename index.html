@@ -37,10 +37,10 @@
       <!-- Menú Desktop -->
       <nav class="main-nav" aria-label="Navegación principal">
         <ul class="nav-list">
-          <li><a href="nosotros.html" class="nav-link">Nosotros</a></li>
-          <li><a href="catalogo.html" class="nav-link">Catálogo</a></li>
-          <li><a href="portfolio.html" class="nav-link">Portfolio</a></li>
-          <li><a href="index.html#contacto" class="nav-link">Contacto</a></li>
+          <li><a href="nosotros" class="nav-link">Nosotros</a></li>
+          <li><a href="catalogo" class="nav-link">Catálogo</a></li>
+          <li><a href="portfolio" class="nav-link">Portfolio</a></li>
+          <li><a href="/#contacto" class="nav-link">Contacto</a></li>
         </ul>
       </nav>
 
@@ -55,10 +55,10 @@
     <!-- Menú Móvil Overlay -->
     <nav class="mobile-nav" aria-label="Navegación móvil" aria-hidden="true">
       <ul class="mobile-nav-list">
-        <li><a href="nosotros.html" class="mobile-nav-link">Nosotros</a></li>
-        <li><a href="catalogo.html" class="mobile-nav-link">Catálogo</a></li>
-        <li><a href="portfolio.html" class="mobile-nav-link">Portfolio</a></li>
-        <li><a href="index.html#contacto" class="mobile-nav-link">Contacto</a></li>
+        <li><a href="nosotros" class="mobile-nav-link">Nosotros</a></li>
+        <li><a href="catalogo" class="mobile-nav-link">Catálogo</a></li>
+        <li><a href="portfolio" class="mobile-nav-link">Portfolio</a></li>
+        <li><a href="/#contacto" class="mobile-nav-link">Contacto</a></li>
       </ul>
     </nav>
   </header>
@@ -118,7 +118,7 @@
             atrayente pátina natural que las hace únicas.
           </p>
           <div class="reveal" style="margin-top: 2.5rem;">
-            <a href="nosotros.html" class="btn btn-outline-light">Saber más</a>
+            <a href="nosotros" class="btn btn-outline-light">Saber más</a>
           </div>
         </div>
       </div>
@@ -141,7 +141,7 @@
       </div>
 
       <div class="section-footer reveal" style="text-align: center; margin-top: 6rem;">
-        <a href="catalogo.html" class="btn btn-outline-light">Ver colección completa</a>
+        <a href="catalogo" class="btn btn-outline-light">Ver colección completa</a>
       </div>
     </div>
   </section>
@@ -195,7 +195,7 @@
       </div>
 
       <div class="section-footer reveal" style="text-align: center; margin-top: 4rem;">
-        <a href="portfolio.html" class="btn btn-outline-light">Ver todos los proyectos</a>
+        <a href="portfolio" class="btn btn-outline-light">Ver todos los proyectos</a>
       </div>
     </div>
   </section>
@@ -323,7 +323,7 @@
         grid.innerHTML = '<p style="color:var(--color-text-muted); text-align:center; padding: 3rem 0; grid-column: 1/-1;">No hay productos destacados.</p>';
       } else {
         grid.innerHTML = destacados.map(producto => `
-          <a href="producto.html?id=${producto.id}" class="product-card reveal">
+          <a href="producto?id=${producto.id}" class="product-card reveal">
             <div class="product-image-wrapper">
               <img src="${producto.imagen}" alt="${producto.titulo}">
             </div>
@@ -348,7 +348,7 @@
           const esTall = index === 0 || index === 3; // Mantenemos el diseño masonry original
           const tallClass = esTall ? 'portfolio-item--tall' : '';
           return `
-            <a href="proyecto.html?id=${proyecto.id}" class="portfolio-item ${tallClass} reveal">
+            <a href="proyecto?id=${proyecto.id}" class="portfolio-item ${tallClass} reveal">
               <img src="${proyecto.imagen}" alt="${proyecto.titulo}">
               <figcaption class="portfolio-overlay">
                 <h3 class="portfolio-title">${proyecto.titulo}</h3>
