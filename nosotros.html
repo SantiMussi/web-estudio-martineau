@@ -50,6 +50,22 @@
       font-style: italic;
     }
 
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: var(--color-white);
+      opacity: 0.6;
+      animation: bounce 2s infinite;
+      z-index: 2;
+    }
+    @keyframes bounce {
+      0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+      40% { transform: translate(-50%, -10px); }
+      60% { transform: translate(-50%, -5px); }
+    }
+
     /* ── Sección Empresa ── */
     .about-empresa {
       padding: 7rem 0;
@@ -381,6 +397,11 @@
       <span class="section-label">Quiénes Somos</span>
       <h1>Más de un siglo<br>de artesanía</h1>
       <p>Desde 1922, creando piezas únicas de piedra reconstituida y yeso para los mejores arquitectos y decoradores del mundo.</p>
+    </div>
+    <div class="scroll-indicator" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
     </div>
   </section>
 
