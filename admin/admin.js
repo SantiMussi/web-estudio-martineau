@@ -146,6 +146,7 @@ function editarItem(data, modalId) {
     for (const [key, value] of Object.entries(data)) {
         const field = form.querySelector(`[name="${key}"]`);
         if (!field) continue;
+        if (field.type === 'file') continue;
 
         if (field.type === 'checkbox') {
             field.checked = value == 1;
