@@ -54,6 +54,30 @@ function initModals() {
     document.querySelectorAll('[data-modal-open]').forEach(btn => {
         btn.addEventListener('click', () => {
             const modalId = btn.getAttribute('data-modal-open');
+            const overlay = document.getElementById(modalId);
+            if (overlay && !btn.hasAttribute('onclick')) {
+                const form = overlay.querySelector('form');
+                if (form) {
+                    form.reset();
+                    const idInput = form.querySelector('input[name="id"]');
+                    if (idInput) idInput.value = '';
+                    
+                    const specsContainer = form.querySelector('.specs-container');
+                    if (specsContainer) specsContainer.innerHTML = '';
+                    
+                    const title = overlay.querySelector('.modal-header h2');
+                    if (title) title.textContent = 'Nuevo';
+                    
+                    const currentMainImgDiv = form.querySelector('#current-main-image');
+                    if (currentMainImgDiv) currentMainImgDiv.style.display = 'none';
+                    
+                    const currentGalleryDiv = form.querySelector('#current-gallery');
+                    if (currentGalleryDiv) currentGalleryDiv.style.display = 'none';
+                    
+                    const imagePreviews = form.querySelectorAll('.image-preview');
+                    imagePreviews.forEach(p => p.innerHTML = '');
+                }
+            }
             openModal(modalId);
         });
     });
@@ -153,6 +177,40 @@ function editarItem(data, modalId) {
     // Cambiar título del modal
     const title = overlay.querySelector('.modal-header h2');
     if (title) title.textContent = data._modal_title || 'Editar';
+
+    // Manejar imagen principal
+    const currentMainImgDiv = form.querySelector('#current-main-image');
+    if (currentMainImgDiv) {
+        if (data.imagen) {
+            currentMainImgDiv.style.display = 'block';
+            currentMainImgDiv.querySelector('img').src = '../' + data.imagen;
+            currentMainImgDiv.querySelector('input').checked = false;
+        } else {
+            currentMainImgDiv.style.display = 'none';
+        }
+    }
+
+    // Manejar galería
+    const currentGalleryDiv = form.querySelector('#current-gallery');
+    if (currentGalleryDiv) {
+        currentGalleryDiv.innerHTML = '';
+        if (data.imagenes && data.imagenes.length > 0) {
+            currentGalleryDiv.style.display = 'flex';
+            data.imagenes.forEach(img => {
+                const div = document.createElement('div');
+                div.style.textAlign = 'center';
+                div.innerHTML = `
+                    <img src="../${escapeAttr(img)}" style="max-height: 80px; display: block; margin-bottom: 5px; border-radius: 4px;">
+                    <label style="font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer;">
+                        <input type="checkbox" name="eliminar_galeria[]" value="${escapeAttr(img)}"> Borrar
+                    </label>
+                `;
+                currentGalleryDiv.appendChild(div);
+            });
+        } else {
+            currentGalleryDiv.style.display = 'none';
+        }
+    }
 
     openModal(modalId);
 }

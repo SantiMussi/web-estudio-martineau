@@ -161,6 +161,8 @@ unset($_SESSION['flash_msg']);
                                                 "descripcion" => $prod["descripcion"],
                                                 "destacar" => $prod["destacar"],
                                                 "specs" => $prod["specs"],
+                                                "imagen" => $prod["imagen"],
+                                                "imagenes" => $prod["imagenes"] ? json_decode($prod["imagenes"], true) : [],
                                                 "_modal_title" => "Editar Producto"
                                             ], JSON_HEX_APOS | JSON_HEX_QUOT) ?>, "modal-producto")'>
                                                 Editar
@@ -235,6 +237,12 @@ unset($_SESSION['flash_msg']);
                     <!-- Imagen Principal -->
                     <div class="form-group">
                         <label>Imagen Principal</label>
+                        <div id="current-main-image" style="display:none; margin-bottom: 10px; background: var(--admin-bg); padding: 10px; border-radius: 4px;">
+                            <img src="" style="max-height: 100px; display: block; margin-bottom: 5px; border-radius: 4px;">
+                            <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 5px; color: var(--admin-text); cursor: pointer;">
+                                <input type="checkbox" name="eliminar_imagen_principal" value="1"> Eliminar imagen actual
+                            </label>
+                        </div>
                         <div class="file-upload-area">
                             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                             <p>Arrastrá una imagen o <strong>hacé clic para seleccionar</strong></p>
@@ -245,7 +253,11 @@ unset($_SESSION['flash_msg']);
 
                     <!-- Galería -->
                     <div class="form-group">
-                        <label>Galería de Imágenes</label>
+                        <label>Galería de Imágenes actuales</label>
+                        <div id="current-gallery" style="display:none; margin-bottom: 10px; gap: 10px; flex-wrap: wrap; background: var(--admin-bg); padding: 10px; border-radius: 4px;">
+                            <!-- Js poblará esto -->
+                        </div>
+                        <label>Subir nuevas imágenes a la galería</label>
                         <div class="file-upload-area">
                             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
                             <p>Seleccioná múltiples imágenes para la galería</p>

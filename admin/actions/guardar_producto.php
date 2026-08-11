@@ -93,7 +93,12 @@ try {
 
         // Mantener imagen actual si no se subió una nueva
         if (!$imagen_path) {
-            $imagen_path = $actual['imagen'];
+            if (isset($_POST['eliminar_imagen_principal']) && $_POST['eliminar_imagen_principal'] == '1') {
+                if ($actual['imagen']) eliminar_imagen($actual['imagen']);
+                $imagen_path = null;
+            } else {
+                $imagen_path = $actual['imagen'];
+            }
         } else {
             // Eliminar imagen anterior del disco
             if ($actual['imagen']) {
@@ -101,10 +106,28 @@ try {
             }
         }
 
-        // Mantener galería actual si no se subieron nuevas
-        $imagenes_json = !empty($imagenes_nuevas) 
-            ? json_encode($imagenes_nuevas) 
-            : $actual['imagenes'];
+        // Mantener galería actual, quitar eliminadas, y agregar nuevas
+        $galeria_actual = $actual['imagenes'] ? json_decode($actual['imagenes'], true) : [];
+        if (!is_array($galeria_actual)) $galeria_actual = [];
+        
+        $imagenes_a_eliminar = $_POST['eliminar_galeria'] ?? [];
+        if (!is_array($imagenes_a_eliminar)) $imagenes_a_eliminar = [];
+        
+        $galeria_final = [];
+        foreach ($galeria_actual as $img) {
+            if (in_array($img, $imagenes_a_eliminar)) {
+                eliminar_imagen($img);
+            } else {
+                $galeria_final[] = $img;
+            }
+        }
+        
+        // Agregar las nuevas a la galería final
+        if (!empty($imagenes_nuevas)) {
+            $galeria_final = array_merge($galeria_final, $imagenes_nuevas);
+        }
+        
+        $imagenes_json = !empty($galeria_final) ? json_encode($galeria_final) : null;
 
         $stmt = $pdo->prepare('
             UPDATE productos SET 
