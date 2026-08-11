@@ -1,3 +1,7 @@
+
 uploads/
 admin/uploads/
-.htaccess
+!admin/uploads/.htaccess
+admin/config.php
+*.log
+.env

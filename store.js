@@ -1,70 +1,73 @@
 /**
  * store.js — Capa de datos de AR Martineau
  *
- * ┌─────────────────────────────────────────────────────────┐
- * │  Para conectar a un servidor real:                      │
- * │  1. Reemplazá las funciones dentro del bloque marcado   │
- * │     como  ─── [SIMULACIÓN] ───                         │
- * │  2. Hacelas async y usá fetch() a tu API               │
- * │  3. El resto de la página (forEach, render) NO cambia  │
- * └─────────────────────────────────────────────────────────┘
+ * ┌─────────────────────────────────────────────────────────────┐
+ * │  Conectado a API real: api/datos.php                        │
+ * │  Todas las funciones devuelven datos desde MySQL vía fetch  │
+ * │  La interfaz pública se mantiene idéntica para no romper    │
+ * │  el código de rendering existente en cada HTML.             │
+ * └─────────────────────────────────────────────────────────────┘
  */
-
-/* ═══════════════════════════════════════════════════════════
-   ─── [SIMULACIÓN] ─── Reemplazar por llamadas a API real
-   ═══════════════════════════════════════════════════════════ */
 
 const Store = {
 
+  // Cache local para evitar requests duplicados en la misma carga de página
+  _cache: {},
+
   /**
-   * Inicializa el store cargando el JSON local si localStorage está vacío.
-   * → En producción: eliminar este método; el fetch irá directo a la API.
+   * Inicializa el store. Precarga productos y proyectos.
+   * Compatible con la interfaz anterior (await Store.init()).
    */
   async init() {
-    if (!localStorage.getItem('martineau_db')) {
-      try {
-        const res = await fetch('sim/data.json');
-        const data = await res.json();
-        localStorage.setItem('martineau_db', JSON.stringify(data));
-      } catch (e) {
-        console.warn('[Store] No se pudo cargar data.json. Usando datos vacíos.');
-        localStorage.setItem('martineau_db', JSON.stringify({ productos: [], proyectos: [] }));
-      }
+    try {
+      const [productos, proyectos] = await Promise.all([
+        this._fetch('productos'),
+        this._fetch('proyectos')
+      ]);
+      this._cache.productos = productos;
+      this._cache.proyectos = proyectos;
+    } catch (e) {
+      console.warn('[Store] Error al cargar datos desde API:', e);
+      this._cache.productos = [];
+      this._cache.proyectos = [];
     }
   },
 
   /**
-   * Devuelve todos los productos.
-   * → REEMPLAZAR por: const res = await fetch('/api/productos'); return res.json();
+   * Fetch genérico al endpoint de la API.
+   * @param {string} tipo — Parámetro 'tipo' para api/datos.php
+   * @param {Object} params — Parámetros adicionales (ej: { id: 5 })
+   * @returns {Promise<Array|Object>}
+   */
+  async _fetch(tipo, params = {}) {
+    const url = new URL('api/datos.php', window.location.origin + window.location.pathname.replace(/[^/]*$/, ''));
+    url.searchParams.set('tipo', tipo);
+    for (const [key, val] of Object.entries(params)) {
+      url.searchParams.set(key, val);
+    }
+    const res = await fetch(url.toString());
+    if (!res.ok) throw new Error(`API error: ${res.status}`);
+    return res.json();
+  },
+
+  /**
+   * Devuelve todos los productos (desde cache).
    * @returns {Array}
    */
   getProductos() {
-    const db = JSON.parse(localStorage.getItem('martineau_db')) || { productos: [] };
-    return db.productos;
+    return this._cache.productos || [];
   },
 
   /**
-   * Devuelve todos los proyectos.
-   * → REEMPLAZAR por: const res = await fetch('/api/proyectos'); return res.json();
+   * Devuelve todos los proyectos (desde cache).
    * @returns {Array}
    */
   getProyectos() {
-    const db = JSON.parse(localStorage.getItem('martineau_db')) || { proyectos: [] };
-    return db.proyectos;
-  },
-
-  /**
-   * Devuelve solo los proyectos marcados como destacados (destacar: true).
-   * → REEMPLAZAR por: const res = await fetch('/api/proyectos?destacar=true'); return res.json();
-   * @returns {Array}
-   */
-  getProyectosDestacados() {
-    return this.getProyectos().filter(p => p.destacar === true);
+    return this._cache.proyectos || [];
   },
 
   /**
    * Devuelve solo los productos marcados como destacados (destacar: true).
-   * → REEMPLAZAR por: const res = await fetch('/api/productos?destacar=true'); return res.json();
    * @returns {Array}
    */
   getProductosDestacados() {
@@ -72,8 +75,15 @@ const Store = {
   },
 
   /**
+   * Devuelve solo los proyectos marcados como destacados (destacar: true).
+   * @returns {Array}
+   */
+  getProyectosDestacados() {
+    return this.getProyectos().filter(p => p.destacar === true);
+  },
+
+  /**
    * Devuelve un producto por su ID.
-   * → REEMPLAZAR por: const res = await fetch(`/api/productos/${id}`); return res.json();
    * @param {number|string} id
    * @returns {Object|null}
    */
@@ -83,7 +93,6 @@ const Store = {
 
   /**
    * Devuelve un proyecto por su ID.
-   * → REEMPLAZAR por: const res = await fetch(`/api/proyectos/${id}`); return res.json();
    * @param {number|string} id
    * @returns {Object|null}
    */
@@ -92,8 +101,3 @@ const Store = {
   },
 
 };
-
-/* ═══════════════════════════════════════════════════════════
-   ─── FIN [SIMULACIÓN] ───
-   ═══════════════════════════════════════════════════════════ */
-
