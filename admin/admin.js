@@ -148,12 +148,16 @@ function editarItem(data, modalId) {
         if (!field) continue;
         if (field.type === 'file') continue;
 
-        if (field.type === 'checkbox') {
-            field.checked = value == 1;
-        } else if (field.tagName === 'SELECT') {
-            field.value = value;
-        } else {
-            field.value = value;
+        try {
+            if (field.type === 'checkbox') {
+                field.checked = value == 1;
+            } else if (field.tagName === 'SELECT') {
+                field.value = value;
+            } else {
+                field.value = value;
+            }
+        } catch (e) {
+            console.warn(`Error al asignar valor al campo ${key}:`, e);
         }
     }
 
