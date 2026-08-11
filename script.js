@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Filtrado y Paginación
-    const initFiltersAndPagination = () => {
+    window.initFiltersAndPagination = () => {
         const containers = document.querySelectorAll('.filter-container');
         if (containers.length === 0) return;
 
@@ -450,7 +450,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initSmoothScroll();
         initFormHandling();
         initBeforeAfter();
-        initFiltersAndPagination();
+        window.initFiltersAndPagination();
     };
 
     init();
