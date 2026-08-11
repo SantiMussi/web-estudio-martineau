@@ -59,10 +59,9 @@
     <div class="container">
 
       <!-- Filtros -->
-      <div class="filters reveal">
+      <div class="filters reveal" id="catalog-filters">
+        <!-- Generado por JS -->
         <button class="filter-btn active" data-filter="all">Todas</button>
-        <button class="filter-btn" data-filter="chimeneas">Chimeneas</button>
-        <button class="filter-btn" data-filter="esculturas">Esculturas</button>
       </div>
 
       <!-- Grid: se rellena dinámicamente por JS -->
@@ -116,6 +115,14 @@
 
     function renderCatalogo() {
       const grid = document.getElementById('catalog-grid');
+      const filterContainer = document.getElementById('catalog-filters');
+
+      // ── Obtiene las categorías de tipo producto ──
+      const categorias = Store.getCategorias('producto');
+      if (filterContainer && categorias.length > 0) {
+        filterContainer.innerHTML = '<button class="filter-btn active" data-filter="all">Todas</button>' +
+          categorias.map(cat => `<button class="filter-btn" data-filter="${cat.slug}">${capitalizar(cat.nombre)}</button>`).join('');
+      }
 
       // ── Obtiene los datos (de simulación o API, según store.js) ──
       const productos = Store.getProductos();

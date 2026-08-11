@@ -20,16 +20,19 @@ const Store = {
    */
   async init() {
     try {
-      const [productos, proyectos] = await Promise.all([
+      const [productos, proyectos, categorias] = await Promise.all([
         this._fetch('productos'),
-        this._fetch('proyectos')
+        this._fetch('proyectos'),
+        this._fetch('categorias')
       ]);
       this._cache.productos = productos;
       this._cache.proyectos = proyectos;
+      this._cache.categorias = categorias;
     } catch (e) {
       console.warn('[Store] Error al cargar datos desde API:', e);
       this._cache.productos = [];
       this._cache.proyectos = [];
+      this._cache.categorias = [];
     }
   },
 
@@ -64,6 +67,18 @@ const Store = {
    */
   getProyectos() {
     return this._cache.proyectos || [];
+  },
+  
+  /**
+   * Devuelve las categorias (desde cache).
+   * @returns {Array}
+   */
+  getCategorias(tipo = null) {
+    let cats = this._cache.categorias || [];
+    if (tipo) {
+        cats = cats.filter(c => c.tipo === tipo);
+    }
+    return cats;
   },
 
   /**

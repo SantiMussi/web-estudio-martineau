@@ -54,12 +54,9 @@
     <div class="container">
       
       <!-- Filtros -->
-      <div class="filters reveal">
+      <div class="filters reveal" id="portfolio-filters">
+        <!-- Generado por JS -->
         <button class="filter-btn active" data-filter="all">Todos</button>
-        <button class="filter-btn" data-filter="residencial">Residencial</button>
-        <button class="filter-btn" data-filter="corporativo">Corporativo</button>
-        <button class="filter-btn" data-filter="publico">Espacio Público</button>
-        <button class="filter-btn" data-filter="gastronomia">Gastronomía</button>
       </div>
 
       <!-- Grid: se rellena dinámicamente por JS -->
@@ -111,6 +108,14 @@
 
     function renderPortfolio() {
       const grid = document.getElementById('portfolio-grid');
+      const filterContainer = document.getElementById('portfolio-filters');
+
+      // ── Obtiene las categorías de tipo proyecto ──
+      const categorias = Store.getCategorias('proyecto');
+      if (filterContainer && categorias.length > 0) {
+        filterContainer.innerHTML = '<button class="filter-btn active" data-filter="all">Todos</button>' +
+          categorias.map(cat => `<button class="filter-btn" data-filter="${cat.slug}">${capitalizar(cat.nombre)}</button>`).join('');
+      }
 
       // ── Obtiene los datos (de simulación o API, según store.js) ──
       const proyectos = Store.getProyectos();
