@@ -17,29 +17,9 @@
  * @security PDO Prepared Statements. Sin datos sensibles expuestos.
  */
 
-// ─── Conexión a BD (sin headers de seguridad del admin) ───
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'tu_nombre_bd');
-define('DB_USER', 'tu_usuario_bd');
-define('DB_PASS', 'tu_password_bd');
-
-try {
-    $pdo = new PDO(
-        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4",
-        DB_USER,
-        DB_PASS,
-        [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES   => false
-        ]
-    );
-} catch (PDOException $e) {
-    http_response_code(500);
-    header('Content-Type: application/json; charset=utf-8');
-    echo json_encode(['error' => 'Error de conexión a la base de datos.']);
-    exit();
-}
+// ─── Conexión a BD ───
+// Importamos la conexión centralizada (esto protege las credenciales de Git ya que config.php está en .gitignore)
+require_once __DIR__ . '/../admin/config.php';
 
 // ─── Headers de respuesta ───
 header('Content-Type: application/json; charset=utf-8');

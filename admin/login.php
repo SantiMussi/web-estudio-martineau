@@ -23,22 +23,22 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verificar_csrf();
 
-    $email = trim($_POST['email'] ?? '');
+    $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    if (empty($email) || empty($password)) {
+    if (empty($username) || empty($password)) {
         $error = 'Complete todos los campos.';
     } else {
-        // Buscar usuario por email con prepared statement
-        $stmt = $pdo->prepare('SELECT id, password_hash FROM usuarios WHERE email = :email LIMIT 1');
-        $stmt->execute(['email' => $email]);
+        // Buscar usuario por username con prepared statement
+        $stmt = $pdo->prepare('SELECT id, password_hash FROM usuarios WHERE username = :username LIMIT 1');
+        $stmt->execute(['username' => $username]);
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password_hash'])) {
             // Autenticación exitosa: regenerar ID de sesión (previene session fixation)
             session_regenerate_id(true);
             $_SESSION['user_id'] = $user['id'];
-            $_SESSION['user_email'] = $email;
+            $_SESSION['username'] = $username;
 
             header('Location: index.php');
             exit();
@@ -206,9 +206,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?= csrf_field() ?>
 
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="admin@martineau.studio" 
-                           value="<?= e($_POST['email'] ?? '') ?>" required autofocus>
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" name="username" placeholder="admin" 
+                           value="<?= e($_POST['username'] ?? '') ?>" required autofocus>
                 </div>
 
                 <div class="form-group">
