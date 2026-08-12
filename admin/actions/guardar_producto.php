@@ -37,6 +37,7 @@ try {
     $categoria_id = !empty($_POST['categoria_id']) ? (int)$_POST['categoria_id'] : null;
     $descripcion  = trim($_POST['descripcion'] ?? '');
     $destacar     = isset($_POST['destacar']) ? 1 : 0;
+    $oculto       = isset($_POST['oculto']) ? 1 : 0;
     $specs        = $_POST['specs'] ?? '[]';
 
     // Validación básica
@@ -137,7 +138,8 @@ try {
                 imagen = :imagen,
                 imagenes = :imagenes,
                 specs = :specs,
-                destacar = :destacar
+                destacar = :destacar,
+                oculto = :oculto
             WHERE id = :id
         ');
         $stmt->execute([
@@ -148,6 +150,7 @@ try {
             'imagenes'     => $imagenes_json,
             'specs'        => $specs,
             'destacar'     => $destacar,
+            'oculto'       => $oculto,
             'id'           => $id,
         ]);
 
@@ -158,8 +161,8 @@ try {
         $imagenes_json = !empty($imagenes_nuevas) ? json_encode($imagenes_nuevas) : null;
 
         $stmt = $pdo->prepare('
-            INSERT INTO productos (titulo, categoria_id, descripcion, imagen, imagenes, specs, destacar) 
-            VALUES (:titulo, :categoria_id, :descripcion, :imagen, :imagenes, :specs, :destacar)
+            INSERT INTO productos (titulo, categoria_id, descripcion, imagen, imagenes, specs, destacar, oculto) 
+            VALUES (:titulo, :categoria_id, :descripcion, :imagen, :imagenes, :specs, :destacar, :oculto)
         ');
         $stmt->execute([
             'titulo'       => $titulo,
@@ -169,6 +172,7 @@ try {
             'imagenes'     => $imagenes_json,
             'specs'        => $specs,
             'destacar'     => $destacar,
+            'oculto'       => $oculto,
         ]);
 
         $_SESSION['flash_msg'] = ['type' => 'success', 'text' => 'Producto creado correctamente.'];

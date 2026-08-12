@@ -118,6 +118,7 @@ unset($_SESSION['flash_msg']);
                                 <th>Título</th>
                                 <th>Categoría</th>
                                 <th>Destacar</th>
+                                <th>Visibilidad</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -155,6 +156,20 @@ unset($_SESSION['flash_msg']);
                                         </form>
                                     </td>
                                     <td>
+                                        <form method="POST" action="actions/toggle_ocultar.php" style="display:inline">
+                                            <?= csrf_field() ?>
+                                            <input type="hidden" name="tipo" value="producto">
+                                            <input type="hidden" name="id" value="<?= (int)$prod['id'] ?>">
+                                            <button type="submit" class="toggle-btn" title="Cambiar visibilidad">
+                                                <?php if (isset($prod['oculto']) && $prod['oculto']): ?>
+                                                    <span class="badge badge-inactive">👁 Oculto</span>
+                                                <?php else: ?>
+                                                    <span class="badge badge-active">👁 Visible</span>
+                                                <?php endif; ?>
+                                            </button>
+                                        </form>
+                                    </td>
+                                    <td>
                                         <div class="table-actions">
                                             <button type="button" class="btn-admin btn-secondary btn-sm" onclick='editarItem(<?= json_encode([
                                                 "id" => $prod["id"],
@@ -162,6 +177,7 @@ unset($_SESSION['flash_msg']);
                                                 "categoria_id" => $prod["categoria_id"],
                                                 "descripcion" => $prod["descripcion"],
                                                 "destacar" => $prod["destacar"],
+                                                "oculto" => isset($prod["oculto"]) ? $prod["oculto"] : 0,
                                                 "specs" => $prod["specs"],
                                                 "imagen" => $prod["imagen"],
                                                 "imagenes" => $prod["imagenes"] ? json_decode($prod["imagenes"], true) : [],
@@ -223,9 +239,13 @@ unset($_SESSION['flash_msg']);
 
                         <!-- Destacar -->
                         <div class="form-group" style="display:flex; align-items:flex-end; padding-bottom: 0.4rem;">
-                            <label class="form-check">
+                            <label class="form-check" style="margin-right: 1rem;">
                                 <input type="checkbox" name="destacar" value="1">
                                 <span>Destacar en la Home</span>
+                            </label>
+                            <label class="form-check">
+                                <input type="checkbox" name="oculto" value="1">
+                                <span>Ocultar producto (borrador)</span>
                             </label>
                         </div>
                     </div>
