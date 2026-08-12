@@ -92,7 +92,10 @@
 
       document.title = proyecto.titulo + ' — AR Martineau';
 
-      const imagenes = proyecto.imagenes || [proyecto.imagen];
+      const imagenes = [proyecto.imagen];
+      if (proyecto.imagenes && proyecto.imagenes.length > 0) {
+        imagenes.push(...proyecto.imagenes);
+      }
 
       // Thumbnails
       const thumbsHTML = imagenes.map((src, i) =>

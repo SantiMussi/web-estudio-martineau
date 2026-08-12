@@ -88,7 +88,10 @@
 
       document.title = producto.titulo + ' - AR Martineau';
 
-      const imagenes = producto.imagenes || [producto.imagen];
+      const imagenes = [producto.imagen];
+      if (producto.imagenes && producto.imagenes.length > 0) {
+        imagenes.push(...producto.imagenes);
+      }
 
       const thumbsHTML = imagenes.map((src, i) =>
         '<div class="gallery-thumb ' + (i === 0 ? 'active' : '') + '" onclick="cambiarImagen(this,\'' + src + '\')">' +
