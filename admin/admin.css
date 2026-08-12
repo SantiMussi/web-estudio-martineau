@@ -701,6 +701,27 @@ select.form-control {
     stroke-width: 2;
 }
 
+/* ─── DRAG & DROP REORDERING ─── */
+.drag-handle {
+    cursor: grab;
+    color: var(--admin-text-muted);
+    font-size: 1.2rem;
+    text-align: center;
+    user-select: none;
+}
+.drag-handle:active {
+    cursor: grabbing;
+}
+.sortable-ghost {
+    opacity: 0.4;
+    background: var(--admin-bg-alt);
+}
+.sortable-drag {
+    background: var(--admin-bg-card);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    cursor: grabbing;
+}
+
 /* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
     .admin-sidebar {

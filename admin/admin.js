@@ -434,3 +434,54 @@ function escapeAttr(str) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
 }
+
+// ═══════════════════════════════════════════════
+// ─── SORTABLE JS (DRAG & DROP) ───
+// ═══════════════════════════════════════════════
+
+document.addEventListener('DOMContentLoaded', () => {
+    const initSortable = (id, tabla) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+
+        Sortable.create(el, {
+            handle: '.drag-handle',
+            animation: 150,
+            ghostClass: 'sortable-ghost',
+            dragClass: 'sortable-drag',
+            onEnd: function (evt) {
+                // evt.oldIndex, evt.newIndex
+                if (evt.oldIndex === evt.newIndex) return;
+
+                const orden = [];
+                el.querySelectorAll('tr[data-id]').forEach(tr => {
+                    orden.push(tr.getAttribute('data-id'));
+                });
+
+                fetch('actions/guardar_orden.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        tabla: tabla,
+                        orden: orden
+                    })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.success) {
+                        alert('Error al guardar el nuevo orden: ' + (data.error || 'Desconocido'));
+                    }
+                })
+                .catch(err => {
+                    console.error('Error saving order:', err);
+                    alert('Error de conexión al guardar el orden.');
+                });
+            }
+        });
+    };
+
+    initSortable('sortable-productos', 'productos');
+    initSortable('sortable-proyectos', 'proyectos');
+});

@@ -14,7 +14,7 @@ $stmt = $pdo->query('
     SELECT p.*, c.nombre AS categoria_nombre 
     FROM proyectos p 
     LEFT JOIN categorias c ON p.categoria_id = c.id 
-    ORDER BY p.created_at DESC
+    ORDER BY p.orden ASC, p.created_at DESC
 ');
 $proyectos = $stmt->fetchAll();
 
@@ -111,6 +111,7 @@ unset($_SESSION['flash_msg']);
                     <table class="admin-table">
                         <thead>
                             <tr>
+                                <th style="width: 40px;"></th>
                                 <th>Imagen</th>
                                 <th>Título</th>
                                 <th>Categoría</th>
@@ -120,9 +121,10 @@ unset($_SESSION['flash_msg']);
                                 <th>Acciones</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="sortable-proyectos">
                             <?php foreach ($proyectos as $proy): ?>
-                                <tr>
+                                <tr data-id="<?= $proy['id'] ?>">
+                                    <td class="drag-handle" title="Arrastrar para reordenar">☰</td>
                                     <td>
                                         <?php if ($proy['imagen']): ?>
                                             <img src="../<?= e($proy['imagen']) ?>" alt="<?= e($proy['titulo']) ?>" class="table-thumb" loading="lazy" decoding="async">
@@ -301,6 +303,7 @@ unset($_SESSION['flash_msg']);
         </div>
     </div>
 
-    <script src="admin.js?v=4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="admin.js?v=5"></script>
 </body>
 </html>

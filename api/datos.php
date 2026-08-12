@@ -39,7 +39,7 @@ try {
                        p.imagen, p.imagenes, p.specs, p.destacar
                 FROM productos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
-                ORDER BY p.created_at DESC
+                ORDER BY p.orden ASC, p.created_at DESC
             ');
             $data = $stmt->fetchAll();
             echo json_encode(formatearLista($data));
@@ -52,7 +52,7 @@ try {
                        p.descripcion, p.imagen, p.imagenes, p.specs, p.destacar
                 FROM proyectos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
-                ORDER BY p.created_at DESC
+                ORDER BY p.orden ASC, p.created_at DESC
             ');
             $data = $stmt->fetchAll();
             echo json_encode(formatearLista($data));
@@ -66,7 +66,7 @@ try {
                 FROM productos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
                 WHERE p.destacar = 1
-                ORDER BY p.created_at DESC
+                ORDER BY p.orden ASC, p.created_at DESC
             ');
             $data = $stmt->fetchAll();
             echo json_encode(formatearLista($data));
@@ -80,7 +80,7 @@ try {
                 FROM proyectos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
                 WHERE p.destacar = 1
-                ORDER BY p.created_at DESC
+                ORDER BY p.orden ASC, p.created_at DESC
             ');
             $data = $stmt->fetchAll();
             echo json_encode(formatearLista($data));
