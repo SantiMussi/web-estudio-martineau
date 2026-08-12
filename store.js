@@ -20,16 +20,34 @@ const Store = {
    */
   async init() {
     try {
-      const [productos, proyectos, categorias] = await Promise.all([
+      const results = await Promise.allSettled([
         this._fetch('productos'),
         this._fetch('proyectos'),
         this._fetch('categorias')
       ]);
-      this._cache.productos = productos;
-      this._cache.proyectos = proyectos;
-      this._cache.categorias = categorias;
+      
+      if (results[0].status === 'fulfilled') {
+        this._cache.productos = results[0].value;
+      } else {
+        console.error('[Store] Error productos:', results[0].reason);
+        this._cache.productos = [];
+      }
+      
+      if (results[1].status === 'fulfilled') {
+        this._cache.proyectos = results[1].value;
+      } else {
+        console.error('[Store] Error proyectos:', results[1].reason);
+        this._cache.proyectos = [];
+      }
+      
+      if (results[2].status === 'fulfilled') {
+        this._cache.categorias = results[2].value;
+      } else {
+        console.error('[Store] Error categorias:', results[2].reason);
+        this._cache.categorias = [];
+      }
     } catch (e) {
-      console.warn('[Store] Error al cargar datos desde API:', e);
+      console.warn('[Store] Error fatal:', e);
       this._cache.productos = [];
       this._cache.proyectos = [];
       this._cache.categorias = [];
