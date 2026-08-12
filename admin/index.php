@@ -237,11 +237,12 @@ unset($_SESSION['flash_msg']);
                     <!-- Imagen Principal -->
                     <div class="form-group">
                         <label>Imagen Principal</label>
-                        <div id="current-main-image" style="display:none; margin-bottom: 10px; background: var(--admin-bg); padding: 10px; border-radius: 4px;">
-                            <img src="" style="max-height: 100px; display: block; margin-bottom: 5px; border-radius: 4px;">
-                            <label style="font-size: 0.85rem; display: flex; align-items: center; gap: 5px; color: var(--admin-text); cursor: pointer;">
-                                <input type="checkbox" name="eliminar_imagen_principal" value="1"> Eliminar imagen actual
-                            </label>
+                        <div id="current-main-image" style="display:none; margin-bottom: 15px;">
+                            <div class="preview-thumb">
+                                <img src="" style="width: 100px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid var(--admin-border);">
+                                <button type="button" class="remove-preview" title="Eliminar imagen" onclick="this.closest('#current-main-image').querySelector('input[type=checkbox]').checked = true; this.parentElement.style.display = 'none';">&times;</button>
+                            </div>
+                            <input type="checkbox" name="eliminar_imagen_principal" value="1" style="display:none;">
                         </div>
                         <div class="file-upload-area">
                             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>

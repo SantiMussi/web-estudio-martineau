@@ -188,8 +188,11 @@ function editarItem(data, modalId) {
     if (currentMainImgDiv) {
         if (data.imagen) {
             currentMainImgDiv.style.display = 'block';
-            currentMainImgDiv.querySelector('img').src = '../' + data.imagen;
-            currentMainImgDiv.querySelector('input').checked = false;
+            const previewThumb = currentMainImgDiv.querySelector('.preview-thumb');
+            if (previewThumb) previewThumb.style.display = 'inline-block';
+            currentMainImgDiv.querySelector('img').src = '../' + escapeAttr(data.imagen);
+            const checkbox = currentMainImgDiv.querySelector('input[type="checkbox"]');
+            if (checkbox) checkbox.checked = false;
         } else {
             currentMainImgDiv.style.display = 'none';
         }
@@ -203,13 +206,19 @@ function editarItem(data, modalId) {
             currentGalleryDiv.style.display = 'flex';
             data.imagenes.forEach(img => {
                 const div = document.createElement('div');
-                div.style.textAlign = 'center';
+                div.className = 'preview-thumb';
                 div.innerHTML = `
-                    <img src="../${escapeAttr(img)}" style="max-height: 80px; display: block; margin-bottom: 5px; border-radius: 4px;" loading="lazy" decoding="async">
-                    <label style="font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer;">
-                        <input type="checkbox" name="eliminar_galeria[]" value="${escapeAttr(img)}"> Borrar
-                    </label>
+                    <img src="../${escapeAttr(img)}" loading="lazy" decoding="async" style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--admin-border);">
+                    <button type="button" class="remove-preview" title="Eliminar imagen">&times;</button>
                 `;
+                div.querySelector('.remove-preview').addEventListener('click', () => {
+                    div.style.display = 'none';
+                    const hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = 'eliminar_galeria[]';
+                    hidden.value = img;
+                    div.appendChild(hidden);
+                });
                 currentGalleryDiv.appendChild(div);
             });
         } else {
