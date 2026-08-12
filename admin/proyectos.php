@@ -125,7 +125,7 @@ unset($_SESSION['flash_msg']);
                                 <tr>
                                     <td>
                                         <?php if ($proy['imagen']): ?>
-                                            <img src="../<?= e($proy['imagen']) ?>" alt="<?= e($proy['titulo']) ?>" class="table-thumb">
+                                            <img src="../<?= e($proy['imagen']) ?>" alt="<?= e($proy['titulo']) ?>" class="table-thumb" loading="lazy" decoding="async">
                                         <?php else: ?>
                                             <div class="table-thumb" style="background: var(--admin-bg); display:flex; align-items:center; justify-content:center; color:var(--admin-text-light); font-size:0.6rem;">Sin img</div>
                                         <?php endif; ?>

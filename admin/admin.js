@@ -205,7 +205,7 @@ function editarItem(data, modalId) {
                 const div = document.createElement('div');
                 div.style.textAlign = 'center';
                 div.innerHTML = `
-                    <img src="../${escapeAttr(img)}" style="max-height: 80px; display: block; margin-bottom: 5px; border-radius: 4px;">
+                    <img src="../${escapeAttr(img)}" style="max-height: 80px; display: block; margin-bottom: 5px; border-radius: 4px;" loading="lazy" decoding="async">
                     <label style="font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 5px; cursor: pointer;">
                         <input type="checkbox" name="eliminar_galeria[]" value="${escapeAttr(img)}"> Borrar
                     </label>
