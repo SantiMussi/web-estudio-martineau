@@ -328,7 +328,7 @@ function initImagePreviews() {
 
 function previewFiles(input, previewContainer, multiple) {
     if (!previewContainer) return;
-    if (!multiple) previewContainer.innerHTML = '';
+    previewContainer.innerHTML = ''; // Limpiar siempre porque el input file nativo reemplaza la selección
 
     const files = input.files;
     for (let i = 0; i < files.length; i++) {
@@ -340,8 +340,19 @@ function previewFiles(input, previewContainer, multiple) {
             const thumb = document.createElement('div');
             thumb.className = 'preview-thumb';
             thumb.innerHTML = `
-                <img src="${e.target.result}" alt="Preview">
+                <img src="${e.target.result}" alt="Preview" style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--admin-border);">
+                <button type="button" class="remove-preview" title="Eliminar imagen">&times;</button>
             `;
+            
+            thumb.querySelector('.remove-preview').addEventListener('click', () => {
+                const dt = new DataTransfer();
+                for (let j = 0; j < input.files.length; j++) {
+                    if (j !== i) dt.items.add(input.files[j]);
+                }
+                input.files = dt.files;
+                previewFiles(input, previewContainer, multiple); // Volver a renderizar
+            });
+
             previewContainer.appendChild(thumb);
         };
         reader.readAsDataURL(file);
