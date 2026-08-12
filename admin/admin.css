@@ -707,6 +707,9 @@ select.form-control {
     color: var(--admin-text-muted);
     font-size: 1.2rem;
     text-align: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
 }
 .drag-handle:active {
