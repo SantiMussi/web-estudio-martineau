@@ -436,7 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 loader.classList.add('hidden');
                 setTimeout(() => loader.style.display = 'none', 1000);
-            }, 2700);
+            }, 3000);
         });
     };
 
