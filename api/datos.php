@@ -1,27 +1,10 @@
 <?php
-/**
- * api/datos.php — API JSON Pública
- * 
- * Endpoint que alimenta el frontend con datos dinámicos de la BD.
- * NO requiere autenticación (es público).
- * 
- * Parámetros GET:
- *   ?tipo=productos                → Todos los productos con categoría
- *   ?tipo=proyectos                → Todos los proyectos con categoría
- *   ?tipo=productos_destacados     → Solo productos con destacar=1
- *   ?tipo=proyectos_destacados     → Solo proyectos con destacar=1
- *   ?tipo=producto&id=X            → Detalle de un producto
- *   ?tipo=proyecto&id=X            → Detalle de un proyecto
- *   ?tipo=categorias&filtro=X      → Categorías filtradas por tipo (producto/proyecto)
- * 
- * @security PDO Prepared Statements. Sin datos sensibles expuestos.
- */
 
-// ─── Conexión a BD ───
+//  Conexión a BD 
 // Importamos la conexión centralizada (esto protege las credenciales de Git ya que config.php está en .gitignore)
 require_once __DIR__ . '/../admin/config.php';
 
-// ─── Headers de respuesta ───
+//  Headers de respuesta 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
 header('X-Content-Type-Options: nosniff');
@@ -32,7 +15,7 @@ $id   = isset($_GET['id']) ? (int)$_GET['id'] : null;
 try {
     switch ($tipo) {
 
-        // ─── Todos los productos ───
+        //  Todos los productos 
         case 'productos':
             $stmt = $pdo->query('
                 SELECT p.id, p.titulo, c.slug AS categoria, p.descripcion, 
@@ -46,7 +29,7 @@ try {
             echo json_encode(formatearLista($data));
             break;
 
-        // ─── Todos los proyectos ───
+        //  Todos los proyectos 
         case 'proyectos':
             $stmt = $pdo->query('
                 SELECT p.id, p.titulo, c.slug AS categoria, p.ubicacion, p.anio,
@@ -60,7 +43,7 @@ try {
             echo json_encode(formatearLista($data));
             break;
 
-        // ─── Productos destacados ───
+        //  Productos destacados 
         case 'productos_destacados':
             $stmt = $pdo->query('
                 SELECT p.id, p.titulo, c.slug AS categoria, p.descripcion, 
@@ -74,7 +57,7 @@ try {
             echo json_encode(formatearLista($data));
             break;
 
-        // ─── Proyectos destacados ───
+        //  Proyectos destacados 
         case 'proyectos_destacados':
             $stmt = $pdo->query('
                 SELECT p.id, p.titulo, c.slug AS categoria, p.ubicacion, p.anio,
@@ -88,7 +71,7 @@ try {
             echo json_encode(formatearLista($data));
             break;
 
-        // ─── Detalle de producto ───
+        //  Detalle de producto 
         case 'producto':
             if (!$id) {
                 http_response_code(400);
@@ -113,7 +96,7 @@ try {
             }
             break;
 
-        // ─── Detalle de proyecto ───
+        //  Detalle de proyecto 
         case 'proyecto':
             if (!$id) {
                 http_response_code(400);
@@ -138,7 +121,7 @@ try {
             }
             break;
 
-        // ─── Categorías ───
+        //  Categorías 
         case 'categorias':
             $filtro = $_GET['filtro'] ?? '';
             if ($filtro && in_array($filtro, ['producto', 'proyecto'], true)) {
@@ -160,21 +143,14 @@ try {
     echo json_encode(['error' => 'Error interno del servidor.']);
 }
 
-// ═══════════════════════════════════════════════
-// ─── FUNCIONES HELPER ───
-// ═══════════════════════════════════════════════
 
-/**
- * Formatea una lista de ítems: deserializa campos JSON.
- */
+// FUNCIONES HELPER 
+
 function formatearLista(array $items): array {
     return array_map('formatearItem', $items);
 }
 
-/**
- * Formatea un ítem individual: deserializa imagenes y specs desde JSON.
- * Convierte el campo 'destacar' a booleano para compatibilidad con el frontend JS.
- */
+
 function formatearItem(array $item): array {
     // Deserializar galería de imágenes
     if (isset($item['imagenes']) && is_string($item['imagenes'])) {

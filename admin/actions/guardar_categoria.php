@@ -1,11 +1,4 @@
 <?php
-/**
- * actions/guardar_categoria.php — Crear Categoría
- * 
- * Genera slug automáticamente desde el nombre.
- * 
- * @security CSRF + PDO Prepared Statements
- */
 
 require_once __DIR__ . '/../config.php';
 

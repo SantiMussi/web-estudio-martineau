@@ -1,12 +1,4 @@
 <?php
-/**
- * actions/toggle_destacar.php — Toggle estado Destacar
- * 
- * Invierte el valor de `destacar` (0→1, 1→0) para un producto o proyecto.
- * 
- * @security CSRF + PDO Prepared Statements + Whitelist de tablas
- */
-
 require_once __DIR__ . '/../config.php';
 
 if (!isset($_SESSION['user_id'])) {

@@ -8,38 +8,32 @@
     content="Estudio de diseño especializado en esculturas y chimeneas de autor. Diseño, fabricación e instalación de piezas únicas.">
   <title>MartinEau Studio — Esculturas & Chimeneas de Autor</title>
 
-  <!-- Fuentes -->
+  <!-- fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap"
     rel="stylesheet">
 
-  <!-- Estilos -->
+  <!-- css -->
   <link rel="stylesheet" href="styles.css?v=3">
   <meta author="Santiago Mussi" url="www.santimussi.com">
 </head>
 
 <body>
-  <!-- Loader -->
+  <!-- loader -->
   <div class="loader-wrapper">
     <svg class="sculpture-loader" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1.5"
       stroke-linecap="round" stroke-linejoin="round">
       <g class="sculpture-group">
-        <!-- 1. Base -->
+        <!-- svgs -->
         <path class="s-line" pathLength="1" d="M15 85 L85 85" />
-        <!-- 2. Pilares -->
         <path class="s-line" pathLength="1" d="M25 85 L25 30 M75 85 L75 30" />
-        <!-- 3. Arco del hogar -->
         <path class="s-line" pathLength="1" d="M35 85 L35 55 C 35 40 65 40 65 55 L65 85" />
-        <!-- 4. Cornisa (Mantel 3D) -->
         <path class="s-line" pathLength="1" d="M20 30 L80 30 L85 25 L15 25 Z" />
-        <!-- 5. Campana (Parte superior) -->
         <path class="s-line" pathLength="1" d="M25 25 L35 10 L65 10 L75 25" />
-        <!-- 6. Llama principal -->
         <path class="s-line" pathLength="1"
           d="M 50,82 C 38,82 38,70 42,62 C 45,55 46,50 48,45 C 49,55 52,58 53,60 C 55,57 57,53 58,54 C 62,65 60,82 50,82 Z" />
-        <!-- 7. Detalle interior de la llama -->
         <path class="s-line" pathLength="1"
           d="M 50,78 C 45,78 45,72 47,67 C 48,63 49,60 50,56 C 51,62 52,64 53,65 C 54,63 55,61 56,62 C 58,68 55,78 50,78 Z" />
       </g>
@@ -47,7 +41,7 @@
     <div class="loader-text">MartinEau</div>
   </div>
 
-  <!-- Header y Navegación -->
+  <!-- nav -->
   <header class="site-header" id="header">
     <div class="container header-inner">
 
@@ -55,7 +49,7 @@
         MartinEau
       </a>
 
-      <!-- Menú Desktop -->
+      <!-- menu desk -->
       <nav class="main-nav" aria-label="Navegación principal">
         <ul class="nav-list">
           <li><a href="nosotros" class="nav-link">Nosotros</a></li>
@@ -65,7 +59,7 @@
         </ul>
       </nav>
 
-      <!-- Botón Menú Móvil -->
+      <!-- btn mobile -->
       <button class="nav-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
@@ -73,7 +67,7 @@
       </button>
     </div>
 
-    <!-- Menú Móvil Overlay -->
+    <!-- menu mob -->
     <nav class="mobile-nav" aria-label="Navegación móvil" aria-hidden="true">
       <ul class="mobile-nav-list">
         <li><a href="nosotros" class="mobile-nav-link">Nosotros</a></li>
@@ -85,7 +79,7 @@
   </header>
 
 
-  <!-- Sección Hero -->
+  <!-- hero main -->
   <section class="hero" id="inicio">
     <div class="hero-parallax" aria-hidden="true"></div>
     <div class="hero-overlay" aria-hidden="true"></div>
@@ -101,19 +95,19 @@
       </a>
     </div>
 
-    <!-- Indicador de Scroll -->
+    <!-- scroll hint -->
     <div class="scroll-indicator" aria-hidden="true">
       <span class="scroll-line"></span>
     </div>
   </section>
 
 
-  <!-- Sección El Estudio -->
+  <!-- intro -->
   <section class="about section" id="nosotros">
     <div class="container">
 
       <div class="about-grid">
-        <!-- Columna de Imagen -->
+        <!-- col img -->
         <div class="about-image reveal">
           <div class="about-image-wrapper">
             <img src="https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=800&q=80"
@@ -121,7 +115,7 @@
           </div>
         </div>
 
-        <!-- Columna de Texto -->
+        <!-- col txt -->
         <div class="about-text">
           <span class="section-label reveal">Quiénes somos</span>
           <h2 class="reveal">Más de un siglo<br>haciendo historia</h2>
@@ -148,7 +142,7 @@
   </section>
 
 
-  <!-- Catálogo de Productos -->
+  <!-- grid catalogo -->
   <section class="catalog section" id="catalogo">
     <div class="container">
 
@@ -157,7 +151,7 @@
         <h2>Catálogo de piezas</h2>
       </div>
 
-      <!-- Grid: se rellena con productos destacados vía JS -->
+      <!-- destacados js -->
       <div class="catalog-grid" id="home-catalog-grid">
       </div>
 
@@ -168,7 +162,7 @@
   </section>
 
 
-  <!-- Sección Antes y Después -->
+  <!-- before/after section -->
   <section class="before-after section" id="transformacion">
     <div class="container">
       <div class="section-header reveal">
@@ -178,17 +172,17 @@
       </div>
 
       <div class="ba-container reveal">
-        <!-- Imagen de fondo (Antes) -->
+        <!-- bg antes -->
         <div class="ba-image ba-before">
           <img src="https://images.unsplash.com/photo-1513694203232-719a280e022f?w=1200&q=80"
             alt="Espacio antes de la intervención" loading="lazy">
         </div>
-        <!-- Imagen superpuesta (Después) -->
+        <!-- overlay despues -->
         <div class="ba-image ba-after">
           <img src="https://images.unsplash.com/photo-1600607686527-6fb886090705?w=1200&q=80"
             alt="Espacio después con chimenea MartinEau" loading="lazy">
         </div>
-        <!-- Slider Handle -->
+        <!-- handle slider -->
         <div class="ba-slider">
           <div class="ba-slider-line"></div>
           <div class="ba-slider-button">
@@ -202,7 +196,7 @@
     </div>
   </section>
 
-  <!-- Portfolio / Proyectos -->
+  <!-- portfolio grid -->
   <section class="portfolio section" id="portfolio">
     <div class="container">
 
@@ -211,7 +205,7 @@
         <h2>Obras realizadas</h2>
       </div>
 
-      <!-- Grid de Proyectos: se rellena con JS -->
+      <!-- grid js -->
       <div class="portfolio-masonry" id="home-portfolio-grid">
       </div>
 
@@ -222,7 +216,7 @@
   </section>
 
 
-  <!-- Sección Contacto -->
+  <!-- contact -->
   <section class="contact section" id="contacto">
     <div class="container">
 
@@ -306,7 +300,7 @@
   </section>
 
 
-  <!-- Footer -->
+  <!-- footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
       <p class="footer-copy">
@@ -318,79 +312,14 @@
     </div>
   </footer>
 
-  <!-- Scripts -->
-  <!-- Store compartido (capa de datos / simulación) -->
+  <!-- js -->
+  <!-- fake db script -->
   <script src="store.js?v=2"></script>
 
-  <script>
-    /**
-     * ── index.html: render de productos destacados ──
-     *
-     * Esta sección NO necesita modificarse al conectar un backend real.
-     * Solo cambiá Store.getProductosDestacados() en store.js.
-     */
-    document.addEventListener('DOMContentLoaded', async () => {
-      await Store.init();
-      renderDestacados();
-    });
 
-    function renderDestacados() {
-      const grid = document.getElementById('home-catalog-grid');
-
-      // ── Obtiene solo los productos con destacar: true ──
-      const destacados = Store.getProductosDestacados();
-
-      if (destacados.length === 0) {
-        grid.innerHTML = '<p style="color:var(--color-text-muted); text-align:center; padding: 3rem 0; grid-column: 1/-1;">No hay productos destacados.</p>';
-      } else {
-        grid.innerHTML = destacados.map(producto => `
-          <a href="producto?id=${producto.id}" class="product-card reveal">
-            <div class="product-image-wrapper">
-              <img src="${producto.imagen}" alt="${producto.titulo}">
-            </div>
-            <div class="product-body">
-              <span class="product-category">${capitalizar(producto.categoria)}</span>
-              <h3 class="product-title">${producto.titulo}</h3>
-              <p class="product-description">${producto.descripcion}</p>
-            </div>
-          </a>
-        `).join('');
-      }
-
-      // ── Renderiza los proyectos destacados en home ──
-      const gridProyectos = document.getElementById('home-portfolio-grid');
-      // Obtenemos solo los proyectos destacados
-      const proyectosDestacados = Store.getProyectosDestacados();
-
-      if (proyectosDestacados.length === 0) {
-        gridProyectos.innerHTML = '<p style="color:var(--color-text-muted); text-align:center; padding: 3rem 0; grid-column: 1/-1;">No hay proyectos destacados.</p>';
-      } else {
-        gridProyectos.innerHTML = proyectosDestacados.map((proyecto, index) => {
-          const esTall = index === 0 || index === 3; // Mantenemos el diseño masonry original
-          const tallClass = esTall ? 'portfolio-item--tall' : '';
-          return `
-            <a href="proyecto?id=${proyecto.id}" class="portfolio-item ${tallClass} reveal">
-              <img src="${proyecto.imagen}" alt="${proyecto.titulo}">
-              <figcaption class="portfolio-overlay">
-                <h3 class="portfolio-title">${proyecto.titulo}</h3>
-                <p class="portfolio-context">${capitalizar(proyecto.categoria)} — ${proyecto.anio}</p>
-              </figcaption>
-            </a>
-          `;
-        }).join('');
-      }
-
-      // Reinicializar las animaciones para los elementos recién creados
-      if (window.initScrollReveal) window.initScrollReveal();
-    }
-
-    function capitalizar(str) {
-      return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
-    }
-  </script>
 
   <script src="script.js?v=10"></script>
-  <!-- WhatsApp Floating Button -->
+  <!-- wa floating -->
   <a href="https://wa.me/5491100000000" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
     aria-label="Contactar por WhatsApp">
     <div class="whatsapp-pulse"></div>

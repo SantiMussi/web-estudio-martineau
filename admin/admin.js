@@ -1,5 +1,5 @@
 /**
- * admin.js — Lógica del Panel de Administración MartinEau Studio
+ * Lógica del Panel de Administración MartinEau Studio
  * 
  * Maneja:
  * - Apertura/cierre de modales
@@ -19,10 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initDeleteConfirmations();
 });
 
-
-// ═══════════════════════════════════════════════
-// ─── SIDEBAR MOBILE TOGGLE ───
-// ═══════════════════════════════════════════════
 
 function initSidebar() {
     const toggle = document.querySelector('.sidebar-toggle');
@@ -45,10 +41,7 @@ function initSidebar() {
 }
 
 
-// ═══════════════════════════════════════════════
-// ─── MODALES ───
-// ═══════════════════════════════════════════════
-
+//  MODALES
 function initModals() {
     // Botones que abren modal
     document.querySelectorAll('[data-modal-open]').forEach(btn => {
@@ -61,19 +54,19 @@ function initModals() {
                     form.reset();
                     const idInput = form.querySelector('input[name="id"]');
                     if (idInput) idInput.value = '';
-                    
+
                     const specsContainer = form.querySelector('.specs-container');
                     if (specsContainer) specsContainer.innerHTML = '';
-                    
+
                     const title = overlay.querySelector('.modal-header h2');
                     if (title) title.textContent = 'Nuevo';
-                    
+
                     const currentMainImgDiv = form.querySelector('#current-main-image');
                     if (currentMainImgDiv) currentMainImgDiv.style.display = 'none';
-                    
+
                     const currentGalleryDiv = form.querySelector('#current-gallery');
                     if (currentGalleryDiv) currentGalleryDiv.style.display = 'none';
-                    
+
                     const imagePreviews = form.querySelectorAll('.image-preview');
                     imagePreviews.forEach(p => p.innerHTML = '');
                 }
@@ -111,7 +104,7 @@ function openModal(id) {
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
 
-        // Focus en el primer input
+        //Focus en el primer input
         setTimeout(() => {
             const firstInput = overlay.querySelector('input:not([type="hidden"]), textarea, select');
             if (firstInput) firstInput.focus();
@@ -230,9 +223,7 @@ function editarItem(data, modalId) {
 }
 
 
-// ═══════════════════════════════════════════════
-// ─── SPECS DINÁMICOS (Clave-Valor) ───
-// ═══════════════════════════════════════════════
+// SPECS DINÁMICOS (Clave-Valor)
 
 function initSpecs() {
     document.querySelectorAll('.btn-add-spec').forEach(btn => {
@@ -260,10 +251,6 @@ function addSpecRow(container, label = '', value = '') {
     container.appendChild(row);
 }
 
-/**
- * Recolecta todos los pares clave-valor de specs y los serializa a JSON.
- * Se llama antes de enviar el formulario.
- */
 function serializarSpecs(form) {
     const rows = form.querySelectorAll('.spec-row');
     const specs = [];
@@ -288,9 +275,9 @@ function serializarSpecs(form) {
 }
 
 
-// ═══════════════════════════════════════════════
-// ─── IMAGE PREVIEW ───
-// ═══════════════════════════════════════════════
+
+//IMAGE PREVIEW
+
 
 function initImagePreviews() {
     // Preview de imagen principal
@@ -328,7 +315,7 @@ function initImagePreviews() {
 
 function previewFiles(input, previewContainer, multiple) {
     if (!previewContainer) return;
-    previewContainer.innerHTML = ''; // Limpiar siempre porque el input file nativo reemplaza la selección
+    previewContainer.innerHTML = '';
 
     const files = input.files;
     for (let i = 0; i < files.length; i++) {
@@ -343,7 +330,7 @@ function previewFiles(input, previewContainer, multiple) {
                 <img src="${e.target.result}" alt="Preview" style="width: 80px; height: 80px; object-fit: cover; border-radius: 6px; border: 1px solid var(--admin-border);">
                 <button type="button" class="remove-preview" title="Eliminar imagen">&times;</button>
             `;
-            
+
             thumb.querySelector('.remove-preview').addEventListener('click', () => {
                 const dt = new DataTransfer();
                 for (let j = 0; j < input.files.length; j++) {
@@ -360,9 +347,8 @@ function previewFiles(input, previewContainer, multiple) {
 }
 
 
-// ═══════════════════════════════════════════════
-// ─── SLUG GENERATOR ───
-// ═══════════════════════════════════════════════
+//  SLUG GENERATOR
+
 
 function initSlugGenerator() {
     const nombreInput = document.querySelector('input[name="nombre"]');
@@ -379,17 +365,17 @@ function generarSlug(texto) {
     return texto
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '') // Quitar acentos
-        .replace(/[^a-z0-9\s-]/g, '')    // Solo alfanuméricos
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s-]/g, '')
         .trim()
-        .replace(/[\s]+/g, '-')          // Espacios a guiones
-        .replace(/-+/g, '-');            // Múltiples guiones a uno
+        .replace(/[\s]+/g, '-')
+        .replace(/-+/g, '-');
 }
 
 
-// ═══════════════════════════════════════════════
-// ─── DELETE CONFIRMATIONS ───
-// ═══════════════════════════════════════════════
+
+// DELETE CONFIRMATIONS
+
 
 function initDeleteConfirmations() {
     document.querySelectorAll('.btn-eliminar').forEach(btn => {
@@ -402,14 +388,9 @@ function initDeleteConfirmations() {
 }
 
 
-// ═══════════════════════════════════════════════
-// ─── FORM SUBMIT CON SPECS ───
-// ═══════════════════════════════════════════════
 
-/**
- * Intercepta el submit de formularios que tienen specs dinámicos
- * para serializar los pares clave-valor a JSON antes del envío.
- */
+//  FORM SUBMIT CON SPECS 
+
 document.addEventListener('submit', (e) => {
     const form = e.target;
     if (form.querySelector('.specs-container')) {
@@ -418,13 +399,9 @@ document.addEventListener('submit', (e) => {
 });
 
 
-// ═══════════════════════════════════════════════
-// ─── UTILITY ───
-// ═══════════════════════════════════════════════
+// UTILITY
 
-/**
- * Escapa un string para atributos HTML.
- */
+
 function escapeAttr(str) {
     if (!str) return '';
     return str
@@ -435,9 +412,7 @@ function escapeAttr(str) {
         .replace(/>/g, '&gt;');
 }
 
-// ═══════════════════════════════════════════════
-// ─── SORTABLE JS (DRAG & DROP) ───
-// ═══════════════════════════════════════════════
+//  SORTABLE JS (DRAG & DROP)
 
 document.addEventListener('DOMContentLoaded', () => {
     const initSortable = (id, tabla) => {
@@ -468,16 +443,16 @@ document.addEventListener('DOMContentLoaded', () => {
                         orden: orden
                     })
                 })
-                .then(res => res.json())
-                .then(data => {
-                    if (!data.success) {
-                        alert('Error al guardar el nuevo orden: ' + (data.error || 'Desconocido'));
-                    }
-                })
-                .catch(err => {
-                    console.error('Error saving order:', err);
-                    alert('Error de conexión al guardar el orden.');
-                });
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.success) {
+                            alert('Error al guardar el nuevo orden: ' + (data.error || 'Desconocido'));
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error saving order:', err);
+                        alert('Error de conexión al guardar el orden.');
+                    });
             }
         });
     };

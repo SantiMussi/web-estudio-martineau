@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Header y Navegación -->
+  <!-- nav -->
   <header class="site-header" id="header">
     <div class="container header-inner">
       <a href="/" class="logo" aria-label="MartinEau Studio - Ir al inicio">MartinEau</a>
@@ -39,7 +39,7 @@
     </nav>
   </header>
 
-  <!-- Hero Secundario -->
+  <!-- hero sec -->
   <section class="hero-secondary" style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80');">
     <div class="hero-secondary-overlay"></div>
     <div class="hero-secondary-content container">
@@ -49,29 +49,29 @@
   </section>
 
 
-  <!-- Portfolio -->
+  <!-- portfolio -->
   <section class="portfolio section page-portfolio" id="portfolio-page">
     <div class="container">
       
-      <!-- Filtros -->
+      <!-- filtros -->
       <div class="filters reveal" id="portfolio-filters">
-        <!-- Generado por JS -->
+        <!-- injertado x js -->
         <button class="filter-btn active" data-filter="all">Todos</button>
       </div>
 
-      <!-- Grid: se rellena dinámicamente por JS -->
+      <!-- grid js -->
       <div class="portfolio-masonry filter-container" id="portfolio-grid" data-per-page="6">
       </div>
 
-      <!-- Paginación -->
+      <!-- paginado -->
       <div class="pagination reveal" id="pagination-controls-portfolio">
-        <!-- Generado por JS -->
+        <!-- injertado x js -->
       </div>
 
     </div>
   </section>
 
-  <!-- Sección Contacto -->
+  <!-- contact -->
   <section class="contact section" id="contacto">
     <div class="container">
 
@@ -154,7 +154,7 @@
     </div>
   </section>
 
-  <!-- Footer -->
+  <!-- footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
       <p class="footer-copy">&copy; Todos los derechos reservados, AR Martineau</p>
@@ -162,7 +162,7 @@
     </div>
   </footer>
 
-  <!-- WhatsApp Floating Button -->
+  <!-- wa floating -->
   <a href="https://wa.me/541131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
     <div class="whatsapp-pulse"></div>
     <div class="whatsapp-icon-wrapper">
@@ -173,68 +173,10 @@
     <span class="whatsapp-text">¡Hablemos!</span>
   </a>
 
-  <!-- Store compartido (capa de datos / simulación) -->
+  <!-- fake db script -->
   <script src="store.js?v=3"></script>
 
-  <script>
-    /**
-     * ── portfolio.html: lógica de render ──
-     *
-     * Esta sección NO necesita modificarse al conectar un backend real.
-     * Solo cambiá Store.getProyectos() en store.js.
-     */
-    document.addEventListener('DOMContentLoaded', async () => {
-      // Inicializa el store (solo necesario mientras se use la simulación)
-      await Store.init();
-      renderPortfolio();
-    });
 
-    function renderPortfolio() {
-      const grid = document.getElementById('portfolio-grid');
-      const filterContainer = document.getElementById('portfolio-filters');
-
-      // ── Obtiene las categorías de tipo proyecto ──
-      const categorias = Store.getCategorias('proyecto');
-      if (filterContainer && categorias.length > 0) {
-        filterContainer.innerHTML = '<button class="filter-btn active" data-filter="all">Todos</button>' +
-          categorias.map(cat => `<button class="filter-btn" data-filter="${cat.slug}">${capitalizar(cat.nombre)}</button>`).join('');
-      }
-
-      // ── Obtiene los datos (de simulación o API, según store.js) ──
-      const proyectos = Store.getProyectos();
-
-      if (proyectos.length === 0) {
-        grid.innerHTML = '<p style="color:var(--color-text-muted); text-align:center; padding: 3rem 0;">No hay proyectos disponibles.</p>';
-        return;
-      }
-
-      // ── forEach: construye una tarjeta por cada proyecto ──
-      // Las clases portfolio-item--tall se asignan automáticamente cada 3 items para el efecto masonry
-      grid.innerHTML = proyectos.map((proyecto, index) => {
-        const esTall = index % 3 === 0; // cada 3 items uno es "tall"
-        const tallClass = esTall ? 'portfolio-item--tall' : '';
-        return `
-          <a href="proyecto?id=${proyecto.id}" class="portfolio-item ${tallClass} filter-item" data-category="${proyecto.categoria}">
-            <img src="${proyecto.imagen}" alt="${proyecto.titulo}">
-            <figcaption class="portfolio-overlay">
-              <h3 class="portfolio-title">${proyecto.titulo}</h3>
-              <p class="portfolio-context">${capitalizar(proyecto.categoria)} — ${proyecto.anio}</p>
-            </figcaption>
-          </a>
-        `;
-      }).join('');
-
-      // Reinicializar las animaciones para los elementos recién creados
-      if (window.initScrollReveal) window.initScrollReveal();
-
-      // Re-inicializa los filtros y la paginación del script principal
-      if (window.initFiltersAndPagination) window.initFiltersAndPagination();
-    }
-
-    function capitalizar(str) {
-      return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
-    }
-  </script>
 
   <script src="script.js?v=3"></script>
 </body>

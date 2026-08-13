@@ -1,12 +1,6 @@
 /**
  * store.js — Capa de datos de AR Martineau
- *
- * ┌─────────────────────────────────────────────────────────────┐
- * │  Conectado a API real: api/datos.php                        │
- * │  Todas las funciones devuelven datos desde MySQL vía fetch  │
- * │  La interfaz pública se mantiene idéntica para no romper    │
- * │  el código de rendering existente en cada HTML.             │
- * └─────────────────────────────────────────────────────────────┘
+
  */
 
 const Store = {
@@ -25,21 +19,21 @@ const Store = {
         this._fetch('proyectos'),
         this._fetch('categorias')
       ]);
-      
+
       if (results[0].status === 'fulfilled') {
         this._cache.productos = results[0].value;
       } else {
         console.error('[Store] Error productos:', results[0].reason);
         this._cache.productos = [];
       }
-      
+
       if (results[1].status === 'fulfilled') {
         this._cache.proyectos = results[1].value;
       } else {
         console.error('[Store] Error proyectos:', results[1].reason);
         this._cache.proyectos = [];
       }
-      
+
       if (results[2].status === 'fulfilled') {
         this._cache.categorias = results[2].value;
       } else {
@@ -86,7 +80,7 @@ const Store = {
   getProyectos() {
     return this._cache.proyectos || [];
   },
-  
+
   /**
    * Devuelve las categorias (desde cache).
    * @returns {Array}
@@ -94,7 +88,7 @@ const Store = {
   getCategorias(tipo = null) {
     let cats = this._cache.categorias || [];
     if (tipo) {
-        cats = cats.filter(c => c.tipo === tipo);
+      cats = cats.filter(c => c.tipo === tipo);
     }
     return cats;
   },

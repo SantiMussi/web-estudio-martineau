@@ -1,11 +1,4 @@
 <?php
-/**
- * actions/toggle_ocultar.php — Toggle estado Oculto
- * 
- * Invierte el valor de `oculto` (0→1, 1→0) para un producto o proyecto.
- * 
- * @security CSRF + PDO Prepared Statements + Whitelist de tablas
- */
 
 require_once __DIR__ . '/../config.php';
 
