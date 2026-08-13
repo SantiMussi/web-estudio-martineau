@@ -22,7 +22,7 @@ try {
                        p.imagen, p.imagenes, p.specs, p.destacar
                 FROM productos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
-                WHERE p.oculto = 0
+                WHERE IFNULL(p.oculto, 0) = 0
                 ORDER BY p.orden ASC, p.created_at DESC
             ');
             $data = $stmt->fetchAll();
@@ -36,7 +36,7 @@ try {
                        p.descripcion, p.imagen, p.imagenes, p.specs, p.destacar
                 FROM proyectos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
-                WHERE p.oculto = 0
+                WHERE IFNULL(p.oculto, 0) = 0
                 ORDER BY p.orden ASC, p.created_at DESC
             ');
             $data = $stmt->fetchAll();
@@ -50,7 +50,7 @@ try {
                        p.imagen, p.imagenes, p.specs, p.destacar
                 FROM productos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
-                WHERE p.destacar = 1 AND p.oculto = 0
+                WHERE p.destacar = 1 AND IFNULL(p.oculto, 0) = 0
                 ORDER BY p.orden ASC, p.created_at DESC
             ');
             $data = $stmt->fetchAll();
@@ -64,7 +64,7 @@ try {
                        p.descripcion, p.imagen, p.imagenes, p.specs, p.destacar
                 FROM proyectos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
-                WHERE p.destacar = 1 AND p.oculto = 0
+                WHERE p.destacar = 1 AND IFNULL(p.oculto, 0) = 0
                 ORDER BY p.orden ASC, p.created_at DESC
             ');
             $data = $stmt->fetchAll();
@@ -83,7 +83,7 @@ try {
                        p.imagen, p.imagenes, p.specs, p.destacar
                 FROM productos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
-                WHERE p.id = :id AND p.oculto = 0
+                WHERE p.id = :id AND IFNULL(p.oculto, 0) = 0
             ');
             $stmt->execute(['id' => $id]);
             $item = $stmt->fetch();
@@ -108,7 +108,7 @@ try {
                        p.descripcion, p.imagen, p.imagenes, p.specs, p.destacar
                 FROM proyectos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
-                WHERE p.id = :id AND p.oculto = 0
+                WHERE p.id = :id AND IFNULL(p.oculto, 0) = 0
             ');
             $stmt->execute(['id' => $id]);
             $item = $stmt->fetch();

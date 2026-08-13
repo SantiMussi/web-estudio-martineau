@@ -60,9 +60,21 @@ const Store = {
     for (const [key, val] of Object.entries(params)) {
       url.searchParams.set(key, val);
     }
+    if (window.location.protocol === 'file:') {
+      alert("Error: Estás abriendo el archivo localmente (file://). Debes usar tu servidor local (ej. http://localhost/MartinEau/)");
+      throw new Error("Protocolo file:// no soportado para fetch.");
+    }
+    
     const res = await fetch(url.toString());
     if (!res.ok) throw new Error(`API error: ${res.status}`);
-    return res.json();
+    
+    const text = await res.text();
+    if (text.trim().startsWith('<?php')) {
+      alert("Error: El servidor no está ejecutando PHP (ej. estás usando Live Server). Debes entrar a través de tu servidor local (ej. http://localhost/MartinEau/)");
+      throw new Error("El servidor devolvió código fuente PHP en lugar de JSON.");
+    }
+    
+    return JSON.parse(text);
   },
 
   /**
