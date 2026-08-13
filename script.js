@@ -431,12 +431,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const loader = document.querySelector('.loader-wrapper');
         if (!loader) return;
 
-        // Simular tiempo de carga
+        // Simular tiempo de carga para ver la animación de construcción (2.5s)
         window.addEventListener('load', () => {
             setTimeout(() => {
                 loader.classList.add('hidden');
                 setTimeout(() => loader.style.display = 'none', 1000);
-            }, 800);
+            }, 2700);
         });
     };
 
