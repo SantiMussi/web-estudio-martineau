@@ -1,4 +1,17 @@
 <?php
+/**
+ * actions/guardar_producto.php — Crear o Actualizar Producto
+ * 
+ * Flujo:
+ * 1. Valida CSRF
+ * 2. Sanitiza y valida datos de entrada
+ * 3. Sube imagen principal (si se envió nueva)
+ * 4. Sube galería de imágenes (si se enviaron)
+ * 5. Serializa specs a JSON
+ * 6. INSERT o UPDATE según si viene ID
+ * 
+ * @security CSRF + PDO Prepared Statements + Upload blindado
+ */
 
 require_once __DIR__ . '/../config.php';
 
@@ -38,7 +51,7 @@ try {
         $specs = '[]';
     }
 
-    // Subir imagen principal 
+    // ─── Subir imagen principal ───
     $imagen_path = null;
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
         $imagen_path = subir_imagen($_FILES['imagen']);
@@ -47,7 +60,7 @@ try {
         }
     }
 
-    // Subir galería
+    // ─── Subir galería ───
     $imagenes_nuevas = [];
     if (isset($_FILES['imagenes'])) {
         $total = count($_FILES['imagenes']['name']);
@@ -68,7 +81,7 @@ try {
         }
     }
 
-    // INSERT o UPDATE 
+    // ─── INSERT o UPDATE ───
     if ($id) {
         // UPDATE: Obtener datos actuales para mantener imagen/galería si no se subieron nuevas
         $stmt = $pdo->prepare('SELECT imagen, imagenes FROM productos WHERE id = :id');

@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- nav -->
+  <!-- Header y Navegacion -->
   <header class="site-header" id="header">
     <div class="container header-inner">
       <a href="/" class="logo" aria-label="AR Martineau - Ir al inicio">MartinEau</a>
@@ -39,12 +39,12 @@
     </nav>
   </header>
 
-  <!-- layout prod -->
+  <!-- Product Detail: rellena dinamicamente por JS -->
   <main class="product-detail-page container" id="product-detail-root">
-    <!-- js render -->
+    <!-- Generado por renderProducto() -->
   </main>
 
-  <!-- contact -->
+  <!-- Sección Contacto -->
   <section class="contact section" id="contacto">
     <div class="container">
 
@@ -127,7 +127,7 @@
     </div>
   </section>
 
-  <!-- footer -->
+  <!-- Footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
       <p class="footer-copy">&copy; Todos los derechos reservados, AR Martineau</p>
@@ -135,7 +135,7 @@
     </div>
   </footer>
 
-  <!-- wa icon -->
+  <!-- WhatsApp -->
   <a href="https://wa.me/541131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Contactar por WhatsApp">
     <div class="whatsapp-pulse"></div>
     <div class="whatsapp-icon-wrapper">
@@ -146,9 +146,91 @@
     <span class="whatsapp-text">Hablemos!</span>
   </a>
 
-  <!-- fake db script -->
+  <!-- Store compartido -->
   <script src="store.js?v=3"></script>
+  <script>
+    /**
+     * producto.html: render de detalle
+     * Lee ?id= de la URL, busca con Store.getProductoById(id) y renderiza.
+     * NO cambies esto al conectar el backend. Solo cambia store.js.
+     */
+    document.addEventListener('DOMContentLoaded', async () => {
+      await Store.init();
+      renderProducto();
+    });
 
+    function renderProducto() {
+      const root = document.getElementById('product-detail-root');
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+
+      if (!id) { root.innerHTML = notFound('No se especifico ningun producto.'); return; }
+
+      const producto = Store.getProductoById(id);
+      if (!producto) { root.innerHTML = notFound('Producto no encontrado.'); return; }
+
+      document.title = producto.titulo + ' - AR Martineau';
+
+      const imagenes = [producto.imagen];
+      if (producto.imagenes && producto.imagenes.length > 0) {
+        imagenes.push(...producto.imagenes);
+      }
+
+      const thumbsHTML = imagenes.map((src, i) =>
+        '<div class="gallery-thumb ' + (i === 0 ? 'active' : '') + '" onclick="cambiarImagen(this,\'' + src + '\')">' +
+        '<img src="' + src + '" alt="Vista ' + (i+1) + '"></div>'
+      ).join('');
+
+      const specsHTML = (producto.specs || []).map(s =>
+        '<div class="spec-item"><span class="spec-label">' + s.label + '</span><span class="spec-value">' + s.value + '</span></div>'
+      ).join('');
+
+      root.innerHTML =
+        '<div class="back-link-wrapper reveal">' +
+          '<a href="catalogo" class="back-link">' +
+            '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+              '<line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>' +
+            '</svg> Volver al Catalogo' +
+          '</a>' +
+        '</div>' +
+        '<div class="product-detail-grid">' +
+          '<div class="product-gallery reveal">' +
+            '<div class="gallery-main"><img src="' + imagenes[0] + '" alt="' + producto.titulo + '" id="main-product-image"></div>' +
+            '<div class="gallery-thumbnails">' + thumbsHTML + '</div>' +
+          '</div>' +
+          '<div class="product-info reveal">' +
+            '<span class="product-info-category">' + capitalizar(producto.categoria) + '</span>' +
+            '<h1 class="product-info-title">' + producto.titulo + '</h1>' +
+            '<p class="product-info-desc">' + producto.descripcion + '</p>' +
+            (specsHTML ? '<div class="product-specs">' + specsHTML + '</div>' : '') +
+            '<div class="product-actions"><a href="#contacto" class="btn">Solicitar Cotizacion</a></div>' +
+          '</div>' +
+        '</div>';
+
+      document.querySelectorAll('.gallery-thumb').forEach(thumb => {
+        thumb.addEventListener('click', function() {
+          document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+      
+      // Reinicializar animaciones
+      if (window.initScrollReveal) window.initScrollReveal();
+    }
+
+    function cambiarImagen(thumb, src) {
+      document.getElementById('main-product-image').src = src;
+    }
+
+    function capitalizar(str) {
+      return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+    }
+
+    function notFound(msg) {
+      return '<div style="text-align:center;padding:8rem 2rem"><p style="color:var(--color-text-muted)">' + msg + '</p>' +
+             '<a href="catalogo" class="btn btn-outline-light" style="margin-top:2rem;display:inline-block">Ver catalogo</a></div>';
+    }
+  </script>
   <script src="script.js?v=2"></script>
 </body>
 </html>

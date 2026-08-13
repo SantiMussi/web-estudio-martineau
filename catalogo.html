@@ -15,7 +15,7 @@
 </head>
 
 <body>
-  <!-- nav -->
+  <!-- Header y Navegación -->
   <header class="site-header" id="header">
     <div class="container header-inner">
       <a href="/" class="logo" aria-label="MartinEau Studio - Ir al inicio">MartinEau</a>
@@ -43,7 +43,7 @@
     </nav>
   </header>
 
-  <!-- hero sec -->
+  <!-- Hero Secundario -->
   <section class="hero-secondary"
     style="background-image: url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80');">
     <div class="hero-secondary-overlay"></div>
@@ -54,29 +54,29 @@
   </section>
 
 
-  <!-- catalogo -->
+  <!-- Catálogo -->
   <section class="catalog section page-catalog" id="catalogo-page">
     <div class="container">
 
-      <!-- filtros -->
+      <!-- Filtros -->
       <div class="filters reveal" id="catalog-filters">
-        <!-- injertado x js -->
+        <!-- Generado por JS -->
         <button class="filter-btn active" data-filter="all">Todas</button>
       </div>
 
-      <!-- grid js -->
+      <!-- Grid: se rellena dinámicamente por JS -->
       <div class="catalog-grid filter-container" id="catalog-grid" data-per-page="6">
       </div>
 
-      <!-- paginado -->
+      <!-- Paginación -->
       <div class="pagination reveal" id="pagination-controls">
-        <!-- injertado x js -->
+        <!-- Generado por JS -->
       </div>
 
     </div>
   </section>
 
-  <!-- contact -->
+  <!-- Sección Contacto -->
   <section class="contact section" id="contacto">
     <div class="container">
 
@@ -159,7 +159,7 @@
     </div>
   </section>
 
-  <!-- footer -->
+  <!-- Footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
       <p class="footer-copy">&copy; Todos los derechos reservados, AR Martineau</p>
@@ -167,7 +167,7 @@
     </div>
   </footer>
 
-  <!-- wa floating -->
+  <!-- WhatsApp Floating Button -->
   <a href="https://wa.me/541131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
     aria-label="Contactar por WhatsApp">
     <div class="whatsapp-pulse"></div>
@@ -180,10 +180,65 @@
     <span class="whatsapp-text">¡Hablemos!</span>
   </a>
 
-  <!-- fake db script -->
+  <!-- Store compartido (capa de datos / simulación) -->
   <script src="store.js?v=3"></script>
 
+  <script>
+    /**
+     * ── catalogo.html: lógica de render ──
+     *
+     * Esta sección NO necesita modificarse al conectar un backend real.
+     * Solo cambiá Store.getProductos() en store.js.
+     */
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Inicializa el store (solo necesario mientras se use la simulación)
+      await Store.init();
+      renderCatalogo();
+    });
 
+    function renderCatalogo() {
+      const grid = document.getElementById('catalog-grid');
+      const filterContainer = document.getElementById('catalog-filters');
+
+      // ── Obtiene las categorías de tipo producto ──
+      const categorias = Store.getCategorias('producto');
+      if (filterContainer && categorias.length > 0) {
+        filterContainer.innerHTML = '<button class="filter-btn active" data-filter="all">Todas</button>' +
+          categorias.map(cat => `<button class="filter-btn" data-filter="${cat.slug}">${capitalizar(cat.nombre)}</button>`).join('');
+      }
+
+      // ── Obtiene los datos (de simulación o API, según store.js) ──
+      const productos = Store.getProductos();
+
+      if (productos.length === 0) {
+        grid.innerHTML = '<p style="color:var(--color-text-muted); text-align:center; padding: 3rem 0;">No hay productos disponibles.</p>';
+        return;
+      }
+
+      // ── forEach: construye una tarjeta por cada producto ──
+      grid.innerHTML = productos.map(producto => `
+        <a href="producto?id=${producto.id}" class="product-card filter-item" data-category="${producto.categoria}">
+          <div class="product-image-wrapper">
+            <img src="${producto.imagen}" alt="${producto.titulo}">
+          </div>
+          <div class="product-body">
+            <span class="product-category">${capitalizar(producto.categoria)}</span>
+            <h3 class="product-title">${producto.titulo}</h3>
+          </div>
+        </a>
+      `).join('');
+
+      // Reinicializar las animaciones para los elementos recién creados
+      if (window.initScrollReveal) window.initScrollReveal();
+
+      // Re-inicializa los filtros y la paginación del script principal
+      if (window.initFiltersAndPagination) window.initFiltersAndPagination();
+    }
+
+    function capitalizar(str) {
+      return str ? str.charAt(0).toUpperCase() + str.slice(1) : '';
+    }
+  </script>
 
   <script src="script.js?v=3"></script>
 </body>

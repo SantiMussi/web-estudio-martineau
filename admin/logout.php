@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * logout.php — Cierre Seguro de Sesión
+ * 
+ * @security
+ * - Vacía todas las variables de sesión
+ * - Destruye la sesión del servidor
+ * - Invalida la cookie de sesión en el cliente
+ * - Redirige a login.php
+ */
 
 require_once __DIR__ . '/config.php';
 

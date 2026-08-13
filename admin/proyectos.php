@@ -1,9 +1,15 @@
 <?php
-
+/**
+ * admin/proyectos.php — Gestor de Proyectos (Portfolio)
+ * 
+ * Funcionalidad similar a productos, sumando campos Ubicación y Año.
+ * 
+ * @security Requiere autenticación. CSRF en todos los forms.
+ */
 
 require_once __DIR__ . '/auth.php';
 
-//  Obtener proyectos con su categoría 
+// ─── Obtener proyectos con su categoría ───
 $stmt = $pdo->query('
     SELECT p.*, c.nombre AS categoria_nombre 
     FROM proyectos p 
@@ -12,12 +18,12 @@ $stmt = $pdo->query('
 ');
 $proyectos = $stmt->fetchAll();
 
-//  Obtener categorías tipo 'proyecto' para el dropdown 
+// ─── Obtener categorías tipo 'proyecto' para el dropdown ───
 $stmt_cat = $pdo->prepare("SELECT id, nombre FROM categorias WHERE tipo = 'proyecto' ORDER BY nombre");
 $stmt_cat->execute();
 $categorias = $stmt_cat->fetchAll();
 
-//  Mensajes flash
+// ─── Mensajes flash ───
 $msg = $_SESSION['flash_msg'] ?? null;
 unset($_SESSION['flash_msg']);
 ?>
@@ -182,8 +188,9 @@ unset($_SESSION['flash_msg']);
         </main>
     </div>
 
+    <!-- ═══════════════════════════════════════════ -->
     <!-- MODAL: Crear/Editar Proyecto -->
-
+    <!-- ═══════════════════════════════════════════ -->
     <div class="modal-overlay" id="modal-proyecto">
         <div class="modal">
             <div class="modal-header">
@@ -265,7 +272,7 @@ unset($_SESSION['flash_msg']);
                     <div class="form-group">
                         <label>Galería de Imágenes actuales</label>
                         <div id="current-gallery" style="display:none; margin-bottom: 10px; gap: 10px; flex-wrap: wrap; background: var(--admin-bg); padding: 10px; border-radius: 4px;">
-                            <!-- Js -->
+                            <!-- Js poblará esto -->
                         </div>
                         <label>Subir nuevas imágenes a la galería</label>
                         <div class="file-upload-area">

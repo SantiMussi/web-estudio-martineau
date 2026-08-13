@@ -1,4 +1,13 @@
 <?php
+/**
+ * login.php — Formulario de Login del Panel Admin
+ * 
+ * @security 
+ * - Protección CSRF en formulario POST
+ * - password_verify() contra bcrypt hash
+ * - session_regenerate_id(true) tras autenticación exitosa
+ * - No expone si el email existe o no (mensaje genérico)
+ */
 
 require_once __DIR__ . '/config.php';
 
@@ -10,7 +19,7 @@ if (isset($_SESSION['user_id'])) {
 
 $error = '';
 
-//  Procesar Login 
+// ─── Procesar Login ───
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verificar_csrf();
 

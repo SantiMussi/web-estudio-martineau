@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * actions/eliminar_categoria.php — Eliminar Categoría
+ * 
+ * Solo permite eliminar categorías sin ítems asociados.
+ * 
+ * @security CSRF + PDO Prepared Statements + Verificación de integridad
+ */
 
 require_once __DIR__ . '/../config.php';
 

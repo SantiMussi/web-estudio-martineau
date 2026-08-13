@@ -1,4 +1,9 @@
 <?php
+/**
+ * actions/eliminar_producto.php — Eliminar Producto
+ * 
+ * @security CSRF + PDO Prepared Statements + Limpieza de archivos
+ */
 
 require_once __DIR__ . '/../config.php';
 

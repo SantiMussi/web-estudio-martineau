@@ -1,4 +1,9 @@
 <?php
+/**
+ * admin/actions/guardar_orden.php — Reordenamiento de Items
+ * 
+ * Actualiza la columna `orden` en masa según el orden enviado por JS.
+ */
 
 require_once __DIR__ . '/../auth.php';
 require_once __DIR__ . '/../config.php';
@@ -24,7 +29,7 @@ if (!in_array($tabla, ['productos', 'proyectos'])) {
     exit;
 }
 
-$orden = $data['orden'];
+$orden = $data['orden']; // Array de IDs en orden, ej: [5, 2, 8, 1]
 
 try {
     $pdo->beginTransaction();

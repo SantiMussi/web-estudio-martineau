@@ -1,7 +1,7 @@
-/* 
+/* ═══════════════════════════════════════════════════════════
    admin.css — Panel de Administración MartinEau Studio
    Tema Dark Premium coherente con el sitio público
-    */
+   ═══════════════════════════════════════════════════════════ */
 
 :root {
     --admin-bg: #0a0a0a;
@@ -23,17 +23,9 @@
     --admin-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-*,
-*::before,
-*::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html {
-    font-size: 15px;
-}
+html { font-size: 15px; }
 
 body {
     font-family: var(--admin-font-sans);
@@ -50,39 +42,21 @@ body {
 }
 
 /* Scrollbar */
-::-webkit-scrollbar {
-    width: 5px;
-}
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--admin-bg); }
+::-webkit-scrollbar-thumb { background: var(--admin-border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--admin-accent); }
 
-::-webkit-scrollbar-track {
-    background: var(--admin-bg);
-}
+a { color: var(--admin-accent); text-decoration: none; }
+a:hover { color: #d4a06a; }
 
-::-webkit-scrollbar-thumb {
-    background: var(--admin-border);
-    border-radius: 3px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--admin-accent);
-}
-
-a {
-    color: var(--admin-accent);
-    text-decoration: none;
-}
-
-a:hover {
-    color: #d4a06a;
-}
-
-/*  LAYOUT  */
+/* ─── LAYOUT ─── */
 .admin-layout {
     display: flex;
     min-height: 100vh;
 }
 
-/* SIDEBAR  */
+/* ─── SIDEBAR ─── */
 .admin-sidebar {
     width: var(--admin-sidebar-w);
     background: var(--admin-bg-alt);
@@ -117,9 +91,7 @@ a:hover {
     margin-bottom: 2.5rem;
 }
 
-.sidebar-nav {
-    flex: 1;
-}
+.sidebar-nav { flex: 1; }
 
 .sidebar-nav a {
     display: flex;
@@ -169,11 +141,9 @@ a:hover {
     color: var(--admin-text-light);
 }
 
-.sidebar-footer a:hover {
-    color: var(--admin-danger);
-}
+.sidebar-footer a:hover { color: var(--admin-danger); }
 
-/*  MAIN CONTENT  */
+/* ─── MAIN CONTENT ─── */
 .admin-main {
     flex: 1;
     margin-left: var(--admin-sidebar-w);
@@ -203,7 +173,7 @@ a:hover {
     align-items: center;
 }
 
-/*  BUTTONS  */
+/* ─── BUTTONS ─── */
 .btn-admin {
     display: inline-flex;
     align-items: center;
@@ -232,7 +202,6 @@ a:hover {
     background: linear-gradient(135deg, var(--admin-accent) 0%, var(--admin-accent-dark) 100%);
     color: var(--admin-bg);
 }
-
 .btn-primary:hover {
     opacity: 0.9;
     transform: translateY(-1px);
@@ -244,7 +213,6 @@ a:hover {
     border: 1px solid var(--admin-border);
     color: var(--admin-text-muted);
 }
-
 .btn-secondary:hover {
     border-color: var(--admin-accent);
     color: var(--admin-accent);
@@ -255,7 +223,6 @@ a:hover {
     border: 1px solid rgba(248, 113, 113, 0.2);
     color: var(--admin-danger);
 }
-
 .btn-danger:hover {
     background: rgba(248, 113, 113, 0.2);
 }
@@ -274,13 +241,12 @@ a:hover {
     cursor: pointer;
     transition: all var(--admin-transition);
 }
-
 .btn-icon:hover {
     border-color: var(--admin-accent);
     color: var(--admin-accent);
 }
 
-/*  TABLE  */
+/* ─── TABLE ─── */
 .admin-table-wrapper {
     background: var(--admin-bg-card);
     border: 1px solid var(--admin-border);
@@ -378,15 +344,12 @@ a:hover {
     padding: 0;
 }
 
-/*  MODAL  */
+/* ─── MODAL ─── */
 .modal-overlay {
     display: none;
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.85); /* Slightly darker background to compensate for lack of blur */
     z-index: 200;
     align-items: center;
     justify-content: center;
@@ -399,25 +362,13 @@ a:hover {
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 @keyframes slideUp {
-    from {
-        transform: translateY(20px);
-        opacity: 0;
-    }
-
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 .modal {
@@ -453,10 +404,7 @@ a:hover {
     padding: 0.25rem;
     transition: color var(--admin-transition);
 }
-
-.modal-close:hover {
-    color: var(--admin-text);
-}
+.modal-close:hover { color: var(--admin-text); }
 
 .modal-close svg {
     width: 20px;
@@ -478,7 +426,7 @@ a:hover {
     border-top: 1px solid var(--admin-border);
 }
 
-/*  FORMS  */
+/* ─── FORMS ─── */
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -552,7 +500,7 @@ select.form-control {
     color: var(--admin-text-muted);
 }
 
-/*  FILE UPLOAD  */
+/* ─── FILE UPLOAD ─── */
 .file-upload-area {
     border: 2px dashed var(--admin-border);
     border-radius: var(--admin-radius);
@@ -632,7 +580,7 @@ select.form-control {
     justify-content: center;
 }
 
-/*  SPECS BUILDER  */
+/* ─── SPECS BUILDER ─── */
 .specs-container {
     display: flex;
     flex-direction: column;
@@ -659,10 +607,7 @@ select.form-control {
     line-height: 1;
     transition: opacity var(--admin-transition);
 }
-
-.spec-row .btn-remove-spec:hover {
-    opacity: 0.7;
-}
+.spec-row .btn-remove-spec:hover { opacity: 0.7; }
 
 .btn-add-spec {
     display: inline-flex;
@@ -678,13 +623,12 @@ select.form-control {
     transition: all var(--admin-transition);
     font-family: var(--admin-font-sans);
 }
-
 .btn-add-spec:hover {
     border-color: var(--admin-accent);
     background: rgba(194, 139, 85, 0.05);
 }
 
-/*  ALERTS / FEEDBACK  */
+/* ─── ALERTS / FEEDBACK ─── */
 .alert {
     padding: 0.85rem 1.25rem;
     border-radius: var(--admin-radius);
@@ -713,7 +657,7 @@ select.form-control {
     color: var(--admin-warning);
 }
 
-/*  EMPTY STATE  */
+/* ─── EMPTY STATE ─── */
 .empty-state {
     text-align: center;
     padding: 4rem 2rem;
@@ -734,7 +678,7 @@ select.form-control {
     margin-bottom: 1.5rem;
 }
 
-/*  MOBILE TOGGLE  */
+/* ─── MOBILE TOGGLE ─── */
 .sidebar-toggle {
     display: none;
     position: fixed;
@@ -757,7 +701,7 @@ select.form-control {
     stroke-width: 2;
 }
 
-/* DRAG & DROP REORDERING  */
+/* ─── DRAG & DROP REORDERING ─── */
 .drag-handle {
     cursor: grab;
     color: var(--admin-text-muted);
@@ -768,23 +712,20 @@ select.form-control {
     -ms-user-select: none;
     user-select: none;
 }
-
 .drag-handle:active {
     cursor: grabbing;
 }
-
 .sortable-ghost {
     opacity: 0.4;
     background: var(--admin-bg-alt);
 }
-
 .sortable-drag {
     background: var(--admin-bg-card);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
     cursor: grabbing;
 }
 
-/*  RESPONSIVE  */
+/* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
     .admin-sidebar {
         transform: translateX(-100%);
