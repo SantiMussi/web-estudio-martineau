@@ -1,4 +1,4 @@
-# 🔥 MartinEau Studio — Web
+# MartinEau Studio — Web
 
 Sitio web del estudio **AR Martineau**, empresa argentina fundada en 1922 dedicada a la fabricación artesanal de esculturas, chimeneas, ménsulas, maceteros y piezas de piedra reconstituida.
 
@@ -6,7 +6,7 @@ El sitio busca reflejar la identidad visual del estudio: elegante, sobrio, con e
 
 ---
 
-## ✨ Qué tiene
+## Qué tiene
 
 - **Landing** con hero parallax, scroll reveal y sección de antes/después interactiva (slider drag)
 - **Catálogo de productos** con filtros por categoría, cargado dinámicamente desde la API
@@ -19,7 +19,7 @@ El sitio busca reflejar la identidad visual del estudio: elegante, sobrio, con e
 
 ---
 
-## 🛠 Stack
+## Stack
 
 | Capa | Tecnología |
 |------|-----------|
@@ -32,7 +32,7 @@ Sin frameworks, sin bundlers, sin dependencias de npm. Todo vanilla. La idea es 
 
 ---
 
-## 📁 Estructura
+## Estructura
 
 ```
 ├── index.html            # Landing principal
@@ -65,7 +65,7 @@ Sin frameworks, sin bundlers, sin dependencias de npm. Todo vanilla. La idea es 
 
 ---
 
-## 🚀 Setup local
+## Setup local
 
 1. Tener un servidor PHP corriendo (XAMPP, Laragon, MAMP, lo que sea)
 2. Clonar el repo en la carpeta del servidor:
@@ -90,7 +90,7 @@ Sin frameworks, sin bundlers, sin dependencias de npm. Todo vanilla. La idea es 
 
 ---
 
-## 📝 Notas
+## Notas
 
 - Las URLs limpias (`/catalogo` en vez de `/catalogo.html`) se manejan con `.htaccess`. Si usás Nginx, hay que adaptar las reglas.
 - El `config.php` del admin está en `.gitignore` por seguridad — hay que crearlo a mano.
@@ -98,7 +98,7 @@ Sin frameworks, sin bundlers, sin dependencias de npm. Todo vanilla. La idea es 
 
 ---
 
-## 👤 Autor
+## Autor
 
 Desarrollo por **[Santiago Mussi](https://www.santimussi.com)**.
 
