@@ -151,12 +151,7 @@
   <script src="store.js?v=3"></script>
 
   <script>
-    /**
-     * proyecto.html: render de detalle de proyecto
-     * Lee ?id= de la URL, llama a Store.getProyectoById(id) y renderiza.
-     * Esta seccion NO necesita modificarse al conectar un backend real.
-     * Solo cambia Store.getProyectoById() en store.js.
-     */
+
     document.addEventListener('DOMContentLoaded', async () => {
       await Store.init();
       renderProyecto();
@@ -169,7 +164,6 @@
 
       if (!id) { root.innerHTML = notFound('No se especifico ningun proyecto.'); return; }
 
-      // Obtiene el proyecto por ID (simulacion o API, segun store.js)
       const proyecto = Store.getProyectoById(id);
       if (!proyecto) { root.innerHTML = notFound('Proyecto no encontrado.'); return; }
 
@@ -180,13 +174,11 @@
         imagenes.push(...proyecto.imagenes);
       }
 
-      // Thumbnails
       const thumbsHTML = imagenes.map((src, i) =>
         '<div class="gallery-thumb ' + (i === 0 ? 'active' : '') + '" onclick="cambiarImagen(\'' + src + '\')">' +
         '<img src="' + src + '" alt="Vista ' + (i+1) + '"></div>'
       ).join('');
 
-      // Specs
       const specsHTML = (proyecto.specs || []).map(s =>
         '<div class="spec-item"><span class="spec-label">' + s.label + '</span><span class="spec-value">' + s.value + '</span></div>'
       ).join('');
@@ -213,7 +205,6 @@
           '</div>' +
         '</div>';
 
-      // Thumbnails click
       document.querySelectorAll('.gallery-thumb').forEach(thumb => {
         thumb.addEventListener('click', function() {
           document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));

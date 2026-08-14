@@ -1,16 +1,9 @@
 <?php
-/**
- * admin/actions/guardar_orden.php — Reordenamiento de Items
- * 
- * Actualiza la columna `orden` en masa según el orden enviado por JS.
- */
-
 require_once __DIR__ . '/../auth.php';
 require_once __DIR__ . '/../config.php';
 
 header('Content-Type: application/json');
 
-// Leer payload JSON
 $json = file_get_contents('php://input');
 $data = json_decode($json, true);
 
@@ -22,14 +15,13 @@ if (!$data || empty($data['tabla']) || !isset($data['orden']) || !is_array($data
 
 $tabla = $data['tabla'];
 
-// Solo permitir actualizar estas dos tablas
 if (!in_array($tabla, ['productos', 'proyectos'])) {
     http_response_code(403);
     echo json_encode(['success' => false, 'error' => 'Tabla no permitida.']);
     exit;
 }
 
-$orden = $data['orden']; // Array de IDs en orden, ej: [5, 2, 8, 1]
+$orden = $data['orden'];
 
 try {
     $pdo->beginTransaction();

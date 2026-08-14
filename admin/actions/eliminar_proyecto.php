@@ -1,10 +1,4 @@
 <?php
-/**
- * actions/eliminar_proyecto.php — Eliminar Proyecto
- * 
- * @security CSRF + PDO Prepared Statements + Limpieza de archivos
- */
-
 require_once __DIR__ . '/../config.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -26,7 +20,6 @@ try {
         throw new Exception('ID de proyecto inválido.');
     }
 
-    // Obtener datos del proyecto para limpiar archivos
     $stmt = $pdo->prepare('SELECT imagen, imagenes FROM proyectos WHERE id = :id');
     $stmt->execute(['id' => $id]);
     $proyecto = $stmt->fetch();
@@ -35,12 +28,10 @@ try {
         throw new Exception('Proyecto no encontrado.');
     }
 
-    // Eliminar imagen principal del disco
     if ($proyecto['imagen']) {
         eliminar_imagen($proyecto['imagen']);
     }
 
-    // Eliminar imágenes de la galería del disco
     if ($proyecto['imagenes']) {
         $galeria = json_decode($proyecto['imagenes'], true);
         if (is_array($galeria)) {
@@ -50,7 +41,6 @@ try {
         }
     }
 
-    // Eliminar registro de la BD
     $stmt = $pdo->prepare('DELETE FROM proyectos WHERE id = :id');
     $stmt->execute(['id' => $id]);
 

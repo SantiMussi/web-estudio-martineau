@@ -1,37 +1,21 @@
 <?php
-/**
- * actions/guardar_producto.php — Crear o Actualizar Producto
- * 
- * Flujo:
- * 1. Valida CSRF
- * 2. Sanitiza y valida datos de entrada
- * 3. Sube imagen principal (si se envió nueva)
- * 4. Sube galería de imágenes (si se enviaron)
- * 5. Serializa specs a JSON
- * 6. INSERT o UPDATE según si viene ID
- * 
- * @security CSRF + PDO Prepared Statements + Upload blindado
- */
+
 
 require_once __DIR__ . '/../config.php';
 
-// Verificar autenticación
 if (!isset($_SESSION['user_id'])) {
     header('Location: ../login.php');
     exit();
 }
 
-// Verificar método POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../index.php');
     exit();
 }
 
-// Validar CSRF
 verificar_csrf();
 
 try {
-    // ─── Recoger y sanitizar datos ───
     $id           = !empty($_POST['id']) ? (int)$_POST['id'] : null;
     $titulo       = trim($_POST['titulo'] ?? '');
     $categoria_id = !empty($_POST['categoria_id']) ? (int)$_POST['categoria_id'] : null;
@@ -40,18 +24,15 @@ try {
     $oculto       = isset($_POST['oculto']) ? 1 : 0;
     $specs        = $_POST['specs'] ?? '[]';
 
-    // Validación básica
     if (empty($titulo)) {
         throw new Exception('El título es obligatorio.');
     }
 
-    // Validar que specs sea JSON válido
     $specs_decoded = json_decode($specs, true);
     if (json_last_error() !== JSON_ERROR_NONE) {
         $specs = '[]';
     }
 
-    // ─── Subir imagen principal ───
     $imagen_path = null;
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
         $imagen_path = subir_imagen($_FILES['imagen']);
@@ -60,7 +41,6 @@ try {
         }
     }
 
-    // ─── Subir galería ───
     $imagenes_nuevas = [];
     if (isset($_FILES['imagenes'])) {
         $total = count($_FILES['imagenes']['name']);
@@ -81,9 +61,7 @@ try {
         }
     }
 
-    // ─── INSERT o UPDATE ───
     if ($id) {
-        // UPDATE: Obtener datos actuales para mantener imagen/galería si no se subieron nuevas
         $stmt = $pdo->prepare('SELECT imagen, imagenes FROM productos WHERE id = :id');
         $stmt->execute(['id' => $id]);
         $actual = $stmt->fetch();
@@ -92,7 +70,6 @@ try {
             throw new Exception('Producto no encontrado.');
         }
 
-        // Mantener imagen actual si no se subió una nueva
         if (!$imagen_path) {
             if (isset($_POST['eliminar_imagen_principal']) && $_POST['eliminar_imagen_principal'] == '1') {
                 if ($actual['imagen']) eliminar_imagen($actual['imagen']);
@@ -101,13 +78,11 @@ try {
                 $imagen_path = $actual['imagen'];
             }
         } else {
-            // Eliminar imagen anterior del disco
             if ($actual['imagen']) {
                 eliminar_imagen($actual['imagen']);
             }
         }
 
-        // Mantener galería actual, quitar eliminadas, y agregar nuevas
         $galeria_actual = $actual['imagenes'] ? json_decode($actual['imagenes'], true) : [];
         if (!is_array($galeria_actual)) $galeria_actual = [];
         
@@ -123,7 +98,6 @@ try {
             }
         }
         
-        // Agregar las nuevas a la galería final
         if (!empty($imagenes_nuevas)) {
             $galeria_final = array_merge($galeria_final, $imagenes_nuevas);
         }
@@ -157,7 +131,6 @@ try {
         $_SESSION['flash_msg'] = ['type' => 'success', 'text' => 'Producto actualizado correctamente.'];
 
     } else {
-        // INSERT
         $imagenes_json = !empty($imagenes_nuevas) ? json_encode($imagenes_nuevas) : null;
 
         $stmt = $pdo->prepare('

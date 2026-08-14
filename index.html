@@ -323,12 +323,7 @@
   <script src="store.js?v=2"></script>
 
   <script>
-    /**
-     * ── index.html: render de productos destacados ──
-     *
-     * Esta sección NO necesita modificarse al conectar un backend real.
-     * Solo cambiá Store.getProductosDestacados() en store.js.
-     */
+
     document.addEventListener('DOMContentLoaded', async () => {
       await Store.init();
       renderDestacados();
@@ -337,7 +332,6 @@
     function renderDestacados() {
       const grid = document.getElementById('home-catalog-grid');
 
-      // ── Obtiene solo los productos con destacar: true ──
       const destacados = Store.getProductosDestacados();
 
       if (destacados.length === 0) {
@@ -357,9 +351,7 @@
         `).join('');
       }
 
-      // ── Renderiza los proyectos destacados en home ──
       const gridProyectos = document.getElementById('home-portfolio-grid');
-      // Obtenemos solo los proyectos destacados
       const proyectosDestacados = Store.getProyectosDestacados();
 
       if (proyectosDestacados.length === 0) {

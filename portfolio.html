@@ -177,12 +177,7 @@
   <script src="store.js?v=3"></script>
 
   <script>
-    /**
-     * ── portfolio.html: lógica de render ──
-     *
-     * Esta sección NO necesita modificarse al conectar un backend real.
-     * Solo cambiá Store.getProyectos() en store.js.
-     */
+
     document.addEventListener('DOMContentLoaded', async () => {
       // Inicializa el store (solo necesario mientras se use la simulación)
       await Store.init();
@@ -193,14 +188,12 @@
       const grid = document.getElementById('portfolio-grid');
       const filterContainer = document.getElementById('portfolio-filters');
 
-      // ── Obtiene las categorías de tipo proyecto ──
       const categorias = Store.getCategorias('proyecto');
       if (filterContainer && categorias.length > 0) {
         filterContainer.innerHTML = '<button class="filter-btn active" data-filter="all">Todos</button>' +
           categorias.map(cat => `<button class="filter-btn" data-filter="${cat.slug}">${capitalizar(cat.nombre)}</button>`).join('');
       }
 
-      // ── Obtiene los datos (de simulación o API, según store.js) ──
       const proyectos = Store.getProyectos();
 
       if (proyectos.length === 0) {
@@ -208,7 +201,6 @@
         return;
       }
 
-      // ── forEach: construye una tarjeta por cada proyecto ──
       // Las clases portfolio-item--tall se asignan automáticamente cada 3 items para el efecto masonry
       grid.innerHTML = proyectos.map((proyecto, index) => {
         const esTall = index % 3 === 0; // cada 3 items uno es "tall"

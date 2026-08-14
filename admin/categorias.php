@@ -1,17 +1,7 @@
 <?php
-/**
- * admin/categorias.php — Gestor de Categorías
- * 
- * Permite crear nuevas categorías (producto o proyecto),
- * genera su slug automáticamente, y permite eliminarlas
- * si no tienen ítems asociados.
- * 
- * @security Requiere autenticación. CSRF en todos los forms.
- */
 
 require_once __DIR__ . '/auth.php';
 
-// ─── Obtener todas las categorías con conteo de ítems ───
 $categorias = $pdo->query('
     SELECT c.*, 
         (SELECT COUNT(*) FROM productos WHERE categoria_id = c.id) AS total_productos,
@@ -20,7 +10,6 @@ $categorias = $pdo->query('
     ORDER BY c.tipo, c.nombre
 ')->fetchAll();
 
-// ─── Mensajes flash ───
 $msg = $_SESSION['flash_msg'] ?? null;
 unset($_SESSION['flash_msg']);
 ?>
@@ -155,9 +144,7 @@ unset($_SESSION['flash_msg']);
         </main>
     </div>
 
-    <!-- ═══════════════════════════════════════════ -->
     <!-- MODAL: Crear Categoría -->
-    <!-- ═══════════════════════════════════════════ -->
     <div class="modal-overlay" id="modal-categoria">
         <div class="modal" style="max-width: 500px;">
             <div class="modal-header">

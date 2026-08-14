@@ -1,17 +1,7 @@
 <?php
-/**
- * admin/index.php — Gestor de Productos
- * 
- * Muestra tabla con listado de productos, permite crear/editar/eliminar
- * y toggle del estado "destacar". Incluye modal con formulario completo:
- * título, categoría, descripción, imagen principal, galería, specs dinámicos.
- * 
- * @security Requiere autenticación. CSRF en todos los forms.
- */
 
 require_once __DIR__ . '/auth.php';
 
-// ─── Obtener productos con su categoría ───
 $stmt = $pdo->query('
     SELECT p.*, c.nombre AS categoria_nombre 
     FROM productos p 
@@ -20,12 +10,10 @@ $stmt = $pdo->query('
 ');
 $productos = $stmt->fetchAll();
 
-// ─── Obtener categorías tipo 'producto' para el dropdown ───
 $stmt_cat = $pdo->prepare("SELECT id, nombre FROM categorias WHERE tipo = 'producto' ORDER BY nombre");
 $stmt_cat->execute();
 $categorias = $stmt_cat->fetchAll();
 
-// ─── Mensajes flash ───
 $msg = $_SESSION['flash_msg'] ?? null;
 unset($_SESSION['flash_msg']);
 ?>
@@ -202,9 +190,7 @@ unset($_SESSION['flash_msg']);
         </main>
     </div>
 
-    <!-- ═══════════════════════════════════════════ -->
     <!-- MODAL: Crear/Editar Producto -->
-    <!-- ═══════════════════════════════════════════ -->
     <div class="modal-overlay" id="modal-producto">
         <div class="modal">
             <div class="modal-header">
@@ -278,7 +264,6 @@ unset($_SESSION['flash_msg']);
                     <div class="form-group">
                         <label>Galería de Imágenes actuales</label>
                         <div id="current-gallery" style="display:none; margin-bottom: 10px; gap: 10px; flex-wrap: wrap; background: var(--admin-bg); padding: 10px; border-radius: 4px;">
-                            <!-- Js poblará esto -->
                         </div>
                         <label>Subir nuevas imágenes a la galería</label>
                         <div class="file-upload-area">
@@ -293,7 +278,6 @@ unset($_SESSION['flash_msg']);
                     <div class="form-group">
                         <label>Especificaciones Técnicas</label>
                         <div class="specs-container">
-                            <!-- Los pares clave-valor se agregan aquí dinámicamente -->
                         </div>
                         <button type="button" class="btn-add-spec" style="margin-top: 0.75rem;">
                             + Agregar especificación

@@ -1,11 +1,5 @@
 <?php
-/**
- * actions/guardar_proyecto.php — Crear o Actualizar Proyecto
- * 
- * Igual que guardar_producto pero incluye campos Ubicación y Año.
- * 
- * @security CSRF + PDO Prepared Statements + Upload blindado
- */
+
 
 require_once __DIR__ . '/../config.php';
 
@@ -22,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 verificar_csrf();
 
 try {
-    // ─── Recoger y sanitizar datos ───
     $id           = !empty($_POST['id']) ? (int)$_POST['id'] : null;
     $titulo       = trim($_POST['titulo'] ?? '');
     $categoria_id = !empty($_POST['categoria_id']) ? (int)$_POST['categoria_id'] : null;
@@ -36,13 +29,11 @@ try {
         throw new Exception('El título es obligatorio.');
     }
 
-    // Validar JSON de specs
     $specs_decoded = json_decode($specs, true);
     if (json_last_error() !== JSON_ERROR_NONE) {
         $specs = '[]';
     }
 
-    // ─── Subir imagen principal ───
     $imagen_path = null;
     if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
         $imagen_path = subir_imagen($_FILES['imagen']);
@@ -51,7 +42,6 @@ try {
         }
     }
 
-    // ─── Subir galería ───
     $imagenes_nuevas = [];
     if (isset($_FILES['imagenes'])) {
         $total = count($_FILES['imagenes']['name']);
@@ -72,7 +62,6 @@ try {
         }
     }
 
-    // ─── INSERT o UPDATE ───
     if ($id) {
         $stmt = $pdo->prepare('SELECT imagen, imagenes FROM proyectos WHERE id = :id');
         $stmt->execute(['id' => $id]);

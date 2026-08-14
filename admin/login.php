@@ -1,17 +1,7 @@
 <?php
-/**
- * login.php — Formulario de Login del Panel Admin
- * 
- * @security 
- * - Protección CSRF en formulario POST
- * - password_verify() contra bcrypt hash
- * - session_regenerate_id(true) tras autenticación exitosa
- * - No expone si el email existe o no (mensaje genérico)
- */
 
 require_once __DIR__ . '/config.php';
 
-// Si ya está autenticado, redirigir al panel
 if (isset($_SESSION['user_id'])) {
     header('Location: index.php');
     exit();
@@ -19,7 +9,6 @@ if (isset($_SESSION['user_id'])) {
 
 $error = '';
 
-// ─── Procesar Login ───
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     verificar_csrf();
 
@@ -29,13 +18,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($username) || empty($password)) {
         $error = 'Complete todos los campos.';
     } else {
-        // Buscar usuario por username con prepared statement
         $stmt = $pdo->prepare('SELECT id, password_hash FROM usuarios WHERE username = :username LIMIT 1');
         $stmt->execute(['username' => $username]);
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password_hash'])) {
-            // Autenticación exitosa: regenerar ID de sesión (previene session fixation)
             session_regenerate_id(true);
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $username;
@@ -56,7 +43,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login — MartinEau Admin</title>
 
-    <!-- Fuentes (mismas del sitio) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">

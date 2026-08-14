@@ -85,15 +85,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Efecto Parallax en sección Hero — DESACTIVADO
-    // Para reactivar: descomentar el cuerpo de la función
+    // Efecto Parallax en sección Hero (Desactivado)
     const initParallax = () => {
         // Parallax desactivado intencionalmente
     };
 
     let scrollObserver = null;
     window.initScrollReveal = () => {
-        // Solo buscamos los elementos que no han sido revelados ni observados
         const revealElements = document.querySelectorAll('.reveal:not(.revealed):not([data-observed])');
         if (revealElements.length === 0) return;
 
@@ -104,7 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Usamos un patrón Singleton: creamos el observer solo una vez
         if (!scrollObserver) {
             const observerOptions = {
                 root: null,
@@ -126,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }, observerOptions);
         }
 
-        // Asignamos el observer solo a los elementos nuevos
         revealElements.forEach(el => {
             el.setAttribute('data-observed', 'true');
             scrollObserver.observe(el);
@@ -145,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const targetUrl = new URL(this.href, window.location.origin);
                 const currentUrl = new URL(window.location.href);
 
-                // Si apunta a la misma página
                 const isSamePage = targetUrl.pathname === currentUrl.pathname ||
                     (targetUrl.pathname === '/' && currentUrl.pathname === '/index.html') ||
                     (targetUrl.pathname === '/index.html' && currentUrl.pathname === '/');
@@ -162,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
                             behavior: 'smooth'
                         });
 
-                        // Cerrar menú móvil si está abierto
                         const navToggle = document.querySelector('.nav-toggle');
                         const mobileNav = document.querySelector('.mobile-nav');
                         if (navToggle && navToggle.classList.contains('active')) {
@@ -362,7 +356,6 @@ document.addEventListener('DOMContentLoaded', () => {
             afterImage.style.clipPath = `polygon(0 0, ${percentage}% 0, ${percentage}% 100%, 0 100%)`;
         };
 
-        // Permite hacer clic en cualquier parte del contenedor para mover el slider
         container.addEventListener('mousedown', (e) => {
             isDragging = true;
             moveSlider(e);
@@ -397,13 +390,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (progress > 1) {
                     isDemoing = false;
 
-                    // Asegurar que termine exactamente en el centro (50%)
                     slider.style.left = `50%`;
                     afterImage.style.clipPath = `polygon(0 0, 50% 0, 50% 100%, 0 100%)`;
                     return;
                 }
 
-                // Función seno: oscila desde 50% a 70%, baja a 30% y vuelve a 50%
                 const percentage = 50 + Math.sin(progress * Math.PI * 2) * 20;
 
                 slider.style.left = `${percentage}%`;
@@ -431,7 +422,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const loader = document.querySelector('.loader-wrapper');
         if (!loader) return;
 
-        // Simular tiempo de carga para ver la animación de construcción (2.5s)
         window.addEventListener('load', () => {
             setTimeout(() => {
                 loader.classList.add('hidden');

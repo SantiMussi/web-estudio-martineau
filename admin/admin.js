@@ -1,15 +1,3 @@
-/**
- * admin.js — Lógica del Panel de Administración MartinEau Studio
- * 
- * Maneja:
- * - Apertura/cierre de modales
- * - Cargador dinámico de specs (pares clave-valor)
- * - Auto-generación de slug para categorías
- * - Preview de imágenes antes de subir
- * - Confirmaciones de eliminación
- * - Toggle sidebar en móvil
- */
-
 document.addEventListener('DOMContentLoaded', () => {
     initSidebar();
     initModals();
@@ -20,10 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// ═══════════════════════════════════════════════
-// ─── SIDEBAR MOBILE TOGGLE ───
-// ═══════════════════════════════════════════════
-
 function initSidebar() {
     const toggle = document.querySelector('.sidebar-toggle');
     const sidebar = document.querySelector('.admin-sidebar');
@@ -33,7 +17,6 @@ function initSidebar() {
             sidebar.classList.toggle('open');
         });
 
-        // Cerrar al hacer clic fuera
         document.addEventListener('click', (e) => {
             if (sidebar.classList.contains('open') &&
                 !sidebar.contains(e.target) &&
@@ -44,13 +27,7 @@ function initSidebar() {
     }
 }
 
-
-// ═══════════════════════════════════════════════
-// ─── MODALES ───
-// ═══════════════════════════════════════════════
-
 function initModals() {
-    // Botones que abren modal
     document.querySelectorAll('[data-modal-open]').forEach(btn => {
         btn.addEventListener('click', () => {
             const modalId = btn.getAttribute('data-modal-open');
@@ -82,7 +59,6 @@ function initModals() {
         });
     });
 
-    // Botones que cierran modal
     document.querySelectorAll('[data-modal-close]').forEach(btn => {
         btn.addEventListener('click', () => {
             const overlay = btn.closest('.modal-overlay');
@@ -90,14 +66,12 @@ function initModals() {
         });
     });
 
-    // Cerrar al clic en overlay (fuera del modal)
     document.querySelectorAll('.modal-overlay').forEach(overlay => {
         overlay.addEventListener('click', (e) => {
             if (e.target === overlay) closeModal(overlay);
         });
     });
 
-    // Cerrar con Escape
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             document.querySelectorAll('.modal-overlay.active').forEach(closeModal);
@@ -111,7 +85,6 @@ function openModal(id) {
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
 
-        // Focus en el primer input
         setTimeout(() => {
             const firstInput = overlay.querySelector('input:not([type="hidden"]), textarea, select');
             if (firstInput) firstInput.focus();
@@ -130,11 +103,6 @@ function closeModal(overlayOrId) {
     }
 }
 
-/**
- * Abre el modal de edición y rellena los campos con datos existentes.
- * @param {Object} data — Objeto con los datos del ítem a editar
- * @param {string} modalId — ID del modal overlay
- */
 function editarItem(data, modalId) {
     const overlay = document.getElementById(modalId);
     if (!overlay) return;
@@ -142,7 +110,6 @@ function editarItem(data, modalId) {
     const form = overlay.querySelector('form');
     if (!form) return;
 
-    // Rellenar campos del formulario
     for (const [key, value] of Object.entries(data)) {
         const field = form.querySelector(`[name="${key}"]`);
         if (!field) continue;
@@ -161,7 +128,6 @@ function editarItem(data, modalId) {
         }
     }
 
-    // Cargar specs si existen
     if (data.specs) {
         const container = form.querySelector('.specs-container');
         if (container) {
@@ -179,11 +145,9 @@ function editarItem(data, modalId) {
         }
     }
 
-    // Cambiar título del modal
     const title = overlay.querySelector('.modal-header h2');
     if (title) title.textContent = data._modal_title || 'Editar';
 
-    // Manejar imagen principal
     const currentMainImgDiv = form.querySelector('#current-main-image');
     if (currentMainImgDiv) {
         if (data.imagen) {
@@ -198,7 +162,6 @@ function editarItem(data, modalId) {
         }
     }
 
-    // Manejar galería
     const currentGalleryDiv = form.querySelector('#current-gallery');
     if (currentGalleryDiv) {
         currentGalleryDiv.innerHTML = '';
@@ -229,11 +192,6 @@ function editarItem(data, modalId) {
     openModal(modalId);
 }
 
-
-// ═══════════════════════════════════════════════
-// ─── SPECS DINÁMICOS (Clave-Valor) ───
-// ═══════════════════════════════════════════════
-
 function initSpecs() {
     document.querySelectorAll('.btn-add-spec').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -252,7 +210,6 @@ function addSpecRow(container, label = '', value = '') {
         <button type="button" class="btn-remove-spec" title="Quitar">&times;</button>
     `;
 
-    // Botón quitar
     row.querySelector('.btn-remove-spec').addEventListener('click', () => {
         row.remove();
     });
@@ -260,10 +217,6 @@ function addSpecRow(container, label = '', value = '') {
     container.appendChild(row);
 }
 
-/**
- * Recolecta todos los pares clave-valor de specs y los serializa a JSON.
- * Se llama antes de enviar el formulario.
- */
 function serializarSpecs(form) {
     const rows = form.querySelectorAll('.spec-row');
     const specs = [];
@@ -276,7 +229,6 @@ function serializarSpecs(form) {
         }
     });
 
-    // Crear input hidden con el JSON
     let hiddenInput = form.querySelector('input[name="specs"]');
     if (!hiddenInput) {
         hiddenInput = document.createElement('input');
@@ -287,27 +239,19 @@ function serializarSpecs(form) {
     hiddenInput.value = JSON.stringify(specs);
 }
 
-
-// ═══════════════════════════════════════════════
-// ─── IMAGE PREVIEW ───
-// ═══════════════════════════════════════════════
-
 function initImagePreviews() {
-    // Preview de imagen principal
     document.querySelectorAll('input[name="imagen"]').forEach(input => {
         input.addEventListener('change', function () {
             previewFiles(this, this.closest('.form-group').querySelector('.image-preview'), false);
         });
     });
 
-    // Preview de galería múltiple
     document.querySelectorAll('input[name="imagenes[]"]').forEach(input => {
         input.addEventListener('change', function () {
             previewFiles(this, this.closest('.form-group').querySelector('.image-preview'), true);
         });
     });
 
-    // Drag and drop
     document.querySelectorAll('.file-upload-area').forEach(area => {
         area.addEventListener('dragover', (e) => {
             e.preventDefault();
@@ -359,11 +303,6 @@ function previewFiles(input, previewContainer, multiple) {
     }
 }
 
-
-// ═══════════════════════════════════════════════
-// ─── SLUG GENERATOR ───
-// ═══════════════════════════════════════════════
-
 function initSlugGenerator() {
     const nombreInput = document.querySelector('input[name="nombre"]');
     const slugInput = document.querySelector('input[name="slug"]');
@@ -386,11 +325,6 @@ function generarSlug(texto) {
         .replace(/-+/g, '-');            // Múltiples guiones a uno
 }
 
-
-// ═══════════════════════════════════════════════
-// ─── DELETE CONFIRMATIONS ───
-// ═══════════════════════════════════════════════
-
 function initDeleteConfirmations() {
     document.querySelectorAll('.btn-eliminar').forEach(btn => {
         btn.addEventListener('click', (e) => {
@@ -401,15 +335,6 @@ function initDeleteConfirmations() {
     });
 }
 
-
-// ═══════════════════════════════════════════════
-// ─── FORM SUBMIT CON SPECS ───
-// ═══════════════════════════════════════════════
-
-/**
- * Intercepta el submit de formularios que tienen specs dinámicos
- * para serializar los pares clave-valor a JSON antes del envío.
- */
 document.addEventListener('submit', (e) => {
     const form = e.target;
     if (form.querySelector('.specs-container')) {
@@ -417,14 +342,6 @@ document.addEventListener('submit', (e) => {
     }
 });
 
-
-// ═══════════════════════════════════════════════
-// ─── UTILITY ───
-// ═══════════════════════════════════════════════
-
-/**
- * Escapa un string para atributos HTML.
- */
 function escapeAttr(str) {
     if (!str) return '';
     return str
@@ -434,10 +351,6 @@ function escapeAttr(str) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
 }
-
-// ═══════════════════════════════════════════════
-// ─── SORTABLE JS (DRAG & DROP) ───
-// ═══════════════════════════════════════════════
 
 document.addEventListener('DOMContentLoaded', () => {
     const initSortable = (id, tabla) => {
@@ -450,7 +363,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ghostClass: 'sortable-ghost',
             dragClass: 'sortable-drag',
             onEnd: function (evt) {
-                // evt.oldIndex, evt.newIndex
                 if (evt.oldIndex === evt.newIndex) return;
 
                 const orden = [];

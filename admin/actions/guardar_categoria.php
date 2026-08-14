@@ -1,12 +1,4 @@
 <?php
-/**
- * actions/guardar_categoria.php — Crear Categoría
- * 
- * Genera slug automáticamente desde el nombre.
- * 
- * @security CSRF + PDO Prepared Statements
- */
-
 require_once __DIR__ . '/../config.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -34,19 +26,16 @@ try {
         throw new Exception('El tipo debe ser "producto" o "proyecto".');
     }
 
-    // Generar slug si no se envió desde JS
     if (empty($slug)) {
         $slug = generarSlug($nombre);
     }
 
-    // Verificar que el slug no exista ya
     $stmt = $pdo->prepare('SELECT id FROM categorias WHERE slug = :slug');
     $stmt->execute(['slug' => $slug]);
     if ($stmt->fetch()) {
         throw new Exception('Ya existe una categoría con ese slug.');
     }
 
-    // INSERT
     $stmt = $pdo->prepare('INSERT INTO categorias (nombre, slug, tipo) VALUES (:nombre, :slug, :tipo)');
     $stmt->execute([
         'nombre' => $nombre,
@@ -63,15 +52,10 @@ try {
 header('Location: ../categorias.php');
 exit();
 
-/**
- * Genera un slug URL-friendly desde un texto.
- * Ej: "Chimeneas de Lujo" → "chimeneas-de-lujo"
- */
+
 function generarSlug(string $texto): string {
     $slug = mb_strtolower($texto, 'UTF-8');
-    // Transliterar caracteres especiales
     $slug = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $slug);
-    // Solo alfanuméricos y guiones
     $slug = preg_replace('/[^a-z0-9\s-]/', '', $slug);
     $slug = preg_replace('/[\s]+/', '-', trim($slug));
     $slug = preg_replace('/-+/', '-', $slug);

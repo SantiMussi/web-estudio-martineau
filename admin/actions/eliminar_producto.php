@@ -1,10 +1,4 @@
 <?php
-/**
- * actions/eliminar_producto.php — Eliminar Producto
- * 
- * @security CSRF + PDO Prepared Statements + Limpieza de archivos
- */
-
 require_once __DIR__ . '/../config.php';
 
 if (!isset($_SESSION['user_id'])) {
@@ -26,7 +20,6 @@ try {
         throw new Exception('ID de producto inválido.');
     }
 
-    // Obtener datos del producto para limpiar archivos
     $stmt = $pdo->prepare('SELECT imagen, imagenes FROM productos WHERE id = :id');
     $stmt->execute(['id' => $id]);
     $producto = $stmt->fetch();
@@ -35,12 +28,10 @@ try {
         throw new Exception('Producto no encontrado.');
     }
 
-    // Eliminar imagen principal del disco
     if ($producto['imagen']) {
         eliminar_imagen($producto['imagen']);
     }
 
-    // Eliminar imágenes de la galería del disco
     if ($producto['imagenes']) {
         $galeria = json_decode($producto['imagenes'], true);
         if (is_array($galeria)) {
@@ -50,7 +41,6 @@ try {
         }
     }
 
-    // Eliminar registro de la BD
     $stmt = $pdo->prepare('DELETE FROM productos WHERE id = :id');
     $stmt->execute(['id' => $id]);
 

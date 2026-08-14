@@ -1,20 +1,9 @@
 <?php
-/**
- * logout.php — Cierre Seguro de Sesión
- * 
- * @security
- * - Vacía todas las variables de sesión
- * - Destruye la sesión del servidor
- * - Invalida la cookie de sesión en el cliente
- * - Redirige a login.php
- */
 
 require_once __DIR__ . '/config.php';
 
-// Vaciar variables de sesión
 $_SESSION = [];
 
-// Eliminar la cookie de sesión del navegador
 if (ini_get('session.use_cookies')) {
     $params = session_get_cookie_params();
     setcookie(
@@ -28,9 +17,7 @@ if (ini_get('session.use_cookies')) {
     );
 }
 
-// Destruir la sesión del servidor
 session_destroy();
 
-// Redirigir al login
 header('Location: login.php');
 exit();
