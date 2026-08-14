@@ -100,5 +100,5 @@ Sin frameworks, sin bundlers, sin dependencias de npm. Todo vanilla. La idea es 
 
 ## 👤 Autor
 
-Desarrollo por **[Santiago Mussi](https://www.santimussi.com)** — Drops Design.
+Desarrollo por **[Santiago Mussi](https://www.santimussi.com)**.
 
