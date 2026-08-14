@@ -46,7 +46,6 @@ const Store = {
     }
 
     if (window.location.protocol === 'file:') {
-      alert("Error: Estás abriendo el archivo localmente (file://). Debes usar tu servidor local (ej. http://localhost/MartinEau/)");
       throw new Error("Protocolo file:// no soportado para fetch.");
     }
     
@@ -63,7 +62,6 @@ const Store = {
     const text = await res.text();
 
     if (text.trim().startsWith('<?php')) {
-      alert("Error: El servidor no está ejecutando PHP. Debes entrar a través de tu servidor local (ej. http://localhost/MartinEau/)");
       throw new Error("El servidor devolvió código fuente PHP en lugar de JSON.");
     }
 

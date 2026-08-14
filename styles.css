@@ -151,7 +151,7 @@ p:last-child {
 }
 
 .sculpture-loader {
-  width: 100px;
+  width: 180px;
   height: 100px;
   color: var(--color-accent);
   overflow: visible;
