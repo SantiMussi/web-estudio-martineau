@@ -317,10 +317,131 @@
       text-transform: uppercase;
     }
 
+    /* Nuestro Taller */
+    .about-taller {
+      padding: 7rem 0;
+      background: var(--color-bg);
+    }
+    .about-taller-header {
+      max-width: 640px;
+      margin-bottom: 3.5rem;
+    }
+    .about-taller-header .section-label {
+      display: block;
+      margin-bottom: 1rem;
+    }
+    .about-taller-header h2 {
+      margin-bottom: 1.5rem;
+    }
+    .about-taller-header p {
+      color: var(--color-text-muted);
+      font-size: 0.975rem;
+      line-height: 1.85;
+    }
+    .taller-gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 4.5rem;
+    }
+    .taller-gallery figure {
+      margin: 0;
+    }
+    .taller-gallery img {
+      width: 100%;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(35%) contrast(1.05);
+      transition: filter 0.6s var(--ease-out);
+    }
+    .taller-gallery figure:hover img {
+      filter: grayscale(0%) contrast(1.05);
+    }
+    .taller-gallery figcaption {
+      margin-top: 0.8rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--color-text-muted);
+    }
+    .taller-ubicacion {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: stretch;
+      border-top: 1px solid var(--color-border);
+      padding-top: 4rem;
+    }
+    .taller-ubicacion-info h3 {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 1.75rem;
+      color: var(--color-text);
+    }
+    .taller-dato {
+      margin-bottom: 1.5rem;
+    }
+    .taller-dato span {
+      display: block;
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-accent);
+      margin-bottom: 0.4rem;
+    }
+    .taller-dato p {
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+    .taller-dato a {
+      color: var(--color-text-muted);
+      transition: color 0.3s;
+    }
+    .taller-dato a:hover {
+      color: var(--color-accent);
+    }
+    .taller-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-top: 0.5rem;
+      padding: 0.9rem 1.6rem;
+      border: 1px solid var(--color-accent);
+      color: var(--color-accent);
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      transition: background 0.3s, color 0.3s;
+    }
+    .taller-cta:hover {
+      background: var(--color-accent);
+      color: var(--color-black);
+    }
+    .taller-mapa {
+      position: relative;
+      min-height: 360px;
+      border: 1px solid var(--color-border);
+    }
+    .taller-mapa iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      filter: grayscale(1) invert(0.9) contrast(0.85) hue-rotate(180deg);
+    }
+
     @media (max-width: 900px) {
       .about-empresa-grid {
         grid-template-columns: 1fr;
         gap: 3rem;
+      }
+      .taller-ubicacion {
+        grid-template-columns: 1fr;
+        gap: 2.5rem;
       }
       .about-empresa-image {
         order: -1;
@@ -341,6 +462,12 @@
       }
       .testimonios-grid {
         grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 700px) {
+      .taller-gallery {
+        grid-template-columns: 1fr;
+        gap: 1.75rem;
       }
     }
     @media (max-width: 600px) {
@@ -442,6 +569,75 @@
       <div class="about-quote reveal">
         <blockquote>Las piezas están hechas para durar toda una vida.</blockquote>
       </div>
+    </div>
+  </section>
+
+  <!-- Nuestro Taller -->
+  <section class="about-taller section" id="taller">
+    <div class="container">
+
+      <div class="about-taller-header reveal">
+        <span class="section-label">Nuestro Taller</span>
+        <h2>Un museo vivo<br>en Las Cañitas</h2>
+        <p>
+          Cien años de moldes, diseños y copias de la antigüedad clásica conviven en un taller que sigue produciendo cada pieza a mano. Se puede visitar con cita previa: desde la calle hasta el patio y las mesas de trabajo.
+        </p>
+      </div>
+
+      <div class="taller-gallery reveal">
+        <figure>
+          <img src="assets/taller-fachada.webp" alt="Fachada del taller de AR Martineau sobre la calle, con el cartel Martineau" loading="lazy">
+          <figcaption>La fachada</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/taller-patio.webp" alt="Patio del taller con maceteros, ánforas y esculturas de piedra reconstituida" loading="lazy">
+          <figcaption>El patio</figcaption>
+        </figure>
+        <figure>
+          <img src="assets/taller-interior.webp" alt="Interior del taller con mesas de trabajo y molduras talladas" loading="lazy">
+          <figcaption>Las mesas de trabajo</figcaption>
+        </figure>
+      </div>
+
+      <div class="taller-ubicacion reveal">
+        <div class="taller-ubicacion-info">
+          <h3>Cómo llegar</h3>
+
+          <div class="taller-dato">
+            <span>Dirección</span>
+            <p>Santos Dumont 4457<br>Chacarita, CABA — Argentina</p>
+          </div>
+
+          <div class="taller-dato">
+            <span>Horario</span>
+            <p>Lunes a Viernes, 09:00 — 18:00</p>
+          </div>
+
+          <div class="taller-dato">
+            <span>En auto</span>
+            <p>Estacionamiento propio para clientes dentro del predio.</p>
+          </div>
+
+          <div class="taller-dato">
+            <span>Visitas</span>
+            <p>Con cita previa. Coordinala por <a href="https://wa.me/541131917014" target="_blank" rel="noopener">WhatsApp</a>.</p>
+          </div>
+
+          <a class="taller-cta"
+            href="https://www.google.com/maps/dir/?api=1&destination=Santos%20Dumont%204457%2C%20Buenos%20Aires%2C%20Argentina"
+            target="_blank" rel="noopener">
+            Abrir en Google Maps
+          </a>
+        </div>
+
+        <div class="taller-mapa">
+          <iframe
+            src="https://www.google.com/maps?q=Santos%20Dumont%204457%2C%20Buenos%20Aires%2C%20Argentina&output=embed"
+            title="Mapa de ubicación del taller de AR Martineau"
+            loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+      </div>
+
     </div>
   </section>
 
