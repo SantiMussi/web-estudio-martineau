@@ -280,6 +280,14 @@ button {
   }
 }
 
+/* Páginas sin hero de imagen: el header necesita fondo para que se lea el texto claro */
+.page-detail .site-header {
+  background-color: rgba(46, 40, 32, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
 .site-header.scrolled {
   background-color: rgba(46, 40, 32, 0.82);
   backdrop-filter: blur(12px);
@@ -1186,7 +1194,6 @@ body.no-scroll {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  margin-bottom: 4rem;
 }
 
 .hero-secondary-overlay {
