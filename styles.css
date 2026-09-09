@@ -164,40 +164,50 @@ p:last-child {
 
 .loader-mark {
   position: relative;
-  animation: lgBreath 4s ease-in-out 2s infinite;
+  animation: lgBreath 4s ease-in-out 3s infinite;
 }
 
+/* El logo se "dibuja" de arriba a abajo, con una luz que recorre el trazo */
 .loader-logo {
   display: block;
   width: clamp(150px, 33vw, 244px);
   height: auto;
-  filter: drop-shadow(0 0 26px rgba(244, 241, 237, 0.16));
-  animation: lgEmerge 1.7s var(--ease-smooth) 0.15s both;
+  filter: drop-shadow(0 0 26px rgba(244, 241, 237, 0.18));
+  opacity: 0;
+  clip-path: inset(0 0 100% 0);
+}
+
+.loader-mark.is-in .loader-logo {
+  animation: lgDraw 2.3s var(--ease-out) 0.1s forwards;
 }
 
 .loader-shine {
   position: absolute;
-  inset: 0;
+  left: -10%;
+  right: -10%;
+  top: 0;
+  height: 16px;
   pointer-events: none;
-  -webkit-mask: url('assets/logo-badge.webp') center / contain no-repeat;
-  mask: url('assets/logo-badge.webp') center / contain no-repeat;
-  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.6) 50%, transparent 60%);
-  background-size: 280% 100%;
-  background-position: 180% 0;
+  background: radial-gradient(ellipse at center, rgba(255, 245, 235, 0.9) 0%, rgba(255, 245, 235, 0.15) 45%, transparent 72%);
+  filter: blur(2px);
   opacity: 0;
-  animation: lgShine 1.5s var(--ease-out) 1.6s 1 forwards;
 }
 
-@keyframes lgEmerge {
-  0%   { opacity: 0; transform: scale(1.06); filter: blur(7px); }
-  55%  { opacity: 1; }
-  100% { opacity: 1; transform: scale(1); filter: blur(0); }
+.loader-mark.is-in .loader-shine {
+  animation: lgScan 2.3s var(--ease-out) 0.1s forwards;
 }
 
-@keyframes lgShine {
-  0%   { opacity: 0; background-position: 175% 0; }
-  18%  { opacity: 1; }
-  100% { opacity: 0; background-position: -55% 0; }
+@keyframes lgDraw {
+  0%   { opacity: 0.25; transform: translateY(16px) scale(1.03); clip-path: inset(0 0 100% 0); }
+  16%  { opacity: 1; }
+  100% { opacity: 1; transform: translateY(0) scale(1); clip-path: inset(0 0 -3% 0); }
+}
+
+@keyframes lgScan {
+  0%   { top: 2%; opacity: 0; }
+  12%  { opacity: 0.95; }
+  86%  { opacity: 0.95; }
+  100% { top: 99%; opacity: 0; }
 }
 
 @keyframes lgBreath {
@@ -206,8 +216,14 @@ p:last-child {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .loader-mark { animation: none; }
-  .loader-logo { animation: none; opacity: 1; filter: none; }
+  .loader-mark,
+  .loader-mark.is-in .loader-logo {
+    animation: none;
+  }
+  .loader-mark .loader-logo {
+    opacity: 1;
+    clip-path: none;
+  }
   .loader-shine { display: none; }
 }
 
@@ -528,11 +544,15 @@ body.no-scroll {
 }
 
 .hero-content {
-  max-width: 900px;
+  max-width: 1040px;
   padding: 0 1.5rem;
 }
 
 .hero-title {
+  font-size: clamp(1.75rem, 4.9vw, 3.9rem);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
   text-shadow: 0 10px 30px rgba(28, 24, 19, 0.5);
   margin-bottom: 2.5rem;
 }
