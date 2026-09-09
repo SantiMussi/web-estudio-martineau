@@ -17,8 +17,8 @@
     --admin-danger: #B4453C;
     --admin-warning: #8A6314;
     --admin-sidebar-w: 260px;
-    --admin-font-sans: 'Inter', sans-serif;
-    --admin-font-serif: 'Cormorant Garamond', serif;
+    --admin-font-sans: 'Bodoni Moda', 'Didot', 'Bodoni MT', Georgia, 'Times New Roman', serif;
+    --admin-font-serif: 'Bodoni Moda', 'Didot', 'Bodoni MT', Georgia, 'Times New Roman', serif;
     --admin-radius: 10px;
     --admin-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }

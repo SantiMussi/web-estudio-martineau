@@ -25,7 +25,7 @@ El sitio busca reflejar la identidad visual del estudio: elegante, sobrio, con e
 |------|-----------|
 | Front | HTML5, CSS3 (vanilla), JavaScript ES6+ |
 | Back / API | PHP + MySQL (PDO) |
-| Tipografía | [Cormorant Garamond](https://fonts.google.com/specimen/Cormorant+Garamond) + [Inter](https://fonts.google.com/specimen/Inter) |
+| Tipografía | [Bodoni Moda](https://fonts.google.com/specimen/Bodoni+Moda) (estilo Didot, en todo el sitio) |
 | Hosting | Servidor con soporte PHP (Apache + `.htaccess` para URLs limpias) |
 
 Sin frameworks, sin bundlers, sin dependencias de npm. Todo vanilla. La idea es que sea liviano, rápido de deployar y fácil de mantener.

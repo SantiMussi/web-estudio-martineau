@@ -425,8 +425,8 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('load', () => {
             setTimeout(() => {
                 loader.classList.add('hidden');
-                setTimeout(() => loader.style.display = 'none', 1000);
-            }, 3000);
+                setTimeout(() => loader.style.display = 'none', 900);
+            }, 2600);
         });
     };
 

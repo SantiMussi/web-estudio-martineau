@@ -25,8 +25,8 @@ unset($_SESSION['flash_msg']);
     <title>Productos — MartinEau Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="admin.css?v=4">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->

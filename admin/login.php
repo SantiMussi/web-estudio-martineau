@@ -45,13 +45,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
 
     <style>
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Bodoni Moda', 'Didot', 'Bodoni MT', Georgia, 'Times New Roman', serif;
             background: #E1DED7;
             background-image: radial-gradient(circle at top right, #F1EFEA 0%, #E1DED7 100%);
             color: #38322A;
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .login-logo {
-            font-family: 'Cormorant Garamond', serif;
+            font-family: 'Bodoni Moda', 'Didot', 'Bodoni MT', Georgia, 'Times New Roman', serif;
             font-weight: 300;
             font-size: 2.5rem;
             text-align: center;
@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: 1px solid #CBC4B6;
             border-radius: 8px;
             color: #38322A;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Bodoni Moda', 'Didot', 'Bodoni MT', Georgia, 'Times New Roman', serif;
             font-size: 0.95rem;
             transition: border-color 0.3s ease;
             outline: none;
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: none;
             border-radius: 8px;
             color: #F4F1ED;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Bodoni Moda', 'Didot', 'Bodoni MT', Georgia, 'Times New Roman', serif;
             font-size: 0.85rem;
             font-weight: 500;
             letter-spacing: 0.1em;

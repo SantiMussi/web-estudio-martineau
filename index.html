@@ -12,70 +12,29 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap"
     rel="stylesheet">
 
   <!-- Estilos -->
-  <link rel="stylesheet" href="styles.css?v=9">
+  <link rel="stylesheet" href="styles.css?v=10">
   <meta author="Santiago Mussi" url="www.santimussi.com">
 </head>
 
 <body>
-  <!-- Loader -->
+  <!-- Loader / Splash -->
   <div class="loader-wrapper">
-    <svg class="sculpture-loader" viewBox="0 0 180 100" fill="none" stroke="currentColor" stroke-width="1.5"
-      stroke-linecap="round" stroke-linejoin="round">
-      <g class="sculpture-group">
-        <!-- 1. Base -->
-        <path class="s-line" pathLength="1" d="M15 85 L85 85" />
-        <!-- 2. Pilares -->
-        <path class="s-line" pathLength="1" d="M25 85 L25 30 M75 85 L75 30" />
-        <!-- 3. Arco del hogar -->
-        <path class="s-line" pathLength="1" d="M35 85 L35 55 C 35 40 65 40 65 55 L65 85" />
-        <!-- 4. Cornisa (Mantel 3D) -->
-        <path class="s-line" pathLength="1" d="M20 30 L80 30 L85 25 L15 25 Z" />
-        <!-- 5. Campana (Parte superior) -->
-        <path class="s-line" pathLength="1" d="M25 25 L35 10 L65 10 L75 25" />
-        <!-- 6. Llama principal -->
-        <path class="s-line" pathLength="1"
-          d="M 50,82 C 38,82 38,70 42,62 C 45,55 46,50 48,45 C 49,55 52,58 53,60 C 55,57 57,53 58,54 C 62,65 60,82 50,82 Z" />
-        <!-- 7. Detalle interior de la llama -->
-        <path class="s-line" pathLength="1"
-          d="M 50,78 C 45,78 45,72 47,67 C 48,63 49,60 50,56 C 51,62 52,64 53,65 C 54,63 55,61 56,62 C 58,68 55,78 50,78 Z" />
-        <!-- 8. Pedestal de la Escultura -->
-        <path class="s-line" pathLength="1" d="M 110 85 L 160 85 L 157 78 L 113 78 Z" />
-        <path class="s-line" pathLength="1" d="M 117 78 L 153 78 L 153 73 L 117 73 Z" />
-        <!-- 9. Cabeza y moño (estilo griego) -->
-        <path class="s-line" pathLength="1"
-          d="M 135 13 C 132 13 131 15 131 16 L 129 17 L 131 18 C 131 20 133 21 135 21" />
-        <path class="s-line" pathLength="1" d="M 135 13 C 138 13 140 16 139 19 C 138 21 136 21 135 21" />
-        <path class="s-line" pathLength="1" d="M 139 15 C 142 16 142 18 139 19" />
-        <!-- 10. Torso y brazos -->
-        <path class="s-line" pathLength="1" d="M 133 21 L 133 23 M 137 21 L 137 23" />
-        <path class="s-line" pathLength="1" d="M 133 23 Q 128 23 126 26" />
-        <path class="s-line" pathLength="1" d="M 137 23 Q 142 23 144 26" />
-        <path class="s-line" pathLength="1" d="M 126 26 L 121 33 L 115 29" />
-        <path class="s-line" pathLength="1" d="M 144 26 L 147 35 L 145 45" />
-        <!-- 11. Copa -->
-        <path class="s-line" pathLength="1" d="M 113 27 L 117 27 L 115 31 Z" />
-        <!-- 12. Vestido / Túnica (Contornos y drapeado cruzado) -->
-        <path class="s-line" pathLength="1" d="M 124 29 C 126 35 127 40 127 45" />
-        <path class="s-line" pathLength="1" d="M 144 26 C 146 35 145 40 145 45" />
-        <path class="s-line" pathLength="1" d="M 127 44 Q 136 46 145 44" />
-        <path class="s-line" pathLength="1" d="M 126 26 C 132 35 138 40 145 44" />
-        <path class="s-line" pathLength="1" d="M 129 26 C 135 35 141 40 145 42" />
-        <!-- 13. Falda y pliegues verticales -->
-        <path class="s-line" pathLength="1" d="M 127 45 C 125 55 124 65 124 73" />
-        <path class="s-line" pathLength="1" d="M 145 45 C 147 55 148 65 148 73" />
-        <path class="s-line" pathLength="1" d="M 124 73 Q 136 75 148 73" />
-        <path class="s-line" pathLength="1" d="M 127 45 Q 127 60 126 73" />
-        <path class="s-line" pathLength="1" d="M 131 45 Q 131 60 131 74" />
-        <path class="s-line" pathLength="1" d="M 136 45 Q 136 60 136 74" />
-        <path class="s-line" pathLength="1" d="M 141 45 Q 141 60 141 74" />
-        <path class="s-line" pathLength="1" d="M 145 45 Q 145 60 146 73" />
-      </g>
-    </svg>
-    <div class="loader-text">MartinEau</div>
+    <div class="loader-mark">
+      <svg class="loader-logo" viewBox="0 0 260 330" fill="none" xmlns="http://www.w3.org/2000/svg"
+        role="img" aria-label="MartinEau — Piedra París 1922">
+        <rect class="lg-frame lg-frame--outer" x="13" y="13" width="234" height="304" rx="62"
+          pathLength="1" stroke="#F4F1ED" stroke-width="2" />
+        <rect class="lg-frame lg-frame--inner" x="23" y="23" width="214" height="284" rx="52"
+          pathLength="1" stroke="#F4F1ED" stroke-width="1" />
+        <text class="lg-m" x="130" y="207" text-anchor="middle" fill="#F4F1ED">M</text>
+        <text class="lg-cap lg-cap--name" x="132" y="248" text-anchor="middle" fill="#F4F1ED">PIEDRA PARIS</text>
+        <text class="lg-cap lg-cap--year" x="133" y="274" text-anchor="middle" fill="#F4F1ED">1922</text>
+      </svg>
+    </div>
   </div>
 
   <!-- Header y Navegación -->

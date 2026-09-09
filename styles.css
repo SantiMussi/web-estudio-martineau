@@ -28,9 +28,9 @@
   --grad-accent: linear-gradient(135deg, var(--dusty-taupe-2) 0%, var(--stone-brown) 100%);
   --grad-dark: radial-gradient(circle at top right, #F5F3EE 0%, var(--color-bg) 100%);
 
-  /* Tipografías */
-  --font-sans: 'Inter', sans-serif;
-  --font-serif: 'Cormorant Garamond', serif;
+  /* Tipografías — Didot / Bodoni Moda en toda la página */
+  --font-sans: 'Bodoni Moda', 'Didot', 'Bodoni MT', 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-serif: 'Bodoni Moda', 'Didot', 'Bodoni MT', 'Playfair Display', Georgia, 'Times New Roman', serif;
 
   /* Transiciones y Easing */
   --ease-smooth: cubic-bezier(0.77, 0, 0.175, 1);
@@ -140,20 +140,21 @@ p:last-child {
   margin-right: 15px;
 }
 
-/* Loader */
+/* Loader / Splash — monograma MartinEau animado */
 .loader-wrapper {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--color-bg);
+  background-color: var(--dusty-taupe);
+  background-image: radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.06) 0%, transparent 60%);
   z-index: 10000;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  transition: opacity 1s var(--ease-smooth), visibility 1s;
+  transition: opacity 0.9s var(--ease-smooth), visibility 0.9s;
 }
 
 .loader-wrapper.hidden {
@@ -161,57 +162,70 @@ p:last-child {
   visibility: hidden;
 }
 
-.sculpture-loader {
-  width: 180px;
-  height: 100px;
-  color: var(--color-accent);
-  overflow: visible;
-  filter: drop-shadow(0 0 8px rgba(110, 97, 80, 0.22));
+.loader-mark {
+  animation: lgBreath 3.6s ease-in-out 2.4s infinite;
 }
 
-.s-line {
+.loader-logo {
+  display: block;
+  width: clamp(150px, 32vw, 232px);
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 22px rgba(244, 241, 237, 0.16));
+}
+
+.lg-frame {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
-  animation: drawSculpture 2.5s var(--ease-smooth) forwards;
+  animation: lgDraw 1.1s var(--ease-out) forwards;
 }
 
-/* Trazado secuencial para simular construcción */
-.s-line:nth-child(1) { animation-delay: 0.1s; stroke-width: 1.5; }
-.s-line:nth-child(2) { animation-delay: 0.3s; }
-.s-line:nth-child(3) { animation-delay: 0.5s; }
-.s-line:nth-child(4) { animation-delay: 0.7s; }
-.s-line:nth-child(5) { animation-delay: 0.9s; }
-.s-line:nth-child(6) { animation-delay: 1.1s; }
-.s-line:nth-child(7) { animation-delay: 1.3s; }
+.lg-frame--outer { animation-delay: 0.15s; }
+.lg-frame--inner { animation-delay: 0.45s; }
 
-@keyframes drawSculpture {
-  0% {
-    stroke-dashoffset: 1;
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  100% {
-    stroke-dashoffset: 0;
-    opacity: 1;
-  }
-}
-
-.loader-text {
-  margin-top: 2.5rem;
+.lg-m {
   font-family: var(--font-serif);
-  font-size: 1rem;
-  letter-spacing: 0.4em;
-  text-transform: uppercase;
-  color: var(--color-text-muted);
+  font-size: 132px;
+  font-weight: 500;
   opacity: 0;
-  animation: fadeInText 1.5s var(--ease-out) 1s forwards;
+  transform: translateY(16px);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: lgReveal 1.1s var(--ease-smooth) 0.85s forwards;
 }
 
-@keyframes fadeInText {
-  0% { opacity: 0; transform: translateY(10px); }
-  100% { opacity: 1; transform: translateY(0); }
+.lg-cap {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  opacity: 0;
+  animation: lgFade 0.9s var(--ease-out) forwards;
+}
+
+.lg-cap--name { font-size: 15px; letter-spacing: 0.34em; animation-delay: 1.55s; }
+.lg-cap--year { font-size: 13px; letter-spacing: 0.46em; animation-delay: 1.75s; }
+
+@keyframes lgDraw {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes lgReveal {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes lgFade {
+  to { opacity: 1; }
+}
+
+@keyframes lgBreath {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.025); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loader-mark { animation: none; }
+  .lg-frame { stroke-dashoffset: 0; animation: none; }
+  .lg-m { opacity: 1; transform: none; animation: none; }
+  .lg-cap { opacity: 1; animation: none; }
 }
 
 /* Layout y utilidades */
