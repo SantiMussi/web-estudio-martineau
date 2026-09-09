@@ -52,9 +52,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         body {
             font-family: 'Inter', sans-serif;
-            background: #0a0a0a;
-            background-image: radial-gradient(circle at top right, #1a1a1a 0%, #0a0a0a 100%);
-            color: #F4F1ED;
+            background: #E1DED7;
+            background-image: radial-gradient(circle at top right, #F1EFEA 0%, #E1DED7 100%);
+            color: #38322A;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-align: center;
             letter-spacing: 0.15em;
             margin-bottom: 0.5rem;
-            color: #F4F1ED;
+            color: #38322A;
         }
 
         .login-subtitle {
@@ -83,16 +83,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 0.75rem;
             letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: #C28B55;
+            color: #6E6150;
             margin-bottom: 3rem;
         }
 
         .login-card {
-            background: rgba(20, 20, 20, 0.8);
-            border: 1px solid #2B2A28;
+            background: #F3F1EC;
+            border: 1px solid #CBC4B6;
             border-radius: 12px;
             padding: 2.5rem 2rem;
-            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(56, 48, 38, 0.12);
         }
 
         .form-group {
@@ -104,17 +104,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             font-size: 0.75rem;
             letter-spacing: 0.1em;
             text-transform: uppercase;
-            color: #9E9890;
+            color: #6E6150;
             margin-bottom: 0.5rem;
         }
 
         .form-group input {
             width: 100%;
             padding: 0.85rem 1rem;
-            background: #0a0a0a;
-            border: 1px solid #2B2A28;
+            background: #EFEDE8;
+            border: 1px solid #CBC4B6;
             border-radius: 8px;
-            color: #F4F1ED;
+            color: #38322A;
             font-family: 'Inter', sans-serif;
             font-size: 0.95rem;
             transition: border-color 0.3s ease;
@@ -122,20 +122,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .form-group input:focus {
-            border-color: #C28B55;
+            border-color: #6E6150;
         }
 
         .form-group input::placeholder {
-            color: #524E48;
+            color: #8A7C6C;
         }
 
         .btn-login {
             width: 100%;
             padding: 0.9rem;
-            background: linear-gradient(135deg, #C28B55 0%, #916135 100%);
+            background: linear-gradient(135deg, #897B6B 0%, #574B3C 100%);
             border: none;
             border-radius: 8px;
-            color: #0a0a0a;
+            color: #F4F1ED;
             font-family: 'Inter', sans-serif;
             font-size: 0.85rem;
             font-weight: 500;
@@ -155,9 +155,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .error-msg {
-            background: rgba(220, 53, 69, 0.15);
-            border: 1px solid rgba(220, 53, 69, 0.3);
-            color: #ff6b7a;
+            background: rgba(180, 69, 60, 0.12);
+            border: 1px solid rgba(180, 69, 60, 0.3);
+            color: #B4453C;
             padding: 0.75rem 1rem;
             border-radius: 8px;
             font-size: 0.85rem;
@@ -169,11 +169,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             text-align: center;
             margin-top: 2rem;
             font-size: 0.75rem;
-            color: #524E48;
+            color: #8A7C6C;
         }
 
         .login-footer a {
-            color: #C28B55;
+            color: #6E6150;
             text-decoration: none;
         }
     </style>
