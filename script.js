@@ -422,15 +422,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const loader = document.querySelector('.loader-wrapper');
         if (!loader) return;
 
-        // Fallback por si el onload de la imagen no dispara la animación
-        const mark = loader.querySelector('.loader-mark');
-        if (mark) setTimeout(() => mark.classList.add('is-in'), 350);
-
         window.addEventListener('load', () => {
             setTimeout(() => {
                 loader.classList.add('hidden');
                 setTimeout(() => loader.style.display = 'none', 900);
-            }, 2900);
+            }, 3200);
         });
     };
 
