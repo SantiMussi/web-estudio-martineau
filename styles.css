@@ -164,51 +164,53 @@ p:last-child {
 
 .loader-mark {
   position: relative;
-  animation: lgBreath 4s ease-in-out 3.6s infinite;
+  animation: lgBreath 4.5s ease-in-out 3.6s infinite;
 }
 
-/* El logo se "dibuja" de arriba a abajo, con una luz que recorre el trazo.
-   La animación corre siempre (es una revelación única, no un efecto molesto). */
+/* El monograma se dibuja trazo a trazo (SVG stroke). Corre siempre. */
 .loader-logo {
   display: block;
-  width: clamp(150px, 33vw, 244px);
+  width: clamp(155px, 34vw, 250px);
   height: auto;
-  filter: drop-shadow(0 0 30px rgba(244, 241, 237, 0.2));
-  animation: lgDraw 2.6s var(--ease-out) 0.35s both;
+  overflow: visible;
+  filter: drop-shadow(0 0 30px rgba(244, 239, 234, 0.18));
 }
 
-.loader-shine {
-  position: absolute;
-  left: -12%;
-  right: -12%;
-  top: 0;
-  height: 22px;
-  pointer-events: none;
-  background: radial-gradient(ellipse at center, rgba(255, 248, 240, 0.95) 0%, rgba(255, 248, 240, 0.28) 40%, transparent 70%);
-  filter: blur(3px);
-  opacity: 0;
-  animation: lgScan 2.6s var(--ease-out) 0.35s both;
+.lg-line,
+.lg-m-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: lgDraw 1s var(--ease-out) both;
 }
+
+.lg-frame-o { animation-duration: 1.15s; animation-delay: 0.2s; }
+.lg-frame-i { animation-duration: 1.15s; animation-delay: 0.5s; }
+.lg-m-draw  { animation-duration: 1.5s; animation-delay: 1.05s; animation-timing-function: cubic-bezier(0.6, 0, 0.35, 1); }
+
+.lg-cap {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  opacity: 0;
+  animation: lgFade 0.7s var(--ease-out) both;
+}
+
+.lg-cap-name { font-size: 15px; letter-spacing: 0.3em; animation-delay: 2.5s; }
+.lg-cap-year { font-size: 13px; letter-spacing: 0.44em; animation-delay: 2.7s; }
 
 @keyframes lgDraw {
-  0%   { opacity: 0; transform: translateY(20px) scale(1.04); clip-path: inset(0 0 100% 0); }
-  14%  { opacity: 1; }
-  100% { opacity: 1; transform: translateY(0) scale(1); clip-path: inset(0 0 -4% 0); }
+  to { stroke-dashoffset: 0; }
 }
 
-@keyframes lgScan {
-  0%   { top: 0%; opacity: 0; }
-  10%  { opacity: 1; }
-  85%  { opacity: 1; }
-  100% { top: 100%; opacity: 0; }
+@keyframes lgFade {
+  to { opacity: 1; }
 }
 
 @keyframes lgBreath {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.02); }
+  50% { transform: scale(1.018); }
 }
 
-/* Con "reduce": conservamos la revelación pero quitamos el latido en bucle */
+/* Con "reduce": el dibujo igual corre; solo se quita el latido en bucle */
 @media (prefers-reduced-motion: reduce) {
   .loader-mark { animation: none; }
 }
