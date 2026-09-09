@@ -624,7 +624,7 @@ body.no-scroll {
 
 .about-image {
   position: relative;
-  aspect-ratio: 3/4;
+  aspect-ratio: 3/2;
 }
 
 /* Efecto de marco de foto en about */
