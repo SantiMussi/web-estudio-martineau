@@ -519,7 +519,7 @@ body.no-scroll {
   background-repeat: no-repeat;
   z-index: -2;
   will-change: transform;
-  filter: brightness(1.05) contrast(1) saturate(0.92);
+  filter: brightness(1.2) contrast(0.97) saturate(0.9);
 }
 
 .hero-overlay {
@@ -531,13 +531,13 @@ body.no-scroll {
   z-index: -1;
   background:
     /* velo detrás del texto (centro) */
-    radial-gradient(ellipse 66% 54% at 50% 44%, rgba(24, 20, 16, 0.64) 0%, rgba(24, 20, 16, 0.26) 52%, transparent 80%),
+    radial-gradient(ellipse 60% 54% at 50% 42%, rgba(24, 20, 16, 0.62) 0%, rgba(24, 20, 16, 0.22) 54%, transparent 80%),
     /* scrim para el navbar */
-    linear-gradient(to bottom, rgba(24, 20, 16, 0.58) 0%, rgba(24, 20, 16, 0.14) 15%, transparent 28%),
+    linear-gradient(to bottom, rgba(24, 20, 16, 0.5) 0%, rgba(24, 20, 16, 0.1) 14%, transparent 26%),
     /* fundido inferior */
-    linear-gradient(to top, rgba(24, 20, 16, 0.62) 0%, transparent 34%),
-    /* velo uniforme suave */
-    rgba(24, 20, 16, 0.15);
+    linear-gradient(to top, rgba(24, 20, 16, 0.55) 0%, transparent 32%),
+    /* velo uniforme muy leve */
+    rgba(24, 20, 16, 0.06);
 }
 
 .hero-content {
@@ -561,7 +561,7 @@ body.no-scroll {
   font-size: 0.75rem;
   text-transform: uppercase;
   color: var(--ink-on-dark);
-  text-shadow: 0 1px 12px rgba(24, 20, 16, 0.7);
+  text-shadow: 0 1px 3px rgba(24, 20, 16, 0.75), 0 2px 16px rgba(24, 20, 16, 0.65);
   margin-bottom: 2rem;
 }
 
