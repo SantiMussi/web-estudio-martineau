@@ -768,6 +768,40 @@ body.no-scroll {
   }
 }
 
+/* Estado de carga de grillas (catálogo, portfolio, destacados) */
+.grid-loading {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 5rem 1rem;
+  color: var(--color-text-muted);
+  text-align: center;
+  width: 100%;
+}
+
+.grid-loading .spinner {
+  width: 34px;
+  height: 34px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: gridSpin 0.8s linear infinite;
+}
+
+.grid-loading p {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@keyframes gridSpin {
+  to { transform: rotate(360deg); }
+}
+
 .product-card {
   display: flex;
   flex-direction: column;
