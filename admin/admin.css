@@ -246,6 +246,33 @@ a:hover { color: var(--admin-accent-dark); }
     color: var(--admin-accent);
 }
 
+/* ─── FILTRO DE TABLA ─── */
+.admin-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.admin-filter-bar label {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--admin-text-light);
+    font-weight: 500;
+}
+
+.admin-filter-bar select {
+    width: auto;
+    max-width: 260px;
+}
+
+.admin-filter-count {
+    font-size: 0.8rem;
+    color: var(--admin-text-light);
+}
+
 /* ─── TABLE ─── */
 .admin-table-wrapper {
     background: var(--admin-bg-card);

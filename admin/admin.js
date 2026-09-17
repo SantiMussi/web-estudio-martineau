@@ -6,7 +6,36 @@ document.addEventListener('DOMContentLoaded', () => {
     initImagePreviews();
     initSlugGenerator();
     initDeleteConfirmations();
+    initTableCategoryFilter();
 });
+
+function initTableCategoryFilter() {
+    document.querySelectorAll('[data-filtro-categoria]').forEach(select => {
+        const tbody = document.getElementById(select.getAttribute('data-filtro-categoria'));
+        if (!tbody) return;
+
+        const countEl = document.getElementById(select.id + '-count');
+
+        const aplicarFiltro = () => {
+            const valor = select.value;
+            const filas = tbody.querySelectorAll('tr[data-id]');
+            let visibles = 0;
+
+            filas.forEach(fila => {
+                const coincide = !valor || fila.getAttribute('data-categoria-id') === valor;
+                fila.style.display = coincide ? '' : 'none';
+                if (coincide) visibles++;
+            });
+
+            if (countEl) {
+                countEl.textContent = valor ? `${visibles} de ${filas.length}` : '';
+            }
+        };
+
+        select.addEventListener('change', aplicarFiltro);
+        aplicarFiltro();
+    });
+}
 
 
 function initSidebar() {

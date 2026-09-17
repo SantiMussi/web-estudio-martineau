@@ -758,13 +758,14 @@ body.no-scroll {
 
 @media (min-width: 1024px) {
   .catalog-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 4rem;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
   }
-  
+
   /* Asimetría en catálogo */
-  .catalog-grid .product-card:nth-child(3n+2) {
-    transform: translateY(60px);
+  .catalog-grid .product-card:nth-child(4n+2),
+  .catalog-grid .product-card:nth-child(4n+4) {
+    transform: translateY(40px);
   }
 }
 
@@ -813,7 +814,7 @@ body.no-scroll {
 .product-image-wrapper {
   aspect-ratio: 4/5;
   overflow: hidden;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   position: relative;
 }
 
@@ -857,7 +858,7 @@ body.no-scroll {
 .product-title {
   font-family: var(--font-serif);
   font-weight: 400;
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   letter-spacing: 0.02em;
   color: var(--color-text);
   margin-bottom: 0.8rem;

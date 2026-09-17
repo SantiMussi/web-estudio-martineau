@@ -26,7 +26,7 @@ unset($_SESSION['flash_msg']);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=5">
+    <link rel="stylesheet" href="admin.css?v=6">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -101,6 +101,17 @@ unset($_SESSION['flash_msg']);
                     </div>
                 </div>
             <?php else: ?>
+                <div class="admin-filter-bar">
+                    <label for="filtro-categoria-productos">Filtrar por categoría</label>
+                    <select id="filtro-categoria-productos" class="form-control" data-filtro-categoria="sortable-productos">
+                        <option value="">Todas las categorías</option>
+                        <?php foreach ($categorias as $cat): ?>
+                            <option value="<?= (int)$cat['id'] ?>"><?= e($cat['nombre']) ?></option>
+                        <?php endforeach; ?>
+                        <option value="0">Sin categoría</option>
+                    </select>
+                    <span class="admin-filter-count" id="filtro-categoria-productos-count"></span>
+                </div>
                 <div class="admin-table-wrapper">
                     <table class="admin-table">
                         <thead>
@@ -116,7 +127,7 @@ unset($_SESSION['flash_msg']);
                         </thead>
                         <tbody id="sortable-productos">
                             <?php foreach ($productos as $prod): ?>
-                                <tr data-id="<?= $prod['id'] ?>">
+                                <tr data-id="<?= $prod['id'] ?>" data-categoria-id="<?= (int)($prod['categoria_id'] ?? 0) ?>">
                                     <td class="drag-handle" title="Arrastrar para reordenar">☰</td>
                                     <td>
                                         <?php if ($prod['imagen']): ?>
@@ -303,6 +314,6 @@ unset($_SESSION['flash_msg']);
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="admin.js?v=6"></script>
+    <script src="admin.js?v=7"></script>
 </body>
 </html>
