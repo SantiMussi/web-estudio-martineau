@@ -154,7 +154,7 @@ p:last-child {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  transition: opacity 0.9s var(--ease-smooth), visibility 0.9s;
+  transition: opacity 0.55s var(--ease-smooth), visibility 0.55s;
 }
 
 .loader-wrapper.hidden {
@@ -183,19 +183,19 @@ p:last-child {
   animation: lgDraw 1s var(--ease-out) both;
 }
 
-.lg-frame-o { animation-duration: 1.15s; animation-delay: 0.2s; }
-.lg-frame-i { animation-duration: 1.15s; animation-delay: 0.5s; }
-.lg-m-draw  { animation-duration: 1.5s; animation-delay: 1.05s; animation-timing-function: cubic-bezier(0.6, 0, 0.35, 1); }
+.lg-frame-o { animation-duration: 0.75s; animation-delay: 0.15s; }
+.lg-frame-i { animation-duration: 0.75s; animation-delay: 0.35s; }
+.lg-m-draw  { animation-duration: 1s; animation-delay: 0.7s; animation-timing-function: cubic-bezier(0.6, 0, 0.35, 1); }
 
 .lg-cap {
   font-family: var(--font-serif);
   font-weight: 400;
   opacity: 0;
-  animation: lgFade 0.7s var(--ease-out) both;
+  animation: lgFade 0.5s var(--ease-out) both;
 }
 
-.lg-cap-name { font-size: 15px; letter-spacing: 0.3em; animation-delay: 2.5s; }
-.lg-cap-year { font-size: 13px; letter-spacing: 0.44em; animation-delay: 2.7s; }
+.lg-cap-name { font-size: 15px; letter-spacing: 0.3em; animation-delay: 1.7s; }
+.lg-cap-year { font-size: 13px; letter-spacing: 0.44em; animation-delay: 1.85s; }
 
 @keyframes lgDraw {
   to { stroke-dashoffset: 0; }
