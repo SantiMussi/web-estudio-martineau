@@ -1,4 +1,4 @@
-// MartinEau Studio - Script principal
+// Martineau Studio - Script principal
 
 document.addEventListener('DOMContentLoaded', () => {
 

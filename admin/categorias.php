@@ -18,7 +18,7 @@ unset($_SESSION['flash_msg']);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Categorías — MartinEau Admin</title>
+    <title>Categorías — Martineau Admin</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
@@ -33,7 +33,7 @@ unset($_SESSION['flash_msg']);
     <div class="admin-layout">
         <!-- Sidebar -->
         <aside class="admin-sidebar">
-            <div class="sidebar-logo">MartinEau</div>
+            <div class="sidebar-logo">Martineau</div>
             <div class="sidebar-label">Administración</div>
 
             <nav class="sidebar-nav">
