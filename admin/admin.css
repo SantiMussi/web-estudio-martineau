@@ -628,6 +628,79 @@ select.form-control {
     background: rgba(110, 97, 80, 0.07);
 }
 
+/* ─── IMPORTACIÓN MASIVA ─── */
+.import-card {
+    background: var(--admin-bg-card);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.import-card h2 {
+    font-size: 1.05rem;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+}
+
+.import-card > p {
+    color: var(--admin-text-muted);
+    font-size: 0.85rem;
+    margin-bottom: 1.25rem;
+}
+
+.import-columns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+}
+
+.import-columns code {
+    background: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 6px;
+    padding: 0.25rem 0.6rem;
+    font-size: 0.75rem;
+    color: var(--admin-text);
+}
+
+.import-columns code em {
+    font-style: normal;
+    color: var(--admin-text-light);
+}
+
+.import-example {
+    background: var(--admin-bg);
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.75rem;
+    color: var(--admin-text-muted);
+    overflow-x: auto;
+    white-space: pre;
+    margin-bottom: 1.25rem;
+}
+
+.import-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--admin-text-light);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin: 1.25rem 0;
+}
+
+.import-divider::before,
+.import-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--admin-border);
+}
+
 /* ─── ALERTS / FEEDBACK ─── */
 .alert {
     padding: 0.85rem 1.25rem;

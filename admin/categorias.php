@@ -49,6 +49,10 @@ unset($_SESSION['flash_msg']);
                     <svg viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
                     Categorías
                 </a>
+                <a href="importar.php">
+                    <svg viewBox="0 0 24 24"><path d="M12 3v12m0-12l4 4m-4-4L8 7"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                    Importar
+                </a>
             </nav>
 
             <div class="sidebar-footer">
@@ -78,7 +82,7 @@ unset($_SESSION['flash_msg']);
 
             <!-- Flash Messages -->
             <?php if ($msg): ?>
-                <div class="alert <?= $msg['type'] === 'success' ? 'alert-success' : 'alert-danger' ?>">
+                <div class="alert <?= flash_alert_class($msg['type']) ?>">
                     <?= e($msg['text']) ?>
                 </div>
             <?php endif; ?>
