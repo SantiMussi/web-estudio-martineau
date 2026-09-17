@@ -5,3 +5,4 @@ admin/uploads/
 admin/config.php
 *.log
 .env
+.claude

@@ -1033,30 +1033,18 @@ body.no-scroll {
 
 
 .social-link {
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
+  display: inline-flex;
   color: var(--color-text);
-  position: relative;
+  transition: color 0.3s var(--ease-out);
 }
 
-.social-link::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 1px;
-  background-color: var(--color-accent);
-  transition: width 0.4s var(--ease-out);
+.social-link svg {
+  width: 22px;
+  height: 22px;
 }
 
 .social-link:hover {
   color: var(--color-accent);
-}
-
-.social-link:hover::after {
-  width: 100%;
 }
 
 /* Footer */
