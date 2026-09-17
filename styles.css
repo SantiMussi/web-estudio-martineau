@@ -1415,12 +1415,13 @@ body.no-scroll {
   aspect-ratio: 4/5;
   overflow: hidden;
   border-radius: 4px;
+  background: var(--color-bg-alt);
 }
 
 .gallery-main img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   transition: transform 0.8s var(--ease-out);
 }
 
