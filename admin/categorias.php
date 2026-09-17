@@ -193,6 +193,6 @@ unset($_SESSION['flash_msg']);
         </div>
     </div>
 
-    <script src="admin.js?v=7"></script>
+    <script src="admin.js?v=8"></script>
 </body>
 </html>

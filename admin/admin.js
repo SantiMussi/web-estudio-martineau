@@ -15,6 +15,17 @@ function initTableCategoryFilter() {
         if (!tbody) return;
 
         const countEl = document.getElementById(select.id + '-count');
+        const storageKey = 'admin_filtro_' + select.id;
+
+        // Restaurar la última categoría filtrada (se pierde el estado en cada guardado porque recarga la página)
+        try {
+            const guardado = localStorage.getItem(storageKey);
+            if (guardado !== null && select.querySelector(`option[value="${guardado}"]`)) {
+                select.value = guardado;
+            }
+        } catch (e) {
+            // localStorage no disponible: seguimos sin filtro restaurado
+        }
 
         const aplicarFiltro = () => {
             const valor = select.value;
@@ -29,6 +40,12 @@ function initTableCategoryFilter() {
 
             if (countEl) {
                 countEl.textContent = valor ? `${visibles} de ${filas.length}` : '';
+            }
+
+            try {
+                localStorage.setItem(storageKey, valor);
+            } catch (e) {
+                // localStorage no disponible: el filtro no persiste, pero sigue funcionando en esta carga
             }
         };
 
