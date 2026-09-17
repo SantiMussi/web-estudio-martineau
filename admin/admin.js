@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSidebar();
     initModals();
     initSpecs();
+    initSpecPresets();
     initImagePreviews();
     initSlugGenerator();
     initDeleteConfirmations();
@@ -197,6 +198,23 @@ function initSpecs() {
         btn.addEventListener('click', () => {
             const container = btn.closest('.form-group').querySelector('.specs-container');
             if (container) addSpecRow(container);
+        });
+    });
+}
+
+function initSpecPresets() {
+    document.querySelectorAll('.btn-preset-spec').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const container = btn.closest('.form-group').querySelector('.specs-container');
+            if (!container) return;
+
+            const preset = [
+                { label: 'Material', value: 'Piedra París (cemento blanco, marmolina en distintos tonos y granulado de mármol)' },
+                { label: 'Refuerzo', value: 'Concreto + malla de hierro' },
+                { label: 'Terminación', value: 'Impermeabilizada con cerecita' },
+            ];
+
+            preset.forEach(spec => addSpecRow(container, spec.label, spec.value));
         });
     });
 }

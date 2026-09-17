@@ -22,7 +22,7 @@ unset($_SESSION['flash_msg']);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=4">
+    <link rel="stylesheet" href="admin.css?v=5">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -193,6 +193,6 @@ unset($_SESSION['flash_msg']);
         </div>
     </div>
 
-    <script src="admin.js?v=4"></script>
+    <script src="admin.js?v=6"></script>
 </body>
 </html>

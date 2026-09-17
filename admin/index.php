@@ -26,7 +26,7 @@ unset($_SESSION['flash_msg']);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=4">
+    <link rel="stylesheet" href="admin.css?v=5">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -283,9 +283,14 @@ unset($_SESSION['flash_msg']);
                         <label>Especificaciones Técnicas</label>
                         <div class="specs-container">
                         </div>
-                        <button type="button" class="btn-add-spec" style="margin-top: 0.75rem;">
-                            + Agregar especificación
-                        </button>
+                        <div style="display:flex; gap:0.75rem; flex-wrap:wrap; margin-top: 0.75rem;">
+                            <button type="button" class="btn-add-spec">
+                                + Agregar especificación
+                            </button>
+                            <button type="button" class="btn-add-spec btn-preset-spec">
+                                + Specs estándar (Piedra París)
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -298,6 +303,6 @@ unset($_SESSION['flash_msg']);
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="admin.js?v=5"></script>
+    <script src="admin.js?v=6"></script>
 </body>
 </html>
