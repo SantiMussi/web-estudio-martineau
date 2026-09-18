@@ -143,9 +143,22 @@ unset($_SESSION['flash_msg']);
                                                     <button type="submit" class="btn-admin btn-danger btn-sm btn-eliminar">Eliminar</button>
                                                 </form>
                                             <?php else: ?>
-                                                <span style="font-size: 0.75rem; color: var(--admin-text-light);" title="No se puede eliminar porque tiene ítems asociados">
-                                                    En uso
-                                                </span>
+                                                <button type="button" class="btn-admin btn-secondary btn-sm" onclick='abrirReasignar(<?= json_encode([
+                                                    "id" => $cat["id"],
+                                                    "nombre" => $cat["nombre"],
+                                                    "tipo" => $cat["tipo"],
+                                                    "total" => (int)$total_items,
+                                                ], JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
+                                                    Reasignar y borrar
+                                                </button>
+                                                <button type="button" class="btn-admin btn-danger btn-sm" onclick='abrirVaciar(<?= json_encode([
+                                                    "id" => $cat["id"],
+                                                    "nombre" => $cat["nombre"],
+                                                    "tipo" => $cat["tipo"],
+                                                    "total" => (int)$total_items,
+                                                ], JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
+                                                    Vaciar
+                                                </button>
                                             <?php endif; ?>
                                         </div>
                                     </td>
@@ -207,8 +220,81 @@ unset($_SESSION['flash_msg']);
         </div>
     </div>
 
+    <!-- MODAL: Reasignar y borrar categoría -->
+    <div class="modal-overlay" id="modal-reasignar-categoria">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Reasignar y borrar categoría</h2>
+                <button class="modal-close" data-modal-close>
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+
+            <form method="POST" action="actions/reasignar_y_borrar_categoria.php" id="form-reasignar-categoria">
+                <?= csrf_field() ?>
+                <input type="hidden" name="id" id="reasignar-origen-id" value="">
+
+                <div class="modal-body">
+                    <p id="reasignar-texto-intro" style="margin-bottom:1.25rem; font-size:0.9rem;"></p>
+
+                    <div class="form-group">
+                        <label for="reasignar-destino">Mover los ítems a</label>
+                        <select name="categoria_destino_id" id="reasignar-destino" class="form-control" required>
+                            <option value="">Seleccionar categoría...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="reasignar-confirmacion">Para confirmar, escribí el nombre exacto de la categoría: <strong id="reasignar-nombre-esperado"></strong></label>
+                        <input type="text" id="reasignar-confirmacion" name="confirmacion" class="form-control" autocomplete="off" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-admin btn-secondary" data-modal-close>Cancelar</button>
+                    <button type="submit" class="btn-admin btn-danger" id="reasignar-submit-btn" disabled>Reasignar y borrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: Vaciar categoría -->
+    <div class="modal-overlay" id="modal-vaciar-categoria">
+        <div class="modal" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Vaciar categoría</h2>
+                <button class="modal-close" data-modal-close>
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+
+            <form method="POST" action="actions/vaciar_categoria.php" id="form-vaciar-categoria">
+                <?= csrf_field() ?>
+                <input type="hidden" name="id" id="vaciar-origen-id" value="">
+
+                <div class="modal-body">
+                    <p id="vaciar-texto-intro" style="margin-bottom:1.25rem; font-size:0.9rem; color:var(--admin-danger);"></p>
+
+                    <div class="form-group">
+                        <label for="vaciar-confirmacion">Para confirmar, escribí el nombre exacto de la categoría: <strong id="vaciar-nombre-esperado"></strong></label>
+                        <input type="text" id="vaciar-confirmacion" name="confirmacion" class="form-control" autocomplete="off" required>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-admin btn-secondary" data-modal-close>Cancelar</button>
+                    <button type="submit" class="btn-admin btn-danger" id="vaciar-submit-btn" disabled>Vaciar categoría</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="admin.js?v=13"></script>
     <script>
+        const TODAS_CATEGORIAS = <?= json_encode(array_map(function ($c) {
+            return ['id' => (int)$c['id'], 'nombre' => $c['nombre'], 'tipo' => $c['tipo']];
+        }, $categorias)) ?>;
+
         function editarCategoria(data) {
             editarItem(data, 'modal-categoria');
 
@@ -217,6 +303,51 @@ unset($_SESSION['flash_msg']);
             if (tipoSelect) tipoSelect.disabled = true;
             if (nota) nota.hidden = false;
         }
+
+        function abrirReasignar(cat) {
+            document.getElementById('reasignar-origen-id').value = cat.id;
+            document.getElementById('reasignar-nombre-esperado').textContent = cat.nombre;
+            document.getElementById('reasignar-texto-intro').textContent =
+                `Esta categoría tiene ${cat.total} ítem(s). Elegí a qué categoría moverlos: recién ahí se borra "${cat.nombre}".`;
+
+            const select = document.getElementById('reasignar-destino');
+            select.innerHTML = '<option value="">Seleccionar categoría...</option>';
+            TODAS_CATEGORIAS
+                .filter(c => c.tipo === cat.tipo && c.id !== cat.id)
+                .forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c.id;
+                    opt.textContent = c.nombre;
+                    select.appendChild(opt);
+                });
+
+            document.getElementById('reasignar-confirmacion').value = '';
+            document.getElementById('reasignar-submit-btn').disabled = true;
+
+            openModal('modal-reasignar-categoria');
+        }
+
+        function abrirVaciar(cat) {
+            document.getElementById('vaciar-origen-id').value = cat.id;
+            document.getElementById('vaciar-nombre-esperado').textContent = cat.nombre;
+            document.getElementById('vaciar-texto-intro').textContent =
+                `Esto borra para siempre ${cat.total} ítem(s) de "${cat.nombre}" y sus imágenes. No se puede deshacer.`;
+
+            document.getElementById('vaciar-confirmacion').value = '';
+            document.getElementById('vaciar-submit-btn').disabled = true;
+
+            openModal('modal-vaciar-categoria');
+        }
+
+        document.getElementById('reasignar-confirmacion').addEventListener('input', function () {
+            const esperado = document.getElementById('reasignar-nombre-esperado').textContent;
+            document.getElementById('reasignar-submit-btn').disabled = this.value !== esperado;
+        });
+
+        document.getElementById('vaciar-confirmacion').addEventListener('input', function () {
+            const esperado = document.getElementById('vaciar-nombre-esperado').textContent;
+            document.getElementById('vaciar-submit-btn').disabled = this.value !== esperado;
+        });
     </script>
 </body>
 </html>
