@@ -106,7 +106,11 @@ function initModals() {
                     form.reset();
                     const idInput = form.querySelector('input[name="id"]');
                     if (idInput) idInput.value = '';
-                    
+
+                    // Re-habilitar campos que un editarXxx() haya bloqueado (ej: tipo de categoría)
+                    form.querySelectorAll('[disabled]').forEach(el => el.disabled = false);
+                    form.querySelectorAll('.solo-en-edicion').forEach(el => el.hidden = true);
+
                     const specsContainer = form.querySelector('.specs-container');
                     if (specsContainer) specsContainer.innerHTML = '';
                     

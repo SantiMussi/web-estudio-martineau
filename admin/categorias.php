@@ -126,6 +126,16 @@ unset($_SESSION['flash_msg']);
                                     <td><?= (int)$total_items ?></td>
                                     <td>
                                         <div class="table-actions">
+                                            <button type="button" class="btn-admin btn-secondary btn-sm" onclick='editarCategoria(<?= json_encode([
+                                                "id" => $cat["id"],
+                                                "nombre" => $cat["nombre"],
+                                                "slug" => $cat["slug"],
+                                                "tipo" => $cat["tipo"],
+                                                "_modal_title" => "Editar Categoría"
+                                            ], JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>
+                                                Editar
+                                            </button>
+
                                             <?php if ($total_items == 0): ?>
                                                 <form method="POST" action="actions/eliminar_categoria.php" style="display:inline">
                                                     <?= csrf_field() ?>
@@ -160,6 +170,7 @@ unset($_SESSION['flash_msg']);
 
             <form method="POST" action="actions/guardar_categoria.php">
                 <?= csrf_field() ?>
+                <input type="hidden" name="id" value="">
 
                 <div class="modal-body">
                     <!-- Nombre -->
@@ -182,17 +193,30 @@ unset($_SESSION['flash_msg']);
                             <option value="producto">Producto</option>
                             <option value="proyecto">Proyecto</option>
                         </select>
+                        <small class="solo-en-edicion" style="display:block; margin-top:0.4rem; color:var(--admin-text-light); font-size:0.75rem;" id="tipo-nota-edicion" hidden>
+                            El tipo no se puede cambiar una vez creada la categoría.
+                        </small>
                     </div>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn-admin btn-secondary" data-modal-close>Cancelar</button>
-                    <button type="submit" class="btn-admin btn-primary">Crear Categoría</button>
+                    <button type="submit" class="btn-admin btn-primary">Guardar Categoría</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <script src="admin.js?v=12"></script>
+    <script src="admin.js?v=13"></script>
+    <script>
+        function editarCategoria(data) {
+            editarItem(data, 'modal-categoria');
+
+            const tipoSelect = document.getElementById('tipo');
+            const nota = document.getElementById('tipo-nota-edicion');
+            if (tipoSelect) tipoSelect.disabled = true;
+            if (nota) nota.hidden = false;
+        }
+    </script>
 </body>
 </html>

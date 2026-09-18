@@ -323,6 +323,6 @@ unset($_SESSION['flash_msg']);
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="admin.js?v=12"></script>
+    <script src="admin.js?v=13"></script>
 </body>
 </html>

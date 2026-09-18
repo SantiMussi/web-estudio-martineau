@@ -10,10 +10,22 @@
                 "assets/modelo_atria.png"
             ],
             "specs": [
-                { "label": "Material", "value": "Piedra París reconstituida" },
-                { "label": "Uso", "value": "Interior y exterior" },
-                { "label": "Acabado", "value": "Terminación artesanal a mano" },
-                { "label": "Patina", "value": "Se desarrolla naturalmente con el tiempo" }
+                {
+                    "label": "Material",
+                    "value": "Piedra París reconstituida"
+                },
+                {
+                    "label": "Uso",
+                    "value": "Interior y exterior"
+                },
+                {
+                    "label": "Acabado",
+                    "value": "Terminación artesanal a mano"
+                },
+                {
+                    "label": "Patina",
+                    "value": "Se desarrolla naturalmente con el tiempo"
+                }
             ],
             "destacar": true
         },
@@ -27,9 +39,18 @@
                 "assets/pieza_monolith.png"
             ],
             "specs": [
-                { "label": "Material", "value": "Yeso de alta calidad" },
-                { "label": "Uso", "value": "Interior" },
-                { "label": "Acabado", "value": "Pintado o natural" }
+                {
+                    "label": "Material",
+                    "value": "Yeso de alta calidad"
+                },
+                {
+                    "label": "Uso",
+                    "value": "Interior"
+                },
+                {
+                    "label": "Acabado",
+                    "value": "Pintado o natural"
+                }
             ],
             "destacar": false
         },
@@ -43,9 +64,18 @@
                 "https://images.unsplash.com/photo-1600585154526-990dced4db0d?w=1200&q=80"
             ],
             "specs": [
-                { "label": "Material", "value": "Piedra París reconstituida" },
-                { "label": "Uso", "value": "Interior y exterior" },
-                { "label": "Personalización", "value": "Bajo plano del arquitecto" }
+                {
+                    "label": "Material",
+                    "value": "Piedra París reconstituida"
+                },
+                {
+                    "label": "Uso",
+                    "value": "Interior y exterior"
+                },
+                {
+                    "label": "Personalización",
+                    "value": "Bajo plano del arquitecto"
+                }
             ],
             "destacar": true
         },
@@ -59,8 +89,14 @@
                 "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&q=80"
             ],
             "specs": [
-                { "label": "Material", "value": "Acero" },
-                { "label": "Estilo", "value": "Contemporáneo" }
+                {
+                    "label": "Material",
+                    "value": "Acero"
+                },
+                {
+                    "label": "Estilo",
+                    "value": "Contemporáneo"
+                }
             ],
             "destacar": true
         },
@@ -74,7 +110,10 @@
                 "assets/macetero_roma.png"
             ],
             "specs": [
-                { "label": "Material", "value": "Piedra París" }
+                {
+                    "label": "Material",
+                    "value": "Piedra París"
+                }
             ],
             "destacar": false
         },
@@ -88,7 +127,10 @@
                 "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200&q=80"
             ],
             "specs": [
-                { "label": "A medida", "value": "Sí" }
+                {
+                    "label": "A medida",
+                    "value": "Sí"
+                }
             ],
             "destacar": true
         }
@@ -108,10 +150,22 @@
             ],
             "descripcion": "Intervención integral en residencia privada en los alrededores de Buenos Aires. Diseño y fabricación de chimeneas, ménsulas y bordes de pileta en piedra París reconstituida, bajo supervisión del arquitecto a cargo.",
             "specs": [
-                { "label": "Tipo", "value": "Residencial" },
-                { "label": "Año", "value": "2024" },
-                { "label": "Ubicación", "value": "Buenos Aires, Argentina" },
-                { "label": "Productos", "value": "Chimeneas, ménsulas, bordes de pileta" }
+                {
+                    "label": "Tipo",
+                    "value": "Residencial"
+                },
+                {
+                    "label": "Año",
+                    "value": "2024"
+                },
+                {
+                    "label": "Ubicación",
+                    "value": "Buenos Aires, Argentina"
+                },
+                {
+                    "label": "Productos",
+                    "value": "Chimeneas, ménsulas, bordes de pileta"
+                }
             ],
             "destacar": true
         },
@@ -128,10 +182,22 @@
             ],
             "descripcion": "Fabricación de elementos decorativos en yeso y piedra para los espacios comunes del edificio corporativo Torre Madero, en Puerto Madero. Proyecto desarrollado en conjunto con el estudio de arquitectura a cargo de la obra.",
             "specs": [
-                { "label": "Tipo", "value": "Corporativo" },
-                { "label": "Año", "value": "2023" },
-                { "label": "Ubicación", "value": "Puerto Madero, Buenos Aires" },
-                { "label": "Productos", "value": "Yeso decorativo, pilastras, cornisas" }
+                {
+                    "label": "Tipo",
+                    "value": "Corporativo"
+                },
+                {
+                    "label": "Año",
+                    "value": "2023"
+                },
+                {
+                    "label": "Ubicación",
+                    "value": "Puerto Madero, Buenos Aires"
+                },
+                {
+                    "label": "Productos",
+                    "value": "Yeso decorativo, pilastras, cornisas"
+                }
             ],
             "destacar": true
         },
@@ -145,12 +211,24 @@
             "imagenes": [
                 "https://images.unsplash.com/photo-1565793298595-6a879b1d9492?w=1200&q=80"
             ],
-            "descripcion": "Una de las obras más emblemáticas de AR Martineau. Fabricación y restauración de elementos arquitectónicos en piedra París para la Basílica de San Nicolás de Bari, con especial cuidado en la fidelidad histórica y la durabilidad de los materiales.",
+            "descripcion": "Una de las obras más emblemáticas de Martineau. Fabricación y restauración de elementos arquitectónicos en piedra París para la Basílica de San Nicolás de Bari, con especial cuidado en la fidelidad histórica y la durabilidad de los materiales.",
             "specs": [
-                { "label": "Tipo", "value": "Espacio Público / Religioso" },
-                { "label": "Año", "value": "2022" },
-                { "label": "Ubicación", "value": "Buenos Aires, Argentina" },
-                { "label": "Productos", "value": "Elementos arquitectónicos, restauración en piedra" }
+                {
+                    "label": "Tipo",
+                    "value": "Espacio Público / Religioso"
+                },
+                {
+                    "label": "Año",
+                    "value": "2022"
+                },
+                {
+                    "label": "Ubicación",
+                    "value": "Buenos Aires, Argentina"
+                },
+                {
+                    "label": "Productos",
+                    "value": "Elementos arquitectónicos, restauración en piedra"
+                }
             ],
             "destacar": false
         },
@@ -166,8 +244,14 @@
             ],
             "descripcion": "Chimenea central doble cara en loft industrial.",
             "specs": [
-                { "label": "Tipo", "value": "Residencial" },
-                { "label": "Año", "value": "2023" }
+                {
+                    "label": "Tipo",
+                    "value": "Residencial"
+                },
+                {
+                    "label": "Año",
+                    "value": "2023"
+                }
             ],
             "destacar": true
         },
@@ -183,8 +267,14 @@
             ],
             "descripcion": "Escultura monumental en jardín privado.",
             "specs": [
-                { "label": "Tipo", "value": "Público" },
-                { "label": "Año", "value": "2023" }
+                {
+                    "label": "Tipo",
+                    "value": "Público"
+                },
+                {
+                    "label": "Año",
+                    "value": "2023"
+                }
             ],
             "destacar": true
         },
@@ -200,8 +290,14 @@
             ],
             "descripcion": "Diseño y provisión de elementos decorativos en yeso para restaurante.",
             "specs": [
-                { "label": "Tipo", "value": "Gastronomía" },
-                { "label": "Año", "value": "2022" }
+                {
+                    "label": "Tipo",
+                    "value": "Gastronomía"
+                },
+                {
+                    "label": "Año",
+                    "value": "2022"
+                }
             ],
             "destacar": false
         }

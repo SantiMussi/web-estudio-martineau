@@ -1,6 +1,6 @@
 # Martineau Studio — Web
 
-Sitio web del estudio **AR Martineau**, empresa argentina fundada en 1922 dedicada a la fabricación artesanal de esculturas, chimeneas, ménsulas, maceteros y piezas de piedra reconstituida.
+Sitio web del estudio **Martineau**, empresa argentina fundada en 1922 dedicada a la fabricación artesanal de esculturas, chimeneas, ménsulas, maceteros y piezas de piedra reconstituida.
 
 El sitio busca reflejar la identidad visual del estudio: elegante, sobrio, con esa onda de atelier que transmite oficio y tradición sin perder modernidad.
 

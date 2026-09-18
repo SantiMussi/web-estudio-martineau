@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Detalle de proyecto - AR Martineau.">
-  <title>Proyecto — AR Martineau</title>
+  <meta name="description" content="Detalle de proyecto - Martineau.">
+  <title>Proyecto — Martineau</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -19,7 +19,7 @@
   <!-- Header -->
   <header class="site-header" id="header">
     <div class="container header-inner">
-      <a href="/" class="logo" aria-label="AR Martineau - Ir al inicio"><img src="assets/logo-wordmark.webp"
+      <a href="/" class="logo" aria-label="Martineau - Ir al inicio"><img src="assets/logo-wordmark.webp"
           alt="Martineau" width="680" height="127"></a>
       <nav class="main-nav" aria-label="Navegacion principal">
         <ul class="nav-list">
@@ -137,7 +137,7 @@
   <!-- Footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p class="footer-copy">&copy; Todos los derechos reservados, AR Martineau</p>
+      <p class="footer-copy">&copy; Todos los derechos reservados, Martineau</p>
       <p class="footer-credit">Desarrollo por Santiago Mussi.</p>
     </div>
   </footer>
@@ -175,7 +175,7 @@
       const proyecto = Store.getProyectoById(id);
       if (!proyecto) { root.innerHTML = notFound('Proyecto no encontrado.'); return; }
 
-      document.title = proyecto.titulo + ' — AR Martineau';
+      document.title = proyecto.titulo + ' — Martineau';
 
       const imagenes = [proyecto.imagen];
       if (proyecto.imagenes && proyecto.imagenes.length > 0) {

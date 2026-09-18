@@ -4,8 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Detalle de producto - AR Martineau.">
-  <title>Producto — AR Martineau</title>
+  <meta name="description" content="Detalle de producto - Martineau.">
+  <title>Producto — Martineau</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
@@ -18,7 +18,7 @@
   <!-- Header y Navegacion -->
   <header class="site-header" id="header">
     <div class="container header-inner">
-      <a href="/" class="logo" aria-label="AR Martineau - Ir al inicio"><img src="assets/logo-wordmark.webp"
+      <a href="/" class="logo" aria-label="Martineau - Ir al inicio"><img src="assets/logo-wordmark.webp"
           alt="Martineau" width="680" height="127"></a>
       <nav class="main-nav" aria-label="Navegacion principal">
         <ul class="nav-list">
@@ -136,7 +136,7 @@
   <!-- Footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p class="footer-copy">&copy; Todos los derechos reservados, AR Martineau</p>
+      <p class="footer-copy">&copy; Todos los derechos reservados, Martineau</p>
       <p class="footer-credit">Desarrollo por Santiago Mussi.</p>
     </div>
   </footer>
@@ -173,7 +173,7 @@
       const producto = Store.getProductoById(id);
       if (!producto) { root.innerHTML = notFound('Producto no encontrado.'); return; }
 
-      document.title = producto.titulo + ' - AR Martineau';
+      document.title = producto.titulo + ' - Martineau';
 
       const imagenes = [producto.imagen];
       if (producto.imagenes && producto.imagenes.length > 0) {
