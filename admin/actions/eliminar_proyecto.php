@@ -1,10 +1,5 @@
 <?php
-require_once __DIR__ . '/../config.php';
-
-if (!isset($_SESSION['user_id'])) {
-    header('Location: ../login.php');
-    exit();
-}
+require_once __DIR__ . '/../auth.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../proyectos.php');

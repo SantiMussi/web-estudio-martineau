@@ -7,6 +7,81 @@ if (isset($_SESSION['user_id'])) {
     exit();
 }
 
+const LOGIN_MAX_INTENTOS = 8;
+const LOGIN_BLOQUEO_MINUTOS = 10;
+
+// Combina IP + usuario para no poder bloquear a otra persona solo con su nombre de usuario.
+function rate_limit_clave(string $username): string {
+    $ip = $_SERVER['REMOTE_ADDR'] ?? 'desconocida';
+    return $ip . '|' . mb_strtolower(trim($username));
+}
+
+function rate_limit_asegurar_tabla(PDO $pdo): void {
+    $pdo->exec('
+        CREATE TABLE IF NOT EXISTS intentos_login (
+            clave VARCHAR(191) NOT NULL PRIMARY KEY,
+            intentos INT NOT NULL DEFAULT 0,
+            bloqueado_hasta DATETIME NULL,
+            actualizado_at DATETIME NOT NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ');
+}
+
+// Segundos restantes de bloqueo, o 0 si se puede intentar. Si algo falla acá, no bloqueamos el login real.
+function rate_limit_bloqueado(PDO $pdo, string $clave): int {
+    try {
+        rate_limit_asegurar_tabla($pdo);
+        $stmt = $pdo->prepare('SELECT bloqueado_hasta FROM intentos_login WHERE clave = :clave');
+        $stmt->execute(['clave' => $clave]);
+        $row = $stmt->fetch();
+        if ($row && $row['bloqueado_hasta']) {
+            $restante = strtotime($row['bloqueado_hasta']) - time();
+            return $restante > 0 ? $restante : 0;
+        }
+    } catch (Exception $e) {
+        error_log('[rate_limit] Error verificando bloqueo: ' . $e->getMessage());
+    }
+    return 0;
+}
+
+function rate_limit_registrar_fallo(PDO $pdo, string $clave): void {
+    try {
+        rate_limit_asegurar_tabla($pdo);
+        $stmt = $pdo->prepare('SELECT intentos FROM intentos_login WHERE clave = :clave');
+        $stmt->execute(['clave' => $clave]);
+        $row = $stmt->fetch();
+        $intentos = ($row['intentos'] ?? 0) + 1;
+
+        $bloqueado_hasta = $intentos >= LOGIN_MAX_INTENTOS
+            ? date('Y-m-d H:i:s', time() + LOGIN_BLOQUEO_MINUTOS * 60)
+            : null;
+
+        $stmt = $pdo->prepare('
+            INSERT INTO intentos_login (clave, intentos, bloqueado_hasta, actualizado_at)
+            VALUES (:clave, :intentos, :bloqueado_hasta, NOW())
+            ON DUPLICATE KEY UPDATE intentos = :intentos2, bloqueado_hasta = :bloqueado_hasta2, actualizado_at = NOW()
+        ');
+        $stmt->execute([
+            'clave' => $clave,
+            'intentos' => $intentos,
+            'bloqueado_hasta' => $bloqueado_hasta,
+            'intentos2' => $intentos,
+            'bloqueado_hasta2' => $bloqueado_hasta,
+        ]);
+    } catch (Exception $e) {
+        error_log('[rate_limit] Error registrando fallo: ' . $e->getMessage());
+    }
+}
+
+function rate_limit_resetear(PDO $pdo, string $clave): void {
+    try {
+        $stmt = $pdo->prepare('DELETE FROM intentos_login WHERE clave = :clave');
+        $stmt->execute(['clave' => $clave]);
+    } catch (Exception $e) {
+        error_log('[rate_limit] Error reseteando: ' . $e->getMessage());
+    }
+}
+
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -14,8 +89,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? '';
+    $rate_clave = rate_limit_clave($username);
+    $segundos_bloqueo = rate_limit_bloqueado($pdo, $rate_clave);
 
-    if (empty($username) || empty($password)) {
+    if ($segundos_bloqueo > 0) {
+        $minutos = (int) ceil($segundos_bloqueo / 60);
+        $error = 'Demasiados intentos fallidos. Probá de nuevo en ' . $minutos . ' minuto' . ($minutos === 1 ? '' : 's') . '.';
+    } elseif (empty($username) || empty($password)) {
         $error = 'Complete todos los campos.';
     } else {
         $stmt = $pdo->prepare('SELECT id, password_hash FROM usuarios WHERE username = :username LIMIT 1');
@@ -23,6 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password_hash'])) {
+            rate_limit_resetear($pdo, $rate_clave);
             session_regenerate_id(true);
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $username;
@@ -30,10 +111,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             header('Location: index.php');
             exit();
         } else {
+            rate_limit_registrar_fallo($pdo, $rate_clave);
             // Mensaje genérico para no revelar si el email existe
             $error = 'Credenciales incorrectas.';
         }
     }
+} elseif (isset($_GET['timeout'])) {
+    $error = 'Tu sesión expiró por inactividad. Iniciá sesión de nuevo.';
 }
 ?>
 <!DOCTYPE html>

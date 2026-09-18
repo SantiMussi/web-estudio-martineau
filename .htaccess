@@ -3,6 +3,24 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([^\.]+)$ $1.html [NC,L]
 
+# No listar el contenido de carpetas que no tengan un index
+Options -Indexes
+
+# Headers de seguridad para TODO el sitio (las páginas públicas son HTML estático,
+# así que estos headers no pueden salir de PHP: tienen que ir acá).
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "DENY"
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Strict-Transport-Security "max-age=31536000"
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+    <FilesMatch "\.html$">
+        Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none';"
+    </FilesMatch>
+</IfModule>
+
 # Cache de navegador para archivos estáticos (imágenes, CSS, JS, fuentes)
 <IfModule mod_expires.c>
     ExpiresActive On

@@ -119,3 +119,14 @@ const Store = {
   },
 
 };
+
+// Escapa texto antes de insertarlo en HTML (evita XSS con datos cargados desde el panel admin).
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}

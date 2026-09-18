@@ -13,6 +13,12 @@ if (!$data || empty($data['tabla']) || !isset($data['orden']) || !is_array($data
     exit;
 }
 
+if (!isset($data['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string) $data['csrf_token'])) {
+    http_response_code(403);
+    echo json_encode(['success' => false, 'error' => 'Token CSRF inválido.']);
+    exit;
+}
+
 $tabla = $data['tabla'];
 
 if (!in_array($tabla, ['productos', 'proyectos'])) {

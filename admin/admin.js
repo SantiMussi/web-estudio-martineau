@@ -495,6 +495,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     orden.push(tr.getAttribute('data-id'));
                 });
 
+                const csrfInput = document.querySelector('input[name="csrf_token"]');
+
                 fetch('actions/guardar_orden.php', {
                     method: 'POST',
                     headers: {
@@ -502,7 +504,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify({
                         tabla: tabla,
-                        orden: orden
+                        orden: orden,
+                        csrf_token: csrfInput ? csrfInput.value : ''
                     })
                 })
                 .then(res => res.json())
