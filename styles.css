@@ -28,9 +28,9 @@
   --grad-accent: linear-gradient(135deg, var(--dusty-taupe-2) 0%, var(--stone-brown) 100%);
   --grad-dark: radial-gradient(circle at top right, #F5F3EE 0%, var(--color-bg) 100%);
 
-  /* Tipografías — Didot / Bodoni Moda en toda la página */
-  --font-sans: 'Bodoni Moda', 'Didot', 'Bodoni MT', 'Playfair Display', Georgia, 'Times New Roman', serif;
-  --font-serif: 'Bodoni Moda', 'Didot', 'Bodoni MT', 'Playfair Display', Georgia, 'Times New Roman', serif;
+  /* Tipografías — Cormorant Garamond en toda la página */
+  --font-sans: 'Cormorant Garamond', 'Didot', 'Bodoni MT', 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --font-serif: 'Cormorant Garamond', 'Didot', 'Bodoni MT', 'Playfair Display', Georgia, 'Times New Roman', serif;
 
   /* Transiciones y Easing */
   --ease-smooth: cubic-bezier(0.77, 0, 0.175, 1);
