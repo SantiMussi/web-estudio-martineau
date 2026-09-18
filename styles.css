@@ -317,13 +317,33 @@ button {
   height: 20px;
   width: auto;
   filter: drop-shadow(0 1px 9px rgba(24, 20, 16, 0.55));
+  transition: opacity 0.45s var(--ease-smooth), transform 0.45s var(--ease-smooth);
+}
+
+.logo img.logo-mark {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 28px;
+  opacity: 0;
+  transform: translateY(-50%) scale(0.55);
+  pointer-events: none;
+}
+
+.site-header.scrolled .logo-full {
+  opacity: 0;
+  transform: scale(0.7);
+}
+
+.site-header.scrolled .logo-mark {
+  opacity: 1;
+  transform: translateY(-50%) scale(1);
 }
 
 @media (min-width: 1024px) {
   .logo img { height: 24px; }
+  .logo img.logo-mark { height: 32px; }
 }
-
-.site-header.scrolled .logo img { height: 19px; }
 
 .main-nav {
   display: none;
