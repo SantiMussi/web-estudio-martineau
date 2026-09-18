@@ -267,34 +267,33 @@ button {
   top: 0;
   left: 0;
   width: 100%;
-  height: 80px;
+  height: 70px;
   z-index: 1000;
   background-color: transparent;
-  transition: background-color 0.5s var(--ease-smooth), height 0.5s var(--ease-smooth), backdrop-filter 0.5s;
+  transition: background-color 0.5s var(--ease-smooth), backdrop-filter 0.5s;
   display: flex;
   align-items: center;
 }
 
 @media (min-width: 1024px) {
   .site-header {
-    height: 100px;
+    height: 80px;
   }
 }
 
 /* Páginas sin hero de imagen: el header necesita fondo para que se lea el texto claro */
 .page-detail .site-header {
   background-color: rgba(46, 40, 32, 0.9);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .site-header.scrolled {
   background-color: rgba(46, 40, 32, 0.82);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  height: 70px;
 }
 
 .site-header .container {
@@ -317,32 +316,17 @@ button {
   height: 20px;
   width: auto;
   filter: drop-shadow(0 1px 9px rgba(24, 20, 16, 0.55));
-  transition: opacity 0.45s var(--ease-smooth), transform 0.45s var(--ease-smooth);
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.5s var(--ease-smooth);
 }
 
-.logo img.logo-mark {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  height: 28px;
-  opacity: 0;
-  transform: translateY(-50%) scale(0.55);
-  pointer-events: none;
-}
-
-.site-header.scrolled .logo-full {
-  opacity: 0;
-  transform: scale(0.7);
-}
-
-.site-header.scrolled .logo-mark {
-  opacity: 1;
-  transform: translateY(-50%) scale(1);
+/* Al scrollear, el wordmark se "cierra" dejando visible solo la M inicial */
+.site-header.scrolled .logo img {
+  clip-path: inset(0 82% 0 0);
 }
 
 @media (min-width: 1024px) {
   .logo img { height: 24px; }
-  .logo img.logo-mark { height: 32px; }
 }
 
 .main-nav {
