@@ -401,10 +401,39 @@ function initDeleteConfirmations() {
 
 document.addEventListener('submit', (e) => {
     const form = e.target;
+
+    if (requiereImagenPrincipal(form) && !tieneImagenPrincipal(form)) {
+        e.preventDefault();
+        alert('Tenés que subir una imagen principal antes de guardar.');
+        const fileInput = form.querySelector('input[name="imagen"]');
+        if (fileInput) fileInput.focus();
+        return;
+    }
+
     if (form.querySelector('.specs-container')) {
         serializarSpecs(form);
     }
 });
+
+function requiereImagenPrincipal(form) {
+    const action = form.getAttribute('action') || '';
+    return action.endsWith('guardar_producto.php') || action.endsWith('guardar_proyecto.php');
+}
+
+function tieneImagenPrincipal(form) {
+    const fileInput = form.querySelector('input[name="imagen"]');
+    const tieneArchivoNuevo = !!(fileInput && fileInput.files && fileInput.files.length > 0);
+
+    const currentMainImgDiv = form.querySelector('#current-main-image');
+    const eliminarCheckbox = form.querySelector('input[name="eliminar_imagen_principal"]');
+    const tieneImagenActual = !!(
+        currentMainImgDiv &&
+        currentMainImgDiv.style.display !== 'none' &&
+        !(eliminarCheckbox && eliminarCheckbox.checked)
+    );
+
+    return tieneArchivoNuevo || tieneImagenActual;
+}
 
 function escapeAttr(str) {
     if (!str) return '';

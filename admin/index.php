@@ -259,7 +259,7 @@ unset($_SESSION['flash_msg']);
 
                     <!-- Imagen Principal -->
                     <div class="form-group">
-                        <label>Imagen Principal</label>
+                        <label>Imagen Principal <span style="color:var(--admin-danger)">*</span></label>
                         <div id="current-main-image" style="display:none; margin-bottom: 15px;">
                             <div class="preview-thumb">
                                 <img src="" style="width: 100px; height: 100px; object-fit: cover; border-radius: 6px; border: 1px solid var(--admin-border);">
@@ -314,6 +314,6 @@ unset($_SESSION['flash_msg']);
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="admin.js?v=8"></script>
+    <script src="admin.js?v=9"></script>
 </body>
 </html>
