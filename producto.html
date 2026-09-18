@@ -189,6 +189,9 @@
         '<div class="spec-item"><span class="spec-label">' + s.label + '</span><span class="spec-value">' + s.value + '</span></div>'
       ).join('');
 
+      const mensajeWhatsapp = encodeURIComponent('Hola! Quería consultar por "' + producto.titulo + '".');
+      const linkWhatsapp = 'https://wa.me/541131917014?text=' + mensajeWhatsapp;
+
       root.innerHTML =
         '<div class="back-link-wrapper reveal">' +
         '<a href="catalogo" class="back-link">' +
@@ -207,7 +210,7 @@
         '<h1 class="product-info-title">' + producto.titulo + '</h1>' +
         '<p class="product-info-desc">' + producto.descripcion + '</p>' +
         (specsHTML ? '<div class="product-specs">' + specsHTML + '</div>' : '') +
-        '<div class="product-actions"><a href="#contacto" class="btn">Solicitar Cotizacion</a></div>' +
+        '<div class="product-actions"><a href="' + linkWhatsapp + '" class="btn" target="_blank" rel="noopener">Solicitar Cotización</a></div>' +
         '</div>' +
         '</div>';
 
