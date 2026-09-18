@@ -186,6 +186,6 @@ Pieza Monolith,Esculturas,Pieza escultórica monolítica,,</div>
         </main>
     </div>
 
-    <script src="admin.js?v=13"></script>
+    <script src="admin.js?v=14"></script>
 </body>
 </html>
