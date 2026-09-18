@@ -6,51 +6,72 @@ document.addEventListener('DOMContentLoaded', () => {
     initImagePreviews();
     initSlugGenerator();
     initDeleteConfirmations();
-    initTableCategoryFilter();
+    initTableFilters();
 });
 
-function initTableCategoryFilter() {
-    document.querySelectorAll('[data-filtro-categoria]').forEach(select => {
-        const tbody = document.getElementById(select.getAttribute('data-filtro-categoria'));
+// Combina el filtro por categoría (si existe) y el buscador de texto (si existe) para una misma tabla.
+function initTableFilters() {
+    const tbodyIds = new Set();
+    document.querySelectorAll('[data-filtro-categoria]').forEach(el => tbodyIds.add(el.getAttribute('data-filtro-categoria')));
+    document.querySelectorAll('[data-buscar-tabla]').forEach(el => tbodyIds.add(el.getAttribute('data-buscar-tabla')));
+
+    tbodyIds.forEach(tbodyId => {
+        const tbody = document.getElementById(tbodyId);
         if (!tbody) return;
 
-        const countEl = document.getElementById(select.id + '-count');
-        const storageKey = 'admin_filtro_' + select.id;
+        const select = document.querySelector(`[data-filtro-categoria="${tbodyId}"]`);
+        const buscador = document.querySelector(`[data-buscar-tabla="${tbodyId}"]`);
+        const countEl = document.querySelector(`[data-filtro-count="${tbodyId}"]`);
+        const storageKey = 'admin_filtro_categoria_' + tbodyId;
 
         // Restaurar la última categoría filtrada (se pierde el estado en cada guardado porque recarga la página)
-        try {
-            const guardado = localStorage.getItem(storageKey);
-            if (guardado !== null && select.querySelector(`option[value="${guardado}"]`)) {
-                select.value = guardado;
+        if (select) {
+            try {
+                const guardado = localStorage.getItem(storageKey);
+                if (guardado !== null && select.querySelector(`option[value="${guardado}"]`)) {
+                    select.value = guardado;
+                }
+            } catch (e) {
+                // localStorage no disponible: seguimos sin filtro restaurado
             }
-        } catch (e) {
-            // localStorage no disponible: seguimos sin filtro restaurado
         }
 
-        const aplicarFiltro = () => {
-            const valor = select.value;
+        const normalizar = (str) => (str || '')
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[̀-ͯ]/g, '');
+
+        const aplicar = () => {
+            const valorCategoria = select ? select.value : '';
+            const textoBusqueda = normalizar(buscador ? buscador.value.trim() : '');
             const filas = tbody.querySelectorAll('tr[data-id]');
             let visibles = 0;
 
             filas.forEach(fila => {
-                const coincide = !valor || fila.getAttribute('data-categoria-id') === valor;
-                fila.style.display = coincide ? '' : 'none';
-                if (coincide) visibles++;
+                const coincideCategoria = !valorCategoria || fila.getAttribute('data-categoria-id') === valorCategoria;
+                const tituloEl = fila.querySelector('.table-title');
+                const coincideBusqueda = !textoBusqueda || normalizar(tituloEl ? tituloEl.textContent : '').includes(textoBusqueda);
+                const visible = coincideCategoria && coincideBusqueda;
+                fila.style.display = visible ? '' : 'none';
+                if (visible) visibles++;
             });
 
             if (countEl) {
-                countEl.textContent = valor ? `${visibles} de ${filas.length}` : '';
+                countEl.textContent = (valorCategoria || textoBusqueda) ? `${visibles} de ${filas.length}` : '';
             }
 
-            try {
-                localStorage.setItem(storageKey, valor);
-            } catch (e) {
-                // localStorage no disponible: el filtro no persiste, pero sigue funcionando en esta carga
+            if (select) {
+                try {
+                    localStorage.setItem(storageKey, valorCategoria);
+                } catch (e) {
+                    // localStorage no disponible: el filtro no persiste, pero sigue funcionando en esta carga
+                }
             }
         };
 
-        select.addEventListener('change', aplicarFiltro);
-        aplicarFiltro();
+        if (select) select.addEventListener('change', aplicar);
+        if (buscador) buscador.addEventListener('input', aplicar);
+        aplicar();
     });
 }
 

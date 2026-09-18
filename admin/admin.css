@@ -263,7 +263,8 @@ a:hover { color: var(--admin-accent-dark); }
     font-weight: 500;
 }
 
-.admin-filter-bar select {
+.admin-filter-bar select,
+.admin-filter-bar input[type="search"] {
     width: auto;
     max-width: 260px;
 }

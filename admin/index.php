@@ -26,7 +26,7 @@ unset($_SESSION['flash_msg']);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=6">
+    <link rel="stylesheet" href="admin.css?v=7">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -102,7 +102,10 @@ unset($_SESSION['flash_msg']);
                 </div>
             <?php else: ?>
                 <div class="admin-filter-bar">
-                    <label for="filtro-categoria-productos">Filtrar por categoría</label>
+                    <label for="buscar-productos">Buscar</label>
+                    <input type="search" id="buscar-productos" class="form-control" placeholder="Por título…" data-buscar-tabla="sortable-productos" autocomplete="off">
+
+                    <label for="filtro-categoria-productos">Categoría</label>
                     <select id="filtro-categoria-productos" class="form-control" data-filtro-categoria="sortable-productos">
                         <option value="">Todas las categorías</option>
                         <?php foreach ($categorias as $cat): ?>
@@ -110,7 +113,7 @@ unset($_SESSION['flash_msg']);
                         <?php endforeach; ?>
                         <option value="0">Sin categoría</option>
                     </select>
-                    <span class="admin-filter-count" id="filtro-categoria-productos-count"></span>
+                    <span class="admin-filter-count" data-filtro-count="sortable-productos"></span>
                 </div>
                 <div class="admin-table-wrapper">
                     <table class="admin-table">
@@ -188,6 +191,12 @@ unset($_SESSION['flash_msg']);
                                             ], JSON_HEX_APOS | JSON_HEX_QUOT) ?>, "modal-producto")'>
                                                 Editar
                                             </button>
+
+                                            <form method="POST" action="actions/duplicar_producto.php" style="display:inline">
+                                                <?= csrf_field() ?>
+                                                <input type="hidden" name="id" value="<?= (int)$prod['id'] ?>">
+                                                <button type="submit" class="btn-admin btn-secondary btn-sm">Duplicar</button>
+                                            </form>
 
                                             <form method="POST" action="actions/eliminar_producto.php" style="display:inline">
                                                 <?= csrf_field() ?>
@@ -314,6 +323,6 @@ unset($_SESSION['flash_msg']);
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="admin.js?v=11"></script>
+    <script src="admin.js?v=12"></script>
 </body>
 </html>
