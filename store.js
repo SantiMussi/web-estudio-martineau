@@ -48,9 +48,7 @@ const Store = {
     if (window.location.protocol === 'file:') {
       throw new Error("Protocolo file:// no soportado para fetch.");
     }
-    
-    console.log('[Store] Fetching:', url.toString());
-    
+
     const res = await fetch(url.toString());
 
     if (!res.ok) {
