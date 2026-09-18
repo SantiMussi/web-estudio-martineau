@@ -89,12 +89,27 @@ const Store = {
     return cats;
   },
 
-  getProductosDestacados() {
-    return this.getProductos().filter(p => p.destacar === true);
+  // Si hay productos marcados como destacados manualmente, se usan esos.
+  // Si no hay ninguno, se muestran unos pocos al azar (cambian en cada carga de la página).
+  getProductosDestacados(cantidadAleatoria = 4) {
+    const productos = this.getProductos();
+    const destacados = productos.filter(p => p.destacar === true);
+    return destacados.length > 0 ? destacados : this._elegirAleatorios(productos, cantidadAleatoria);
   },
 
-  getProyectosDestacados() {
-    return this.getProyectos().filter(p => p.destacar === true);
+  getProyectosDestacados(cantidadAleatoria = 4) {
+    const proyectos = this.getProyectos();
+    const destacados = proyectos.filter(p => p.destacar === true);
+    return destacados.length > 0 ? destacados : this._elegirAleatorios(proyectos, cantidadAleatoria);
+  },
+
+  _elegirAleatorios(lista, cantidad) {
+    const copia = [...lista];
+    for (let i = copia.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copia[i], copia[j]] = [copia[j], copia[i]];
+    }
+    return copia.slice(0, cantidad);
   },
 
   getProductoById(id) {
