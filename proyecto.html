@@ -184,7 +184,7 @@
 
       const thumbsHTML = imagenes.map((src, i) =>
         '<div class="gallery-thumb ' + (i === 0 ? 'active' : '') + '" onclick="cambiarImagen(\'' + src + '\')">' +
-        '<img src="' + src + '" alt="Vista ' + (i + 1) + '"></div>'
+        '<img src="' + src + '" alt="Vista ' + (i + 1) + '" loading="lazy" decoding="async"></div>'
       ).join('');
 
       const specsHTML = (proyecto.specs || []).map(s =>
