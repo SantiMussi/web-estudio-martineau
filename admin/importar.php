@@ -89,6 +89,18 @@ unset($_SESSION['flash_msg']);
                 </form>
             </div>
 
+            <!-- CORREGIR MATERIAL Y TERMINACIÓN EN TODOS LOS PRODUCTOS -->
+            <div class="import-card">
+                <h2>Corregir "Material" y "Terminación" en todos los productos</h2>
+                <p>
+                    Busca esas dos filas en las especificaciones técnicas de cada producto. <strong>Material</strong> queda en <code>Tipo Piedra París (cemento blanco, marmolina en distintos tonos y granulado de mármol)</code> para todos. <strong>Terminación</strong> queda en <code>Mate</code> — excepto en la categoría <strong>Maceteros</strong>, que queda en <code>Impermeabilizada con cerecita</code>. Si a un producto le falta alguna de las dos filas, se la agrega. No toca "Refuerzo" ni productos sin ninguna especificación cargada todavía.
+                </p>
+                <form method="POST" action="actions/corregir_specs.php">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn-admin btn-primary">Corregir Material y Terminación</button>
+                </form>
+            </div>
+
             <!-- CATEGORÍAS -->
             <div class="import-card">
                 <h2>Categorías</h2>
@@ -186,6 +198,6 @@ Pieza Monolith,Esculturas,Pieza escultórica monolítica,,</div>
         </main>
     </div>
 
-    <script src="admin.js?v=9"></script>
+    <script src="admin.js?v=11"></script>
 </body>
 </html>

@@ -251,13 +251,20 @@ function initSpecs() {
 function initSpecPresets() {
     document.querySelectorAll('.btn-preset-spec').forEach(btn => {
         btn.addEventListener('click', () => {
+            const form = btn.closest('form');
             const container = btn.closest('.form-group').querySelector('.specs-container');
             if (!container) return;
 
+            const categoriaSelect = form ? form.querySelector('select[name="categoria_id"]') : null;
+            const categoriaTexto = categoriaSelect && categoriaSelect.selectedOptions.length
+                ? categoriaSelect.selectedOptions[0].textContent
+                : '';
+            const esMaceta = /macet/i.test(categoriaTexto);
+
             const preset = [
-                { label: 'Material', value: 'Piedra París (cemento blanco, marmolina en distintos tonos y granulado de mármol)' },
+                { label: 'Material', value: 'Tipo Piedra París (cemento blanco, marmolina en distintos tonos y granulado de mármol)' },
                 { label: 'Refuerzo', value: 'Concreto + malla de hierro' },
-                { label: 'Terminación', value: 'Impermeabilizada con cerecita' },
+                { label: 'Terminación', value: esMaceta ? 'Impermeabilizada con cerecita' : 'Mate' },
             ];
 
             preset.forEach(spec => addSpecRow(container, spec.label, spec.value));
