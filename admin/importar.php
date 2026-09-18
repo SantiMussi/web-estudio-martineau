@@ -77,6 +77,18 @@ unset($_SESSION['flash_msg']);
                 Cargá varias categorías, proyectos o productos de una sola vez pegando datos separados por coma (o punto y coma) o subiendo un archivo <code>.csv</code> exportado de una planilla de cálculo (Excel, Google Sheets). La primera línea debe ser el encabezado con los nombres de columna. Las imágenes no se importan por este medio: se agregan después editando cada ítem desde su sección correspondiente.
             </p>
 
+            <!-- OPTIMIZAR IMÁGENES YA SUBIDAS -->
+            <div class="import-card">
+                <h2>Optimizar imágenes ya subidas</h2>
+                <p>
+                    Redimensiona y comprime (a WebP) las fotos de productos y proyectos que ya están cargadas, para que el sitio pese menos y cargue más rápido en el celular. No borra nada, solo achica los archivos existentes. Si hay muchas imágenes puede que necesites apretar el botón más de una vez.
+                </p>
+                <form method="POST" action="actions/optimizar_imagenes.php">
+                    <?= csrf_field() ?>
+                    <button type="submit" class="btn-admin btn-primary">Optimizar imágenes</button>
+                </form>
+            </div>
+
             <!-- CATEGORÍAS -->
             <div class="import-card">
                 <h2>Categorías</h2>
