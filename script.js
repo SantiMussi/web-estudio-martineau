@@ -85,6 +85,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    // Acordeón de categorías en el menú móvil
+    const initNavDropdowns = () => {
+        document.querySelectorAll('.mobile-nav-chevron').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const item = btn.closest('.has-dropdown');
+                const dropdown = item && item.querySelector('.mobile-nav-dropdown');
+                if (!dropdown) return;
+
+                const isExpanded = btn.getAttribute('aria-expanded') === 'true';
+                btn.setAttribute('aria-expanded', String(!isExpanded));
+                btn.classList.toggle('expanded', !isExpanded);
+                dropdown.classList.toggle('expanded', !isExpanded);
+            });
+        });
+    };
+
     // Efecto Parallax en sección Hero (Desactivado)
     const initParallax = () => {
         // Parallax desactivado intencionalmente
@@ -259,7 +275,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const paginationWrapper = container.nextElementSibling;
 
-            let currentFilter = 'all';
+            const botonActivo = Array.from(filterBtns).find(b => b.classList.contains('active'));
+            let currentFilter = botonActivo ? botonActivo.getAttribute('data-filter') : 'all';
             let currentPage = 1;
 
             const render = () => {
@@ -435,6 +452,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initLoader();
         initHeader();
         initMobileNav();
+        initNavDropdowns();
         // initParallax(); // Parallax desactivado
         window.initScrollReveal();
         initSmoothScroll();

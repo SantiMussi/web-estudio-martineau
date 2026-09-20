@@ -18,7 +18,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=29">
+  <link rel="stylesheet" href="styles.css?v=30">
 </head>
 
 <body>
@@ -30,7 +30,10 @@
       <nav class="main-nav" aria-label="Navegación principal">
         <ul class="nav-list">
           <li><a href="nosotros" class="nav-link">Nosotros</a></li>
-          <li><a href="catalogo" class="nav-link">Catálogo</a></li>
+          <li class="nav-item has-dropdown">
+            <a href="catalogo" class="nav-link">Catálogo</a>
+            <ul class="nav-dropdown" data-nav-dropdown="producto"></ul>
+          </li>
           <li><a href="portfolio" class="nav-link">Portfolio</a></li>
           <li><a href="#contacto" class="nav-link">Contacto</a></li>
         </ul>
@@ -44,7 +47,15 @@
     <nav class="mobile-nav" aria-label="Navegación móvil" aria-hidden="true">
       <ul class="mobile-nav-list">
         <li><a href="nosotros" class="mobile-nav-link">Nosotros</a></li>
-        <li><a href="catalogo" class="mobile-nav-link">Catálogo</a></li>
+        <li class="mobile-nav-item has-dropdown">
+          <div class="mobile-nav-row">
+            <a href="catalogo" class="mobile-nav-link">Catálogo</a>
+            <button type="button" class="mobile-nav-chevron" aria-label="Ver categorías" aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+          </div>
+          <ul class="mobile-nav-dropdown" data-nav-dropdown="producto"></ul>
+        </li>
         <li><a href="portfolio" class="mobile-nav-link">Portfolio</a></li>
         <li><a href="#contacto" class="mobile-nav-link">Contacto</a></li>
       </ul>
@@ -193,7 +204,7 @@
   </a>
 
   <!-- Store compartido (capa de datos / simulación) -->
-  <script src="store.js?v=6"></script>
+  <script src="store.js?v=7"></script>
 
   <script>
 
@@ -201,16 +212,19 @@
       // Inicializa el store (solo necesario mientras se use la simulación)
       await Store.init();
       renderCatalogo();
+      renderNavCategorias();
     });
 
     function renderCatalogo() {
       const grid = document.getElementById('catalog-grid');
       const filterContainer = document.getElementById('catalog-filters');
 
+      const categoriaInicial = new URLSearchParams(window.location.search).get('categoria');
+
       const categorias = Store.getCategorias('producto');
       if (filterContainer && categorias.length > 0) {
-        filterContainer.innerHTML = '<button class="filter-btn active" data-filter="all">Todas</button>' +
-          categorias.map(cat => `<button class="filter-btn" data-filter="${cat.slug}">${capitalizar(escapeHtml(cat.nombre))}</button>`).join('');
+        filterContainer.innerHTML = '<button class="filter-btn' + (categoriaInicial ? '' : ' active') + '" data-filter="all">Todas</button>' +
+          categorias.map(cat => `<button class="filter-btn${cat.slug === categoriaInicial ? ' active' : ''}" data-filter="${cat.slug}">${capitalizar(escapeHtml(cat.nombre))}</button>`).join('');
       }
 
       const productos = Store.getProductos();
@@ -244,7 +258,7 @@
     }
   </script>
 
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=4"></script>
 </body>
 
 </html>

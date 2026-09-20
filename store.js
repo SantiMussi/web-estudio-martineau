@@ -130,3 +130,18 @@ function escapeHtml(str) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
 }
+
+// Puebla los dropdowns de categorías del navbar (desktop) y del menú hamburguesa (mobile).
+function renderNavCategorias() {
+  const contenedores = document.querySelectorAll('[data-nav-dropdown="producto"]');
+  if (contenedores.length === 0) return;
+
+  const categorias = Store.getCategorias('producto');
+  if (categorias.length === 0) return;
+
+  const itemsHTML = categorias.map(cat =>
+    `<li><a href="catalogo?categoria=${encodeURIComponent(cat.slug)}">${escapeHtml(cat.nombre)}</a></li>`
+  ).join('');
+
+  contenedores.forEach(el => { el.innerHTML = itemsHTML; });
+}

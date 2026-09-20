@@ -22,7 +22,7 @@
     rel="stylesheet">
 
   <!-- Estilos -->
-  <link rel="stylesheet" href="styles.css?v=29">
+  <link rel="stylesheet" href="styles.css?v=30">
   <meta author="Santiago Mussi" url="www.santimussi.com">
 </head>
 
@@ -64,7 +64,10 @@
       <nav class="main-nav" aria-label="Navegación principal">
         <ul class="nav-list">
           <li><a href="nosotros" class="nav-link">Nosotros</a></li>
-          <li><a href="catalogo" class="nav-link">Catálogo</a></li>
+          <li class="nav-item has-dropdown">
+            <a href="catalogo" class="nav-link">Catálogo</a>
+            <ul class="nav-dropdown" data-nav-dropdown="producto"></ul>
+          </li>
           <li><a href="portfolio" class="nav-link">Portfolio</a></li>
           <li><a href="#contacto" class="nav-link">Contacto</a></li>
         </ul>
@@ -82,7 +85,15 @@
     <nav class="mobile-nav" aria-label="Navegación móvil" aria-hidden="true">
       <ul class="mobile-nav-list">
         <li><a href="nosotros" class="mobile-nav-link">Nosotros</a></li>
-        <li><a href="catalogo" class="mobile-nav-link">Catálogo</a></li>
+        <li class="mobile-nav-item has-dropdown">
+          <div class="mobile-nav-row">
+            <a href="catalogo" class="mobile-nav-link">Catálogo</a>
+            <button type="button" class="mobile-nav-chevron" aria-label="Ver categorías" aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+          </div>
+          <ul class="mobile-nav-dropdown" data-nav-dropdown="producto"></ul>
+        </li>
         <li><a href="portfolio" class="mobile-nav-link">Portfolio</a></li>
         <li><a href="#contacto" class="mobile-nav-link">Contacto</a></li>
       </ul>
@@ -332,13 +343,14 @@
 
   <!-- Scripts -->
   <!-- Store compartido (capa de datos / simulación) -->
-  <script src="store.js?v=6"></script>
+  <script src="store.js?v=7"></script>
 
   <script>
 
     document.addEventListener('DOMContentLoaded', async () => {
       await Store.init();
       renderDestacados();
+      renderNavCategorias();
     });
 
     function renderDestacados() {
@@ -393,7 +405,7 @@
     }
   </script>
 
-  <script src="script.js?v=11"></script>
+  <script src="script.js?v=12"></script>
   <!-- WhatsApp Floating Button -->
   <a href="https://wa.me/5491131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
     aria-label="Contactar por WhatsApp">
