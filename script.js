@@ -279,6 +279,23 @@ document.addEventListener('DOMContentLoaded', () => {
             let currentFilter = botonActivo ? botonActivo.getAttribute('data-filter') : 'all';
             let currentPage = 1;
 
+            // Mantiene la categoría activa en la URL y en los links de cada item,
+            // para que al volver desde el detalle se respete el filtro elegido.
+            const syncFilterState = () => {
+                const url = new URL(window.location.href);
+                if (currentFilter === 'all') url.searchParams.delete('categoria');
+                else url.searchParams.set('categoria', currentFilter);
+                history.replaceState(null, '', url.pathname + url.search);
+
+                items.forEach(item => {
+                    if (item.tagName !== 'A') return;
+                    const itemUrl = new URL(item.getAttribute('href'), window.location.href);
+                    if (currentFilter === 'all') itemUrl.searchParams.delete('categoria');
+                    else itemUrl.searchParams.set('categoria', currentFilter);
+                    item.setAttribute('href', itemUrl.pathname + itemUrl.search);
+                });
+            };
+
             const render = () => {
                 let filteredItems = items.filter(item => {
                     return currentFilter === 'all' || item.getAttribute('data-category') === currentFilter;
@@ -330,10 +347,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     btn.classList.add('active');
                     currentFilter = btn.getAttribute('data-filter');
                     currentPage = 1;
+                    syncFilterState();
                     render();
                 });
             });
 
+            syncFilterState();
             render();
         });
     };

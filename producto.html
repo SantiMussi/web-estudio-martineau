@@ -194,6 +194,9 @@
 
       document.title = producto.titulo + ' - Martineau';
 
+      const categoriaUrl = params.get('categoria');
+      const linkCatalogo = categoriaUrl ? 'catalogo?categoria=' + encodeURIComponent(categoriaUrl) : 'catalogo';
+
       const imagenes = [producto.imagen];
       if (producto.imagenes && producto.imagenes.length > 0) {
         imagenes.push(...producto.imagenes);
@@ -213,7 +216,7 @@
 
       root.innerHTML =
         '<div class="back-link-wrapper reveal">' +
-        '<a href="catalogo" class="back-link">' +
+        '<a href="' + escapeHtml(linkCatalogo) + '" class="back-link">' +
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
         '<line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>' +
         '</svg> Volver al Catalogo' +
@@ -254,7 +257,7 @@
         '<a href="catalogo" class="btn" style="margin-top:2rem;display:inline-block">Ver catalogo</a></div>';
     }
   </script>
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=13"></script>
 </body>
 
 </html>
