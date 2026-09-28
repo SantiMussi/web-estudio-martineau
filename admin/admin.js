@@ -125,6 +125,13 @@ function initModals() {
                     
                     const imagePreviews = form.querySelectorAll('.image-preview');
                     imagePreviews.forEach(p => p.innerHTML = '');
+
+                    // Si la tabla está filtrada por categoría, precargar esa categoría en el form
+                    const catSelect = form.querySelector('[name="categoria_id"]');
+                    const filtroCat = document.querySelector('[data-filtro-categoria]');
+                    if (catSelect && filtroCat && filtroCat.value) {
+                        catSelect.value = filtroCat.value;
+                    }
                 }
             }
             openModal(modalId);
