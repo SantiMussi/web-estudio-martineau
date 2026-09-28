@@ -295,7 +295,7 @@ unset($_SESSION['flash_msg']);
         </div>
     </div>
 
-    <script src="admin.js?v=17"></script>
+    <script src="admin.js?v=18"></script>
     <script>
         const TODAS_CATEGORIAS = <?= json_encode(array_map(function ($c) {
             return ['id' => (int)$c['id'], 'nombre' => $c['nombre'], 'tipo' => $c['tipo']];

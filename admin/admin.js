@@ -7,7 +7,28 @@ document.addEventListener('DOMContentLoaded', () => {
     initSlugGenerator();
     initDeleteConfirmations();
     initTableFilters();
+    initCapitalizarTitulo();
 });
+
+// Deja siempre la primera letra del título en mayúscula, sin tocar el resto de lo escrito.
+function capitalizarPrimeraLetra(str) {
+    return str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
+}
+
+function initCapitalizarTitulo() {
+    document.querySelectorAll('input[name="titulo"]').forEach(input => {
+        input.addEventListener('input', () => {
+            const val = input.value;
+            if (!val) return;
+            const primera = val.charAt(0);
+            const mayus = primera.toUpperCase();
+            if (primera === mayus) return; // ya está en mayúscula: no tocar el valor ni mover el cursor
+            const pos = input.selectionStart;
+            input.value = mayus + val.slice(1);
+            input.setSelectionRange(pos, pos);
+        });
+    });
+}
 
 // Combina el filtro por categoría (si existe) y el buscador de texto (si existe) para una misma tabla.
 function initTableFilters() {
@@ -401,7 +422,7 @@ function precargarTituloDesdeImagen(input) {
         .replace(/^\s*copia\s+de\s+/i, '')
         .trim();
 
-    if (titulo) tituloInput.value = titulo;
+    if (titulo) tituloInput.value = capitalizarPrimeraLetra(titulo);
 }
 
 function previewFiles(input, previewContainer, multiple) {
