@@ -281,7 +281,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Mantiene la categoría activa en la URL y en los links de cada item,
             // para que al volver desde el detalle se respete el filtro elegido.
+            // No hace nada si el contenedor todavía no tiene items: initFiltersAndPagination()
+            // corre una vez antes de que lleguen los datos async (grid vacío) y de nuevo
+            // después, y no hay que pisar el ?categoria= de la URL con ese primer pase vacío.
             const syncFilterState = () => {
+                if (items.length === 0) return;
                 const url = new URL(window.location.href);
                 if (currentFilter === 'all') url.searchParams.delete('categoria');
                 else url.searchParams.set('categoria', currentFilter);
