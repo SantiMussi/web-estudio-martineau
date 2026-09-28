@@ -366,10 +366,20 @@ function initImagePreviews() {
             e.preventDefault();
             area.classList.remove('dragover');
             const input = area.querySelector('input[type="file"]');
-            if (input && e.dataTransfer.files.length) {
+            if (!input || !e.dataTransfer.files.length) return;
+
+            if (input.multiple) {
+                // Suma lo que ya estaba cargado en vez de reemplazarlo, para poder
+                // arrastrar las imágenes de a una y que se vayan acumulando.
+                const dt = new DataTransfer();
+                Array.from(input.files).forEach(f => dt.items.add(f));
+                Array.from(e.dataTransfer.files).forEach(f => dt.items.add(f));
+                input.files = dt.files;
+            } else {
                 input.files = e.dataTransfer.files;
-                input.dispatchEvent(new Event('change'));
             }
+
+            input.dispatchEvent(new Event('change'));
         });
     });
 }
