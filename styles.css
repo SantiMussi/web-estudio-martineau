@@ -658,17 +658,19 @@ body.no-scroll {
   animation-timing-function: linear;
 }
 
+/* El fade-out de cada slide se superpone con el fade-in del siguiente (18.37% > 14.29%
+   del ciclo), para que nunca haya un instante con las dos en opacity:0 y se vea el fondo. */
 @keyframes heroSlideFade {
   0% { opacity: 0; }
-  2.86% { opacity: 1; }
-  11.43% { opacity: 1; }
-  14.29% { opacity: 0; }
+  4.08% { opacity: 1; }
+  14.29% { opacity: 1; }
+  18.37% { opacity: 0; }
   100% { opacity: 0; }
 }
 
 @keyframes heroSlideZoom {
   0% { transform: scale(1); }
-  14.29% { transform: scale(1.07); }
+  18.37% { transform: scale(1.07); }
   100% { transform: scale(1.07); }
 }
 
