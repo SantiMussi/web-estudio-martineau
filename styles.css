@@ -386,6 +386,19 @@ button {
     position: relative;
   }
 
+  /* Puente invisible sobre el hueco entre el link y el desplegable: sin esto,
+     el hover se corta al mover el mouse hacia abajo y el menú se cierra antes
+     de llegar a las categorías. */
+  .nav-item.has-dropdown::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 230px;
+    height: 0.75rem;
+  }
+
   .nav-dropdown {
     position: absolute;
     top: 100%;
