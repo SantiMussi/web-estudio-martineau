@@ -346,6 +346,7 @@ function initImagePreviews() {
     document.querySelectorAll('input[name="imagen"]').forEach(input => {
         input.addEventListener('change', function () {
             previewFiles(this, this.closest('.form-group').querySelector('.image-preview'), false);
+            precargarTituloDesdeImagen(this);
         });
     });
 
@@ -371,6 +372,26 @@ function initImagePreviews() {
             }
         });
     });
+}
+
+// Si todavía no se escribió un título, lo precarga con el nombre del archivo
+// de la imagen principal (sin extensión y sin el prefijo "Copia de ").
+function precargarTituloDesdeImagen(input) {
+    const form = input.closest('form');
+    if (!form) return;
+
+    const tituloInput = form.querySelector('[name="titulo"]');
+    if (!tituloInput || tituloInput.value.trim()) return;
+
+    const file = input.files && input.files[0];
+    if (!file) return;
+
+    const titulo = file.name
+        .replace(/\.[^.]+$/, '')
+        .replace(/^\s*copia\s+de\s+/i, '')
+        .trim();
+
+    if (titulo) tituloInput.value = titulo;
 }
 
 function previewFiles(input, previewContainer, multiple) {
