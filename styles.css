@@ -176,8 +176,7 @@ p:last-child {
   filter: drop-shadow(0 0 30px rgba(244, 239, 234, 0.18));
 }
 
-.lg-line,
-.lg-m-draw {
+.lg-line {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   animation: lgDraw 1s var(--ease-out) both;
@@ -185,7 +184,16 @@ p:last-child {
 
 .lg-frame-o { animation-duration: 0.75s; animation-delay: 0.15s; }
 .lg-frame-i { animation-duration: 0.75s; animation-delay: 0.35s; }
-.lg-m-draw  { animation-duration: 1s; animation-delay: 0.7s; animation-timing-function: cubic-bezier(0.6, 0, 0.35, 1); }
+
+/* La M se revela con un wipe de abajo hacia arriba sobre la imagen real del
+   glifo (en vez de aproximarla con un trazo dibujado a mano), para que nunca
+   queden huecos por desajuste entre el trazo y el arte real de la M. */
+.lg-m-reveal {
+  transform-origin: 140px 300px;
+  transform: scaleY(0);
+  animation: lgReveal 1s cubic-bezier(0.6, 0, 0.35, 1) both;
+  animation-delay: 0.7s;
+}
 
 .lg-cap {
   font-family: var(--font-serif);
@@ -199,6 +207,10 @@ p:last-child {
 
 @keyframes lgDraw {
   to { stroke-dashoffset: 0; }
+}
+
+@keyframes lgReveal {
+  to { transform: scaleY(1); }
 }
 
 @keyframes lgFade {
