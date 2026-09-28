@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="El proceso de Martineau, del molde a la pieza terminada.">
+  <meta name="description" content="El archivo de moldes de Martineau, más de un siglo de piezas catalogadas a mano.">
   <title>El Proceso — Martineau</title>
 
   <!-- Favicon -->
@@ -21,11 +21,12 @@
   <link rel="stylesheet" href="styles.css?v=37">
 
   <style>
-    /* Proceso — timeline vertical simple. Scroll normal, sin trucos: cada paso
-       aparece con el mismo fade-up que ya usa el resto del sitio. Una línea
-       conecta los números para que se lea como una secuencia de un vistazo. */
+    /* El Archivo — estantería horizontal de fichas de catálogo, una por molde,
+       con el número real que tiene pintado en la pared del taller. Flechas
+       grandes + contador numérico + una ficha asomando en el borde dejan
+       clarísimo que hay más para ver y cómo verlas. */
     .proceso-hero {
-      padding: 7rem 0 4rem;
+      padding: 7rem 0 3rem;
       text-align: center;
     }
 
@@ -44,135 +45,227 @@
     }
 
     .proceso-hero p {
-      max-width: 520px;
+      max-width: 540px;
       margin: 0 auto;
       color: var(--color-text-muted);
       font-size: 1.05rem;
       line-height: 1.7;
     }
 
-    .proceso-timeline {
-      background-color: var(--color-bg-alt);
-      padding: 1rem 0 5rem;
-    }
-
-    .pt-list {
-      max-width: 1040px;
-      margin: 0 auto;
-      padding: 0 1.5rem;
+    .pb-archivo {
       position: relative;
+      background: linear-gradient(180deg, #241F19 0%, #171310 100%);
+      padding: 4rem 0 5rem;
+      overflow: hidden;
     }
 
-    /* La línea que conecta los pasos */
-    .pt-list::before {
-      content: '';
-      position: absolute;
-      top: 2.6rem;
-      bottom: 2.6rem;
-      left: calc(1.5rem + 34px);
-      width: 1px;
-      background: var(--color-border);
-    }
-
-    @media (min-width: 760px) {
-      .pt-list::before { left: 50%; transform: translateX(-0.5px); }
-    }
-
-    .pt-step {
-      position: relative;
-      display: grid;
-      grid-template-columns: 68px 1fr;
-      gap: 1.6rem;
-      align-items: start;
-      padding: 2.6rem 0;
-    }
-
-    .pt-num {
-      position: relative;
-      width: 68px;
-      height: 68px;
-      border-radius: 50%;
-      background: var(--color-bg);
-      border: 1px solid var(--color-border);
+    .pb-archivo-head {
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-family: var(--font-serif);
-      font-size: 1.3rem;
-      color: var(--stone-brown);
-      z-index: 1;
-      flex-shrink: 0;
+      justify-content: space-between;
+      gap: 1.5rem;
+      max-width: 1400px;
+      margin: 0 auto 1.6rem;
+      padding: 0 clamp(1.5rem, 4vw, 3rem);
+      color: var(--ink-on-dark);
     }
 
-    .pt-body { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-
-    .pt-media {
-      aspect-ratio: 16/10;
-      overflow: hidden;
-      background: var(--color-bg);
-    }
-
-    .pt-media img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 1s var(--ease-out);
-    }
-
-    .pt-step:hover .pt-media img { transform: scale(1.05); }
-
-    .pt-label {
+    .pb-archivo-head .eyebrow {
       display: block;
       font-family: var(--font-sans);
-      font-size: 0.68rem;
-      letter-spacing: 0.26em;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: var(--dusty-taupe);
+      color: var(--dusty-taupe-2);
       margin-bottom: 0.6rem;
     }
 
-    .pt-title {
+    .pb-archivo-head h2 {
       font-family: var(--font-serif);
-      font-weight: 600;
-      font-size: clamp(1.4rem, 2.6vw, 1.85rem);
-      color: var(--color-text);
-      margin: 0 0 0.7rem;
-    }
-
-    .pt-desc {
-      font-size: 1rem;
-      line-height: 1.7;
-      color: var(--color-text-muted);
-      max-width: 52ch;
+      font-weight: 500;
+      font-size: clamp(1.5rem, 3vw, 2.1rem);
       margin: 0;
     }
 
-    /* Desktop: zigzag imagen/texto a los costados de la línea central */
-    @media (min-width: 760px) {
-      .pt-step {
-        grid-template-columns: 1fr 68px 1fr;
-        gap: 2.5rem;
-      }
-
-      .pt-num { grid-column: 2; justify-self: center; }
-
-      .pt-body {
-        grid-template-columns: 1fr 1fr;
-        gap: 3rem;
-        align-items: center;
-      }
-
-      .pt-step:nth-child(odd) .pt-body { grid-column: 1 / 2; }
-      .pt-step:nth-child(even) .pt-body { grid-column: 3 / 4; }
-
-      .pt-step:nth-child(odd) .pt-media { order: 1; }
-      .pt-step:nth-child(odd) .pt-text { order: 2; }
-      .pt-step:nth-child(even) .pt-media { order: 2; }
-      .pt-step:nth-child(even) .pt-text { order: 1; }
-
-      .pt-step:nth-child(even) .pt-text { text-align: right; }
-      .pt-step:nth-child(even) .pt-desc { margin-left: auto; }
+    .pb-instruction {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      color: var(--ink-on-dark-muted);
+      flex-shrink: 0;
     }
+
+    .pb-instruction svg {
+      width: 20px;
+      height: 20px;
+      animation: pbSwipeHint 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pbSwipeHint {
+      0%, 100% { transform: translateX(0); opacity: 0.6; }
+      50% { transform: translateX(6px); opacity: 1; }
+    }
+
+    .pb-shelf-wrap {
+      position: relative;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .pb-shelf {
+      display: flex;
+      gap: 1.5rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 1.5rem clamp(1.5rem, 4vw, 3rem) 2rem;
+      cursor: grab;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      user-select: none;
+      scroll-padding-left: clamp(1.5rem, 4vw, 3rem);
+    }
+
+    .pb-shelf.is-dragging { cursor: grabbing; scroll-snap-type: none; }
+    .pb-shelf::-webkit-scrollbar { display: none; }
+
+    .pb-card {
+      position: relative;
+      flex: 0 0 auto;
+      width: min(250px, 68vw);
+      scroll-snap-align: start;
+      background: var(--color-bg);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      border-radius: 3px;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
+      padding: 0.8rem 0.8rem 1.1rem;
+      transform: translateY(0) rotate(0deg);
+      transition: transform 0.5s var(--ease-spring), box-shadow 0.5s var(--ease-smooth);
+    }
+
+    .pb-card:nth-child(3n+1) { --tilt: -1.2deg; }
+    .pb-card:nth-child(3n+2) { --tilt: 0.7deg; }
+    .pb-card:nth-child(3n+3) { --tilt: -0.4deg; }
+
+    .pb-card:hover,
+    .pb-card:focus-within {
+      transform: translateY(-14px) rotate(var(--tilt, 0deg));
+      box-shadow: 0 26px 46px rgba(0, 0, 0, 0.46);
+      z-index: 2;
+    }
+
+    .pb-card-photo {
+      position: relative;
+      aspect-ratio: 4/5;
+      overflow: hidden;
+      background: var(--color-bg-alt);
+      margin-bottom: 0.8rem;
+    }
+
+    .pb-card-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(0.25) sepia(0.12);
+      transition: filter 0.5s ease, transform 0.6s ease;
+    }
+
+    .pb-card:hover .pb-card-photo img {
+      filter: grayscale(0) sepia(0);
+      transform: scale(1.04);
+    }
+
+    .pb-card-num {
+      position: absolute;
+      top: 0.55rem;
+      left: 0.55rem;
+      background: rgba(30, 26, 21, 0.82);
+      color: var(--ink-on-dark);
+      font-family: var(--font-sans);
+      font-size: 0.65rem;
+      letter-spacing: 0.14em;
+      padding: 0.28rem 0.5rem;
+      border: 1px solid rgba(244, 241, 234, 0.3);
+    }
+
+    .pb-card-desc {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      line-height: 1.4;
+      color: var(--color-text);
+      margin: 0;
+    }
+
+    .pb-progress-row {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      max-width: 1400px;
+      margin: 0.3rem auto 0;
+      padding: 0 clamp(1.5rem, 4vw, 3rem);
+    }
+
+    .pb-counter {
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      color: var(--ink-on-dark);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .pb-counter .of {
+      color: var(--ink-on-dark-muted);
+    }
+
+    .pb-progress-track {
+      flex: 1;
+      height: 2px;
+      background: rgba(244, 241, 234, 0.16);
+      position: relative;
+    }
+
+    .pb-progress-fill {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 12%;
+      background: var(--dusty-taupe-2);
+      transition: width 0.25s ease;
+    }
+
+    .pb-controls {
+      display: flex;
+      gap: 0.5rem;
+      flex-shrink: 0;
+    }
+
+    .pb-arrow {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(244, 241, 234, 0.3);
+      background: rgba(244, 241, 234, 0.04);
+      color: var(--ink-on-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: border-color 0.3s, background-color 0.3s, opacity 0.3s;
+    }
+
+    .pb-arrow:hover { border-color: var(--ink-on-dark); background: rgba(244, 241, 234, 0.1); }
+
+    .pb-arrow:disabled {
+      opacity: 0.3;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .pb-arrow svg { width: 16px; height: 16px; }
 
     .proceso-cierre {
       padding: 5rem 1.5rem 6rem;
@@ -193,6 +286,16 @@
       font-style: italic;
       font-size: 1.3rem;
       color: var(--color-text);
+    }
+
+    @media (max-width: 640px) {
+      .pb-archivo-head { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
+      .pb-instruction { font-size: 0.72rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .pb-card, .pb-card-photo img, .pb-shelf { transition: none !important; scroll-behavior: auto !important; }
+      .pb-instruction svg { animation: none !important; }
     }
   </style>
 </head>
@@ -242,75 +345,76 @@
   <!-- Intro -->
   <section class="proceso-hero container">
     <span class="section-label reveal">El taller</span>
-    <h1 class="reveal">Cada pieza pasa por las mismas manos desde hace un siglo</h1>
-    <p class="reveal">Del molde a la pieza terminada, así se hace cada chimenea, cada busto, cada maceta del catálogo.</p>
+    <h1 class="reveal">Más de dos mil moldes, cada uno con su número</h1>
+    <p class="reveal">En la pared del taller cada molde tiene un número pintado a mano. Estas son 8 fotos reales de esa rutina, tomadas la misma semana.</p>
   </section>
 
-  <!-- Timeline -->
-  <section class="proceso-timeline">
-    <div class="pt-list">
+  <!-- Archivo -->
+  <section class="pb-archivo">
+    <div class="pb-archivo-head">
+      <div>
+        <span class="eyebrow">Archivo del taller</span>
+        <h2>Fichero de moldes</h2>
+      </div>
+      <div class="pb-instruction">
+        <span>Deslizá para ver las 8 fichas</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </div>
+    </div>
 
-      <div class="pt-step reveal">
-        <div class="pt-num">01</div>
-        <div class="pt-body">
-          <div class="pt-media">
-            <img src="assets/ImgsPrincipales/Proceso/web/proceso-molde.webp" alt="Artesano tallando un molde de yeso a mano, rodeado de moldes numerados" loading="lazy">
-          </div>
-          <div class="pt-text">
-            <span class="pt-label">Paso 01</span>
-            <h2 class="pt-title">El molde</h2>
-            <p class="pt-desc">Cada relieve nace de un molde propio, tallado y guardado en el taller. Hoy hay más de dos mil, numerados a mano en las estanterías.</p>
-          </div>
-        </div>
+    <div class="pb-shelf-wrap">
+      <div class="pb-shelf" id="pbShelf">
+        <article class="pb-card">
+          <div class="pb-card-photo"><span class="pb-card-num">N° 145</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-145.webp" alt="Artesano terminando un molde circular a mano" loading="lazy"></div>
+          <p class="pb-card-desc">Terminando un molde circular a mano.</p>
+        </article>
+        <article class="pb-card">
+          <div class="pb-card-photo"><span class="pb-card-num">N° 147</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-147.webp" alt="Manos alisando yeso fresco sobre un molde" loading="lazy"></div>
+          <p class="pb-card-desc">Alisando el yeso fresco del molde.</p>
+        </article>
+        <article class="pb-card">
+          <div class="pb-card-photo"><span class="pb-card-num">N° 148</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-148.webp" alt="Mano puliendo el borde de un molde con una esponja" loading="lazy"></div>
+          <p class="pb-card-desc">Puliendo el borde con esponja.</p>
+        </article>
+        <article class="pb-card">
+          <div class="pb-card-photo"><span class="pb-card-num">N° 150</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-150.webp" alt="Fila de moldes de goma vacíos listos para colar" loading="lazy"></div>
+          <p class="pb-card-desc">Moldes de goma listos para colar.</p>
+        </article>
+        <article class="pb-card">
+          <div class="pb-card-photo"><span class="pb-card-num">N° 152</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-152.webp" alt="Armando el marco metálico para colar una placa grande" loading="lazy"></div>
+          <p class="pb-card-desc">Armando el marco para colar una placa.</p>
+        </article>
+        <article class="pb-card">
+          <div class="pb-card-photo"><span class="pb-card-num">N° 157</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-157.webp" alt="Artesano alisando un molde circular recién armado" loading="lazy"></div>
+          <p class="pb-card-desc">Alisando un molde recién armado.</p>
+        </article>
+        <article class="pb-card">
+          <div class="pb-card-photo"><span class="pb-card-num">N° 174</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-174.webp" alt="Retrato del maestro artesano junto a su mesa de trabajo" loading="lazy"></div>
+          <p class="pb-card-desc">El maestro, en su mesa de siempre.</p>
+        </article>
+        <article class="pb-card">
+          <div class="pb-card-photo"><span class="pb-card-num">N° 179</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-179.webp" alt="Dos artesanos cargando cemento y hierro en moldes rectangulares" loading="lazy"></div>
+          <p class="pb-card-desc">Cargando cemento y hierro en el molde.</p>
+        </article>
       </div>
 
-      <div class="pt-step reveal">
-        <div class="pt-num">02</div>
-        <div class="pt-body">
-          <div class="pt-media">
-            <img src="assets/ImgsPrincipales/Proceso/web/proceso-colado.webp" alt="Piezas de concreto recién desmoldadas, todavía dentro de sus moldes" loading="lazy">
-          </div>
-          <div class="pt-text">
-            <span class="pt-label">Paso 02</span>
-            <h2 class="pt-title">El colado</h2>
-            <p class="pt-desc">Cemento blanco y marmolina se mezclan y se vuelcan en el molde. El curado lleva días antes de poder abrirlo.</p>
-          </div>
+      <div class="pb-progress-row">
+        <span class="pb-counter"><span id="pbCounterCurrent">1</span><span class="of"> / 8</span></span>
+        <div class="pb-progress-track"><div class="pb-progress-fill" id="pbProgressFill"></div></div>
+        <div class="pb-controls">
+          <button type="button" class="pb-arrow" id="pbPrev" aria-label="Ficha anterior" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button type="button" class="pb-arrow" id="pbNext" aria-label="Ficha siguiente">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
         </div>
       </div>
-
-      <div class="pt-step reveal">
-        <div class="pt-num">03</div>
-        <div class="pt-body">
-          <div class="pt-media">
-            <img src="assets/ImgsPrincipales/Proceso/web/proceso-detalle.webp" alt="Artesano terminando a mano un jarrón de piedra reconstituida" loading="lazy">
-          </div>
-          <div class="pt-text">
-            <span class="pt-label">Paso 03</span>
-            <h2 class="pt-title">El detalle</h2>
-            <p class="pt-desc">Ninguna pieza sale igual a otra. Cada hoja y cada voluta se retoca a mano antes de dejarla secar.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="pt-step reveal">
-        <div class="pt-num">04</div>
-        <div class="pt-body">
-          <div class="pt-media">
-            <img src="assets/ImgsPrincipales/Proceso/web/proceso-terminacion.webp" alt="Trabajador puliendo baldosas de piedra con amoladora" loading="lazy">
-          </div>
-          <div class="pt-text">
-            <span class="pt-label">Paso 04</span>
-            <h2 class="pt-title">La terminación</h2>
-            <p class="pt-desc">Se corta, se pule y se sella. Recién ahí la pieza está lista para salir del taller de Chacarita.</p>
-          </div>
-        </div>
-      </div>
-
     </div>
   </section>
 
   <div class="proceso-cierre">
-    <p class="reveal">Ciento tres años del mismo oficio, sin atajos.</p>
+    <p class="reveal">Cada ficha es un molde real, todavía en uso. Más de un siglo de piezas catalogadas a mano, una por una.</p>
     <span class="signature">— Martineau, desde 1922</span>
   </div>
 
@@ -330,6 +434,88 @@
     });
   </script>
   <script src="script.js?v=15"></script>
+
+  <script>
+    (function () {
+      const shelf = document.getElementById('pbShelf');
+      const cards = Array.from(shelf.querySelectorAll('.pb-card'));
+      const prevBtn = document.getElementById('pbPrev');
+      const nextBtn = document.getElementById('pbNext');
+      const fill = document.getElementById('pbProgressFill');
+      const counterCurrent = document.getElementById('pbCounterCurrent');
+      const total = cards.length;
+
+      function cardStep() {
+        return cards[0].getBoundingClientRect().width + 24; // ancho + gap
+      }
+
+      function currentIndex() {
+        const step = cardStep();
+        return Math.min(total - 1, Math.round(shelf.scrollLeft / step));
+      }
+
+      function update() {
+        const idx = currentIndex();
+        const max = shelf.scrollWidth - shelf.clientWidth;
+        const pct = max > 0 ? (shelf.scrollLeft / max) * 100 : 0;
+        fill.style.width = Math.min(100, Math.max(4, pct)) + '%';
+        counterCurrent.textContent = idx + 1;
+        prevBtn.disabled = shelf.scrollLeft <= 4;
+        nextBtn.disabled = shelf.scrollLeft >= max - 4;
+      }
+
+      shelf.addEventListener('scroll', update, { passive: true });
+      update();
+
+      prevBtn.addEventListener('click', () => shelf.scrollBy({ left: -cardStep(), behavior: 'smooth' }));
+      nextBtn.addEventListener('click', () => shelf.scrollBy({ left: cardStep(), behavior: 'smooth' }));
+
+      // Drag-to-scroll con mouse (touch ya funciona nativo)
+      let isDown = false, startX = 0, startScroll = 0, moved = false;
+
+      shelf.addEventListener('mousedown', (e) => {
+        isDown = true;
+        moved = false;
+        shelf.classList.add('is-dragging');
+        startX = e.pageX;
+        startScroll = shelf.scrollLeft;
+      });
+
+      window.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        const dx = e.pageX - startX;
+        if (Math.abs(dx) > 4) moved = true;
+        shelf.scrollLeft = startScroll - dx;
+      });
+
+      window.addEventListener('mouseup', () => {
+        isDown = false;
+        shelf.classList.remove('is-dragging');
+      });
+
+      shelf.addEventListener('click', (e) => {
+        if (moved) { e.preventDefault(); e.stopPropagation(); }
+      }, true);
+
+      // Pequeño gesto al cargar: la estantería se corre y vuelve, para que se
+      // note de entrada que se puede deslizar (se salta con reduced-motion).
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!prefersReduced) {
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              io.disconnect();
+              setTimeout(() => {
+                shelf.scrollTo({ left: 70, behavior: 'smooth' });
+                setTimeout(() => shelf.scrollTo({ left: 0, behavior: 'smooth' }), 650);
+              }, 500);
+            }
+          });
+        }, { threshold: 0.5 });
+        io.observe(shelf);
+      }
+    })();
+  </script>
 
   <!-- WhatsApp Floating Button -->
   <a href="https://wa.me/5491131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
