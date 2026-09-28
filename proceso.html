@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="El proceso de Martineau, del molde a la pieza terminada.">
+  <title>El Proceso — Martineau</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=37">
+
+  <style>
+    /* Proceso — timeline vertical simple. Scroll normal, sin trucos: cada paso
+       aparece con el mismo fade-up que ya usa el resto del sitio. Una línea
+       conecta los números para que se lea como una secuencia de un vistazo. */
+    .proceso-hero {
+      padding: 7rem 0 4rem;
+      text-align: center;
+    }
+
+    .proceso-hero .section-label { display: block; margin-bottom: 1.4rem; }
+
+    .proceso-hero h1 {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 500;
+      font-size: clamp(2rem, 5.5vw, 3.2rem);
+      line-height: 1.15;
+      max-width: 720px;
+      margin: 0 auto 1.2rem;
+      text-wrap: balance;
+      color: var(--color-text);
+    }
+
+    .proceso-hero p {
+      max-width: 520px;
+      margin: 0 auto;
+      color: var(--color-text-muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .proceso-timeline {
+      background-color: var(--color-bg-alt);
+      padding: 1rem 0 5rem;
+    }
+
+    .pt-list {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      position: relative;
+    }
+
+    /* La línea que conecta los pasos */
+    .pt-list::before {
+      content: '';
+      position: absolute;
+      top: 2.6rem;
+      bottom: 2.6rem;
+      left: calc(1.5rem + 34px);
+      width: 1px;
+      background: var(--color-border);
+    }
+
+    @media (min-width: 760px) {
+      .pt-list::before { left: 50%; transform: translateX(-0.5px); }
+    }
+
+    .pt-step {
+      position: relative;
+      display: grid;
+      grid-template-columns: 68px 1fr;
+      gap: 1.6rem;
+      align-items: start;
+      padding: 2.6rem 0;
+    }
+
+    .pt-num {
+      position: relative;
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      color: var(--stone-brown);
+      z-index: 1;
+      flex-shrink: 0;
+    }
+
+    .pt-body { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+
+    .pt-media {
+      aspect-ratio: 16/10;
+      overflow: hidden;
+      background: var(--color-bg);
+    }
+
+    .pt-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 1s var(--ease-out);
+    }
+
+    .pt-step:hover .pt-media img { transform: scale(1.05); }
+
+    .pt-label {
+      display: block;
+      font-family: var(--font-sans);
+      font-size: 0.68rem;
+      letter-spacing: 0.26em;
+      text-transform: uppercase;
+      color: var(--dusty-taupe);
+      margin-bottom: 0.6rem;
+    }
+
+    .pt-title {
+      font-family: var(--font-serif);
+      font-weight: 600;
+      font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+      color: var(--color-text);
+      margin: 0 0 0.7rem;
+    }
+
+    .pt-desc {
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--color-text-muted);
+      max-width: 52ch;
+      margin: 0;
+    }
+
+    /* Desktop: zigzag imagen/texto a los costados de la línea central */
+    @media (min-width: 760px) {
+      .pt-step {
+        grid-template-columns: 1fr 68px 1fr;
+        gap: 2.5rem;
+      }
+
+      .pt-num { grid-column: 2; justify-self: center; }
+
+      .pt-body {
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: center;
+      }
+
+      .pt-step:nth-child(odd) .pt-body { grid-column: 1 / 2; }
+      .pt-step:nth-child(even) .pt-body { grid-column: 3 / 4; }
+
+      .pt-step:nth-child(odd) .pt-media { order: 1; }
+      .pt-step:nth-child(odd) .pt-text { order: 2; }
+      .pt-step:nth-child(even) .pt-media { order: 2; }
+      .pt-step:nth-child(even) .pt-text { order: 1; }
+
+      .pt-step:nth-child(even) .pt-text { text-align: right; }
+      .pt-step:nth-child(even) .pt-desc { margin-left: auto; }
+    }
+
+    .proceso-cierre {
+      padding: 5rem 1.5rem 6rem;
+      text-align: center;
+      max-width: 560px;
+      margin: 0 auto;
+    }
+
+    .proceso-cierre p {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: var(--color-text-muted);
+      margin: 0 0 1.5rem;
+    }
+
+    .proceso-cierre .signature {
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-size: 1.3rem;
+      color: var(--color-text);
+    }
+  </style>
+</head>
+
+<body class="page-detail">
+
+  <!-- Header y Navegación -->
+  <header class="site-header" id="header">
+    <div class="container header-inner">
+      <a href="/" class="logo" aria-label="Martineau - Ir al inicio"><img src="assets/logo-wordmark.webp"
+          alt="Martineau" width="680" height="127"></a>
+      <nav class="main-nav" aria-label="Navegación principal">
+        <ul class="nav-list">
+          <li><a href="nosotros" class="nav-link">Nosotros</a></li>
+          <li class="nav-item has-dropdown">
+            <a href="catalogo" class="nav-link">Catálogo</a>
+            <ul class="nav-dropdown" data-nav-dropdown="producto"></ul>
+          </li>
+          <li><a href="portfolio" class="nav-link">Portfolio</a></li>
+          <li><a href="#contacto" class="nav-link">Contacto</a></li>
+        </ul>
+      </nav>
+      <button class="nav-toggle" aria-label="Abrir menú de navegación" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+    <nav class="mobile-nav" aria-label="Navegación móvil" aria-hidden="true">
+      <ul class="mobile-nav-list">
+        <li><a href="nosotros" class="mobile-nav-link">Nosotros</a></li>
+        <li class="mobile-nav-item has-dropdown">
+          <div class="mobile-nav-row">
+            <a href="catalogo" class="mobile-nav-link">Catálogo</a>
+            <button type="button" class="mobile-nav-chevron" aria-label="Ver categorías" aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+          </div>
+          <ul class="mobile-nav-dropdown" data-nav-dropdown="producto"></ul>
+        </li>
+        <li><a href="portfolio" class="mobile-nav-link">Portfolio</a></li>
+        <li><a href="#contacto" class="mobile-nav-link">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Intro -->
+  <section class="proceso-hero container">
+    <span class="section-label reveal">El taller</span>
+    <h1 class="reveal">Cada pieza pasa por las mismas manos desde hace un siglo</h1>
+    <p class="reveal">Del molde a la pieza terminada, así se hace cada chimenea, cada busto, cada maceta del catálogo.</p>
+  </section>
+
+  <!-- Timeline -->
+  <section class="proceso-timeline">
+    <div class="pt-list">
+
+      <div class="pt-step reveal">
+        <div class="pt-num">01</div>
+        <div class="pt-body">
+          <div class="pt-media">
+            <img src="assets/ImgsPrincipales/Proceso/web/proceso-molde.webp" alt="Artesano tallando un molde de yeso a mano, rodeado de moldes numerados" loading="lazy">
+          </div>
+          <div class="pt-text">
+            <span class="pt-label">Paso 01</span>
+            <h2 class="pt-title">El molde</h2>
+            <p class="pt-desc">Cada relieve nace de un molde propio, tallado y guardado en el taller. Hoy hay más de dos mil, numerados a mano en las estanterías.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-step reveal">
+        <div class="pt-num">02</div>
+        <div class="pt-body">
+          <div class="pt-media">
+            <img src="assets/ImgsPrincipales/Proceso/web/proceso-colado.webp" alt="Piezas de concreto recién desmoldadas, todavía dentro de sus moldes" loading="lazy">
+          </div>
+          <div class="pt-text">
+            <span class="pt-label">Paso 02</span>
+            <h2 class="pt-title">El colado</h2>
+            <p class="pt-desc">Cemento blanco y marmolina se mezclan y se vuelcan en el molde. El curado lleva días antes de poder abrirlo.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-step reveal">
+        <div class="pt-num">03</div>
+        <div class="pt-body">
+          <div class="pt-media">
+            <img src="assets/ImgsPrincipales/Proceso/web/proceso-detalle.webp" alt="Artesano terminando a mano un jarrón de piedra reconstituida" loading="lazy">
+          </div>
+          <div class="pt-text">
+            <span class="pt-label">Paso 03</span>
+            <h2 class="pt-title">El detalle</h2>
+            <p class="pt-desc">Ninguna pieza sale igual a otra. Cada hoja y cada voluta se retoca a mano antes de dejarla secar.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-step reveal">
+        <div class="pt-num">04</div>
+        <div class="pt-body">
+          <div class="pt-media">
+            <img src="assets/ImgsPrincipales/Proceso/web/proceso-terminacion.webp" alt="Trabajador puliendo baldosas de piedra con amoladora" loading="lazy">
+          </div>
+          <div class="pt-text">
+            <span class="pt-label">Paso 04</span>
+            <h2 class="pt-title">La terminación</h2>
+            <p class="pt-desc">Se corta, se pule y se sella. Recién ahí la pieza está lista para salir del taller de Chacarita.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <div class="proceso-cierre">
+    <p class="reveal">Ciento tres años del mismo oficio, sin atajos.</p>
+    <span class="signature">— Martineau, desde 1922</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-copy">&copy; Todos los derechos reservados, Martineau</p>
+      <p class="footer-credit">Desarrollo por Santiago Mussi.</p>
+    </div>
+  </footer>
+
+  <script src="store.js?v=7"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await Store.init();
+      renderNavCategorias();
+    });
+  </script>
+  <script src="script.js?v=15"></script>
+
+  <!-- WhatsApp Floating Button -->
+  <a href="https://wa.me/5491131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
+    aria-label="Contactar por WhatsApp">
+    <div class="whatsapp-pulse"></div>
+    <div class="whatsapp-icon-wrapper">
+      <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        <path fill="currentColor"
+          d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zM223.9 414.8c-32 0-63.1-8.4-90.6-24.3l-6.5-3.8-67.4 17.7 18-65.7-4.2-6.7c-17.5-27.9-26.7-60.2-26.7-93.1 0-103.5 84.3-187.8 187.9-187.8 50.1 0 97.2 19.5 132.6 55 35.4 35.4 55 82.5 55 132.7 0 103.5-84.3 187.8-187.9 187.8zm102.7-140.2c-5.6-2.8-33.4-16.5-38.6-18.4-5.2-1.9-9-2.8-12.8 2.8-3.8 5.6-14.7 18.4-18 22.1-3.3 3.8-6.6 4.2-12.2 1.4-5.6-2.8-23.8-8.8-45.3-27.9-16.7-14.9-28-33.3-31.3-38.9-3.3-5.6-.4-8.6 2.4-11.4 2.5-2.5 5.6-6.6 8.4-9.9 2.8-3.3 3.8-5.6 5.6-9.4 1.9-3.8.9-7.1-.4-9.9-1.4-2.8-12.8-30.9-17.5-42.3-4.6-11.1-9.3-9.6-12.8-9.8-3.3-.2-7.1-.2-10.9-.2-3.8 0-9.9 1.4-15.2 7.1-5.2 5.6-20 19.5-20 47.4 0 27.9 20.4 55 23.3 58.8 2.8 3.8 40 61.1 96.9 85.6 13.5 5.8 24.1 9.3 32.3 11.9 13.6 4.3 26 3.7 35.8 2.2 11-1.7 33.4-13.6 38.1-26.8 4.7-13.2 4.7-24.5 3.3-26.8-1.4-2.3-5.2-3.8-10.8-6.6z" />
+      </svg>
+    </div>
+    <span class="whatsapp-text">¡Hablemos!</span>
+  </a>
+
+</body>
+
+</html>
