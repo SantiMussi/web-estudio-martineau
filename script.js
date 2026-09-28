@@ -106,6 +106,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // Parallax desactivado intencionalmente
     };
 
+    // Ajusta el fit de las fotos de producto según su propia proporción: las que son
+    // muy anchas y poco altas (más anchas que altas) usan "contain" para que se vea
+    // la pieza completa en vez de hacerle un zoom feo; el resto usa "cover" para
+    // llenar el recuadro sin bordes.
+    window.initSmartImageFit = () => {
+        document.querySelectorAll('.product-image-wrapper img').forEach(img => {
+            const aplicar = () => {
+                if (!img.naturalWidth || !img.naturalHeight) return;
+                const esMuyAncha = img.naturalWidth / img.naturalHeight > 1;
+                img.style.objectFit = esMuyAncha ? 'contain' : 'cover';
+            };
+            if (img.complete) aplicar();
+            else img.addEventListener('load', aplicar, { once: true });
+        });
+    };
+
     let scrollObserver = null;
     window.initScrollReveal = () => {
         const revealElements = document.querySelectorAll('.reveal:not(.revealed):not([data-observed])');
