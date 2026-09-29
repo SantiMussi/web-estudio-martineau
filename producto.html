@@ -34,7 +34,10 @@
             <a href="catalogo" class="nav-link">Catálogo</a>
             <ul class="nav-dropdown" data-nav-dropdown="producto"></ul>
           </li>
-          <li><a href="portfolio" class="nav-link">Portfolio</a></li>
+          <li class="nav-item has-dropdown">
+            <a href="portfolio" class="nav-link">Portfolio</a>
+            <ul class="nav-dropdown" data-nav-dropdown="proyecto"></ul>
+          </li>
           <li><a href="#contacto" class="nav-link">Contacto</a></li>
         </ul>
       </nav>
@@ -56,7 +59,15 @@
           </div>
           <ul class="mobile-nav-dropdown" data-nav-dropdown="producto"></ul>
         </li>
-        <li><a href="portfolio" class="mobile-nav-link">Portfolio</a></li>
+        <li class="mobile-nav-item has-dropdown">
+          <div class="mobile-nav-row">
+            <a href="portfolio" class="mobile-nav-link">Portfolio</a>
+            <button type="button" class="mobile-nav-chevron" aria-label="Ver categorías de proyectos" aria-expanded="false">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+          </div>
+          <ul class="mobile-nav-dropdown" data-nav-dropdown="proyecto"></ul>
+        </li>
         <li><a href="#contacto" class="mobile-nav-link">Contacto</a></li>
       </ul>
     </nav>
@@ -173,7 +184,7 @@
   </a>
 
   <!-- Store compartido -->
-  <script src="store.js?v=7"></script>
+  <script src="store.js?v=8"></script>
   <script>
 
     document.addEventListener('DOMContentLoaded', async () => {

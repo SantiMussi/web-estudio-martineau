@@ -131,17 +131,32 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
-// Puebla los dropdowns de categorías del navbar (desktop) y del menú hamburguesa (mobile).
+// Puebla los dropdowns de categorías del navbar (desktop) y del menú hamburguesa (mobile):
+// Catálogo con las categorías de productos y Portfolio con las de proyectos.
 function renderNavCategorias() {
-  const contenedores = document.querySelectorAll('[data-nav-dropdown="producto"]');
-  if (contenedores.length === 0) return;
+  const destinos = { producto: 'catalogo', proyecto: 'portfolio' };
 
-  const categorias = Store.getCategorias('producto');
-  if (categorias.length === 0) return;
+  Object.entries(destinos).forEach(([tipo, pagina]) => {
+    const contenedores = document.querySelectorAll(`[data-nav-dropdown="${tipo}"]`);
+    if (contenedores.length === 0) return;
 
-  const itemsHTML = categorias.map(cat =>
-    `<li><a href="catalogo?categoria=${encodeURIComponent(cat.slug)}">${escapeHtml(cat.nombre)}</a></li>`
-  ).join('');
+    const categorias = Store.getCategorias(tipo);
+    if (categorias.length === 0) {
+      // Sin categorías no tiene sentido el desplegable: queda solo el link
+      contenedores.forEach(el => {
+        const item = el.closest('.has-dropdown');
+        if (item) item.classList.remove('has-dropdown');
+        const chevron = item && item.querySelector('.mobile-nav-chevron');
+        if (chevron) chevron.remove();
+        el.remove();
+      });
+      return;
+    }
 
-  contenedores.forEach(el => { el.innerHTML = itemsHTML; });
+    const itemsHTML = categorias.map(cat =>
+      `<li><a href="${pagina}?categoria=${encodeURIComponent(cat.slug)}">${escapeHtml(cat.nombre)}</a></li>`
+    ).join('');
+
+    contenedores.forEach(el => { el.innerHTML = itemsHTML; });
+  });
 }
