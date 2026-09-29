@@ -112,11 +112,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const steps = document.querySelectorAll('.pp-step');
         if (!steps.length) return;
 
+        // Las fotos son lazy: se piden una pantalla antes de llegar, y la animación
+        // espera a que estén decodificadas (así no se "revela" un arco vacío).
+        const fotosDe = (el) => [...el.querySelectorAll('img')];
+        const pedirFotos = (el) => fotosDe(el).forEach(img => { img.loading = 'eager'; });
+        const fotosListas = (el) => Promise.all(fotosDe(el).map(img =>
+            (img.decode ? img.decode() : Promise.resolve()).catch(() => {})
+        ));
+
+        const precarga = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    pedirFotos(entry.target);
+                    precarga.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '150% 0px 150% 0px' });
+        steps.forEach(step => precarga.observe(step));
+        const cierre = document.querySelector('.pp-cierre');
+        if (cierre) precarga.observe(cierre);
+
         const io = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    entry.target.classList.add('is-in');
-                    io.unobserve(entry.target);
+                    const step = entry.target;
+                    io.unobserve(step);
+                    pedirFotos(step);
+                    // Tope de 2,5 s: con conexión lenta la animación igual se muestra
+                    const tope = new Promise(r => setTimeout(r, 2500));
+                    Promise.race([fotosListas(step), tope]).then(() => step.classList.add('is-in'));
                 }
             });
         }, { rootMargin: '0px 0px -25% 0px', threshold: 0.15 });
