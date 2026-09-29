@@ -658,15 +658,26 @@ body.no-scroll {
   background-color: var(--color-black);
 }
 
+/* El ciclo lo maneja initHeroSlideshow() en script.js, así funciona con cualquier
+   cantidad de imágenes. La que entra se funde ENCIMA de la anterior (que queda opaca
+   debajo con .is-prev), así nunca se ve el fondo negro entre una y otra. */
 .hero-slide {
   position: absolute;
   inset: 0;
   opacity: 0;
-  animation-name: heroSlideFade;
-  animation-duration: calc(var(--hero-slide-count) * 7s);
-  animation-delay: calc(var(--hero-slide-index) * -7s);
-  animation-iteration-count: infinite;
-  animation-timing-function: var(--ease-smooth);
+  z-index: 0;
+  transition: opacity 2s var(--ease-smooth);
+}
+
+.hero-slide.is-prev {
+  opacity: 1;
+  z-index: 1;
+  transition: none;
+}
+
+.hero-slide.is-active {
+  opacity: 1;
+  z-index: 2;
 }
 
 .hero-slide img {
@@ -676,27 +687,14 @@ body.no-scroll {
   object-position: center;
   filter: brightness(1.2) contrast(0.97) saturate(0.9);
   transform: scale(1);
-  animation-name: heroSlideZoom;
-  animation-duration: calc(var(--hero-slide-count) * 7s);
-  animation-delay: calc(var(--hero-slide-index) * -7s);
-  animation-iteration-count: infinite;
-  animation-timing-function: linear;
+  /* Fuera de pantalla vuelve a escala 1 de golpe, una vez que ya terminó de desvanecerse */
+  transition: transform 0s linear 2.2s;
 }
 
-/* El fade-out de cada slide se superpone con el fade-in del siguiente (18.37% > 14.29%
-   del ciclo), para que nunca haya un instante con las dos en opacity:0 y se vea el fondo. */
-@keyframes heroSlideFade {
-  0% { opacity: 0; }
-  4.08% { opacity: 1; }
-  14.29% { opacity: 1; }
-  18.37% { opacity: 0; }
-  100% { opacity: 0; }
-}
-
-@keyframes heroSlideZoom {
-  0% { transform: scale(1); }
-  18.37% { transform: scale(1.07); }
-  100% { transform: scale(1.07); }
+.hero-slide.is-active img,
+.hero-slide.is-prev img {
+  transform: scale(1.07);
+  transition: transform 9s linear;
 }
 
 .hero-overlay {

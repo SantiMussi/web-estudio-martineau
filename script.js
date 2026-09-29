@@ -106,6 +106,56 @@ document.addEventListener('DOMContentLoaded', () => {
         // Parallax desactivado intencionalmente
     };
 
+    // Slideshow del hero. Funciona con cualquier cantidad de imágenes y saltea las que
+    // no cargan (p. ej. si se borró el archivo), para que nunca quede un turno en negro.
+    const initHeroSlideshow = () => {
+        const container = document.querySelector('.hero-slides');
+        if (!container) return;
+
+        const DURACION = 7000;
+        const FUNDIDO = 2000;
+
+        const cargo = (slide) => {
+            const img = slide.querySelector('img');
+            return img && img.complete && img.naturalWidth > 0;
+        };
+
+        const quitar = (slide) => {
+            const eraLaActiva = slide.classList.contains('is-active');
+            slide.remove();
+            const primera = container.querySelector('.hero-slide');
+            if (eraLaActiva && primera) primera.classList.add('is-active');
+        };
+
+        container.querySelectorAll('.hero-slide img').forEach(img => {
+            const slide = img.closest('.hero-slide');
+            if (img.complete && img.naturalWidth === 0) quitar(slide);
+            else img.addEventListener('error', () => quitar(slide));
+        });
+
+        const avanzar = () => {
+            const slides = Array.from(container.querySelectorAll('.hero-slide'));
+            if (slides.length < 2) return;
+
+            const actual = container.querySelector('.hero-slide.is-active') || slides[0];
+            const desde = slides.indexOf(actual);
+            let siguiente = null;
+            for (let i = 1; i < slides.length; i++) {
+                const candidata = slides[(desde + i) % slides.length];
+                if (cargo(candidata)) { siguiente = candidata; break; }
+            }
+            if (!siguiente) return;
+
+            slides.forEach(s => s.classList.remove('is-prev'));
+            actual.classList.remove('is-active');
+            actual.classList.add('is-prev');
+            siguiente.classList.add('is-active');
+            setTimeout(() => actual.classList.remove('is-prev'), FUNDIDO + 100);
+        };
+
+        setInterval(avanzar, DURACION);
+    };
+
     // Ajusta el fit de las fotos de producto según su propia proporción: las que son
     // muy anchas y poco altas (más anchas que altas) usan "contain" para que se vea
     // la pieza completa en vez de hacerle un zoom feo; el resto usa "cover" para
@@ -497,6 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initSmoothScroll();
         initFormHandling();
         initBeforeAfter();
+        initHeroSlideshow();
         window.initFiltersAndPagination();
     };
 
