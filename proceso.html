@@ -21,10 +21,10 @@
   <link rel="stylesheet" href="styles.css?v=37">
 
   <style>
-    /* El Archivo — estantería horizontal de fichas de catálogo, una por molde,
-       con el número real que tiene pintado en la pared del taller. Flechas
-       grandes + contador numérico + una ficha asomando en el borde dejan
-       clarísimo que hay más para ver y cómo verlas. */
+    /* El Archivo — grilla estática de fichas, todas visibles a la vez (nada
+       para deslizar). Cada ficha imita una placa de molde de yeso: borde
+       biselado como si estuviera vaciada en relieve, esquinas romas, número
+       "pintado" a mano como los de la pared real del taller. */
     .proceso-hero {
       padding: 7rem 0 3rem;
       text-align: center;
@@ -52,220 +52,142 @@
       line-height: 1.7;
     }
 
-    .pb-archivo {
+    .pm-archivo {
       position: relative;
-      background: linear-gradient(180deg, #241F19 0%, #171310 100%);
+      background:
+        radial-gradient(ellipse 120% 80% at 50% -10%, rgba(255,255,255,0.04) 0%, transparent 55%),
+        linear-gradient(180deg, #241F19 0%, #171310 100%);
       padding: 4rem 0 5rem;
-      overflow: hidden;
     }
 
-    .pb-archivo-head {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 1.5rem;
-      max-width: 1400px;
-      margin: 0 auto 1.6rem;
-      padding: 0 clamp(1.5rem, 4vw, 3rem);
+    .pm-archivo-head {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto 3rem;
+      padding: 0 1.5rem;
       color: var(--ink-on-dark);
     }
 
-    .pb-archivo-head .eyebrow {
+    .pm-archivo-head .eyebrow {
       display: block;
       font-family: var(--font-sans);
       font-size: 0.7rem;
       letter-spacing: 0.3em;
       text-transform: uppercase;
       color: var(--dusty-taupe-2);
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.7rem;
     }
 
-    .pb-archivo-head h2 {
+    .pm-archivo-head h2 {
       font-family: var(--font-serif);
       font-weight: 500;
-      font-size: clamp(1.5rem, 3vw, 2.1rem);
+      font-size: clamp(1.6rem, 3.2vw, 2.2rem);
+      margin: 0 0 0.8rem;
+    }
+
+    .pm-archivo-head p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--ink-on-dark-muted);
       margin: 0;
     }
 
-    .pb-instruction {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      font-family: var(--font-sans);
-      font-size: 0.8rem;
-      color: var(--ink-on-dark-muted);
-      flex-shrink: 0;
-    }
-
-    .pb-instruction svg {
-      width: 20px;
-      height: 20px;
-      animation: pbSwipeHint 1.8s ease-in-out infinite;
-    }
-
-    @keyframes pbSwipeHint {
-      0%, 100% { transform: translateX(0); opacity: 0.6; }
-      50% { transform: translateX(6px); opacity: 1; }
-    }
-
-    .pb-shelf-wrap {
-      position: relative;
-      max-width: 1400px;
+    .pm-grid {
+      max-width: 1280px;
       margin: 0 auto;
+      padding: 0 clamp(1.25rem, 4vw, 3rem);
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: clamp(1.1rem, 2.4vw, 1.8rem);
     }
 
-    .pb-shelf {
-      display: flex;
-      gap: 1.5rem;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      padding: 1.5rem clamp(1.5rem, 4vw, 3rem) 2rem;
-      cursor: grab;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      user-select: none;
-      scroll-padding-left: clamp(1.5rem, 4vw, 3rem);
+    @media (min-width: 640px) {
+      .pm-grid { grid-template-columns: repeat(3, 1fr); }
     }
 
-    .pb-shelf.is-dragging { cursor: grabbing; scroll-snap-type: none; }
-    .pb-shelf::-webkit-scrollbar { display: none; }
+    @media (min-width: 980px) {
+      .pm-grid { grid-template-columns: repeat(4, 1fr); }
+    }
 
-    .pb-card {
+    /* Ficha tipo placa de molde: borde biselado (relieve), esquinas romas */
+    .pm-card {
       position: relative;
-      flex: 0 0 auto;
-      width: min(250px, 68vw);
-      scroll-snap-align: start;
-      background: var(--color-bg);
-      border: 1px solid rgba(0, 0, 0, 0.08);
-      border-radius: 3px;
-      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.35);
-      padding: 0.8rem 0.8rem 1.1rem;
-      transform: translateY(0) rotate(0deg);
-      transition: transform 0.5s var(--ease-spring), box-shadow 0.5s var(--ease-smooth);
+      background: #EDE7D8;
+      border-radius: 6px;
+      padding: 0.6rem 0.6rem 1rem;
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.5) inset,
+        0 -2px 0 rgba(0, 0, 0, 0.12) inset,
+        0 10px 22px rgba(0, 0, 0, 0.32);
+      transform: rotate(var(--tilt, 0deg));
+      transition: transform 0.45s var(--ease-spring), box-shadow 0.45s var(--ease-smooth);
     }
 
-    .pb-card:nth-child(3n+1) { --tilt: -1.2deg; }
-    .pb-card:nth-child(3n+2) { --tilt: 0.7deg; }
-    .pb-card:nth-child(3n+3) { --tilt: -0.4deg; }
+    .pm-grid > .pm-card:nth-child(4n+1) { --tilt: -1deg; }
+    .pm-grid > .pm-card:nth-child(4n+2) { --tilt: 0.6deg; }
+    .pm-grid > .pm-card:nth-child(4n+3) { --tilt: -0.5deg; }
+    .pm-grid > .pm-card:nth-child(4n+4) { --tilt: 1.1deg; }
 
-    .pb-card:hover,
-    .pb-card:focus-within {
-      transform: translateY(-14px) rotate(var(--tilt, 0deg));
-      box-shadow: 0 26px 46px rgba(0, 0, 0, 0.46);
+    .pm-card:hover,
+    .pm-card:focus-within {
+      transform: rotate(0deg) translateY(-6px);
+      box-shadow:
+        0 1px 0 rgba(255, 255, 255, 0.5) inset,
+        0 -2px 0 rgba(0, 0, 0, 0.12) inset,
+        0 20px 34px rgba(0, 0, 0, 0.4);
       z-index: 2;
     }
 
-    .pb-card-photo {
+    .pm-card-photo {
       position: relative;
       aspect-ratio: 4/5;
       overflow: hidden;
+      border-radius: 3px;
       background: var(--color-bg-alt);
-      margin-bottom: 0.8rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35) inset;
     }
 
-    .pb-card-photo img {
+    .pm-card-photo img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
-      filter: grayscale(0.25) sepia(0.12);
+      filter: grayscale(0.3) sepia(0.12) contrast(0.98);
       transition: filter 0.5s ease, transform 0.6s ease;
     }
 
-    .pb-card:hover .pb-card-photo img {
+    .pm-card:hover .pm-card-photo img {
       filter: grayscale(0) sepia(0);
       transform: scale(1.04);
     }
 
-    .pb-card-num {
+    .pm-card-num {
       position: absolute;
-      top: 0.55rem;
-      left: 0.55rem;
-      background: rgba(30, 26, 21, 0.82);
-      color: var(--ink-on-dark);
-      font-family: var(--font-sans);
-      font-size: 0.65rem;
-      letter-spacing: 0.14em;
-      padding: 0.28rem 0.5rem;
-      border: 1px solid rgba(244, 241, 234, 0.3);
-    }
-
-    .pb-card-desc {
-      font-family: var(--font-serif);
-      font-size: 1rem;
-      line-height: 1.4;
-      color: var(--color-text);
-      margin: 0;
-    }
-
-    .pb-progress-row {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      max-width: 1400px;
-      margin: 0.3rem auto 0;
-      padding: 0 clamp(1.5rem, 4vw, 3rem);
-    }
-
-    .pb-counter {
-      font-family: var(--font-sans);
-      font-size: 0.85rem;
-      color: var(--ink-on-dark);
-      letter-spacing: 0.04em;
-      white-space: nowrap;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .pb-counter .of {
-      color: var(--ink-on-dark-muted);
-    }
-
-    .pb-progress-track {
-      flex: 1;
-      height: 2px;
-      background: rgba(244, 241, 234, 0.16);
-      position: relative;
-    }
-
-    .pb-progress-fill {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 12%;
-      background: var(--dusty-taupe-2);
-      transition: width 0.25s ease;
-    }
-
-    .pb-controls {
-      display: flex;
-      gap: 0.5rem;
-      flex-shrink: 0;
-    }
-
-    .pb-arrow {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid rgba(244, 241, 234, 0.3);
-      background: rgba(244, 241, 234, 0.04);
-      color: var(--ink-on-dark);
-      display: flex;
+      top: 0.5rem;
+      left: 0.5rem;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      cursor: pointer;
-      transition: border-color 0.3s, background-color 0.3s, opacity 0.3s;
+      min-width: 2.2rem;
+      padding: 0.15rem 0.4rem;
+      background: rgba(23, 19, 16, 0.72);
+      border-radius: 3px;
+      font-family: var(--font-serif);
+      font-style: italic;
+      font-weight: 600;
+      font-size: 1.15rem;
+      line-height: 1;
+      color: #F4F1EA;
+      transform: rotate(-3deg);
     }
 
-    .pb-arrow:hover { border-color: var(--ink-on-dark); background: rgba(244, 241, 234, 0.1); }
-
-    .pb-arrow:disabled {
-      opacity: 0.3;
-      cursor: default;
-      pointer-events: none;
+    .pm-card-desc {
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      line-height: 1.35;
+      color: #3A3327;
+      margin: 0.7rem 0.1rem 0;
     }
-
-    .pb-arrow svg { width: 16px; height: 16px; }
 
     .proceso-cierre {
       padding: 5rem 1.5rem 6rem;
@@ -288,14 +210,8 @@
       color: var(--color-text);
     }
 
-    @media (max-width: 640px) {
-      .pb-archivo-head { flex-direction: column; align-items: flex-start; gap: 0.8rem; }
-      .pb-instruction { font-size: 0.72rem; }
-    }
-
     @media (prefers-reduced-motion: reduce) {
-      .pb-card, .pb-card-photo img, .pb-shelf { transition: none !important; scroll-behavior: auto !important; }
-      .pb-instruction svg { animation: none !important; }
+      .pm-card, .pm-card-photo img { transition: none !important; }
     }
   </style>
 </head>
@@ -350,66 +266,46 @@
   </section>
 
   <!-- Archivo -->
-  <section class="pb-archivo">
-    <div class="pb-archivo-head">
-      <div>
-        <span class="eyebrow">Archivo del taller</span>
-        <h2>Fichero de moldes</h2>
-      </div>
-      <div class="pb-instruction">
-        <span>Deslizá para ver las 8 fichas</span>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-      </div>
+  <section class="pm-archivo">
+    <div class="pm-archivo-head">
+      <span class="eyebrow reveal">Archivo del taller</span>
+      <h2 class="reveal">Fichero de moldes</h2>
+      <p class="reveal">Ocho fichas, ocho moldes reales, con su número tal cual está pintado en el taller.</p>
     </div>
 
-    <div class="pb-shelf-wrap">
-      <div class="pb-shelf" id="pbShelf">
-        <article class="pb-card">
-          <div class="pb-card-photo"><span class="pb-card-num">N° 145</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-145.webp" alt="Artesano terminando un molde circular a mano" loading="lazy"></div>
-          <p class="pb-card-desc">Terminando un molde circular a mano.</p>
-        </article>
-        <article class="pb-card">
-          <div class="pb-card-photo"><span class="pb-card-num">N° 147</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-147.webp" alt="Manos alisando yeso fresco sobre un molde" loading="lazy"></div>
-          <p class="pb-card-desc">Alisando el yeso fresco del molde.</p>
-        </article>
-        <article class="pb-card">
-          <div class="pb-card-photo"><span class="pb-card-num">N° 148</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-148.webp" alt="Mano puliendo el borde de un molde con una esponja" loading="lazy"></div>
-          <p class="pb-card-desc">Puliendo el borde con esponja.</p>
-        </article>
-        <article class="pb-card">
-          <div class="pb-card-photo"><span class="pb-card-num">N° 150</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-150.webp" alt="Fila de moldes de goma vacíos listos para colar" loading="lazy"></div>
-          <p class="pb-card-desc">Moldes de goma listos para colar.</p>
-        </article>
-        <article class="pb-card">
-          <div class="pb-card-photo"><span class="pb-card-num">N° 152</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-152.webp" alt="Armando el marco metálico para colar una placa grande" loading="lazy"></div>
-          <p class="pb-card-desc">Armando el marco para colar una placa.</p>
-        </article>
-        <article class="pb-card">
-          <div class="pb-card-photo"><span class="pb-card-num">N° 157</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-157.webp" alt="Artesano alisando un molde circular recién armado" loading="lazy"></div>
-          <p class="pb-card-desc">Alisando un molde recién armado.</p>
-        </article>
-        <article class="pb-card">
-          <div class="pb-card-photo"><span class="pb-card-num">N° 174</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-174.webp" alt="Retrato del maestro artesano junto a su mesa de trabajo" loading="lazy"></div>
-          <p class="pb-card-desc">El maestro, en su mesa de siempre.</p>
-        </article>
-        <article class="pb-card">
-          <div class="pb-card-photo"><span class="pb-card-num">N° 179</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-179.webp" alt="Dos artesanos cargando cemento y hierro en moldes rectangulares" loading="lazy"></div>
-          <p class="pb-card-desc">Cargando cemento y hierro en el molde.</p>
-        </article>
-      </div>
-
-      <div class="pb-progress-row">
-        <span class="pb-counter"><span id="pbCounterCurrent">1</span><span class="of"> / 8</span></span>
-        <div class="pb-progress-track"><div class="pb-progress-fill" id="pbProgressFill"></div></div>
-        <div class="pb-controls">
-          <button type="button" class="pb-arrow" id="pbPrev" aria-label="Ficha anterior" disabled>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-          </button>
-          <button type="button" class="pb-arrow" id="pbNext" aria-label="Ficha siguiente">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-          </button>
-        </div>
-      </div>
+    <div class="pm-grid">
+      <article class="pm-card reveal">
+        <div class="pm-card-photo"><span class="pm-card-num">145</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-145.webp" alt="Artesano terminando un molde circular a mano" loading="lazy"></div>
+        <p class="pm-card-desc">Terminando un molde circular a mano.</p>
+      </article>
+      <article class="pm-card reveal">
+        <div class="pm-card-photo"><span class="pm-card-num">147</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-147.webp" alt="Manos alisando yeso fresco sobre un molde" loading="lazy"></div>
+        <p class="pm-card-desc">Alisando el yeso fresco del molde.</p>
+      </article>
+      <article class="pm-card reveal">
+        <div class="pm-card-photo"><span class="pm-card-num">148</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-148.webp" alt="Mano puliendo el borde de un molde con una esponja" loading="lazy"></div>
+        <p class="pm-card-desc">Puliendo el borde con esponja.</p>
+      </article>
+      <article class="pm-card reveal">
+        <div class="pm-card-photo"><span class="pm-card-num">150</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-150.webp" alt="Fila de moldes de goma vacíos listos para colar" loading="lazy"></div>
+        <p class="pm-card-desc">Moldes de goma listos para colar.</p>
+      </article>
+      <article class="pm-card reveal">
+        <div class="pm-card-photo"><span class="pm-card-num">152</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-152.webp" alt="Armando el marco metálico para colar una placa grande" loading="lazy"></div>
+        <p class="pm-card-desc">Armando el marco para colar una placa.</p>
+      </article>
+      <article class="pm-card reveal">
+        <div class="pm-card-photo"><span class="pm-card-num">157</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-157.webp" alt="Artesano alisando un molde circular recién armado" loading="lazy"></div>
+        <p class="pm-card-desc">Alisando un molde recién armado.</p>
+      </article>
+      <article class="pm-card reveal">
+        <div class="pm-card-photo"><span class="pm-card-num">174</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-174.webp" alt="Retrato del maestro artesano junto a su mesa de trabajo" loading="lazy"></div>
+        <p class="pm-card-desc">El maestro, en su mesa de siempre.</p>
+      </article>
+      <article class="pm-card reveal">
+        <div class="pm-card-photo"><span class="pm-card-num">179</span><img src="assets/ImgsPrincipales/Proceso/web/archivo-179.webp" alt="Dos artesanos cargando cemento y hierro en moldes rectangulares" loading="lazy"></div>
+        <p class="pm-card-desc">Cargando cemento y hierro en el molde.</p>
+      </article>
     </div>
   </section>
 
@@ -434,88 +330,6 @@
     });
   </script>
   <script src="script.js?v=15"></script>
-
-  <script>
-    (function () {
-      const shelf = document.getElementById('pbShelf');
-      const cards = Array.from(shelf.querySelectorAll('.pb-card'));
-      const prevBtn = document.getElementById('pbPrev');
-      const nextBtn = document.getElementById('pbNext');
-      const fill = document.getElementById('pbProgressFill');
-      const counterCurrent = document.getElementById('pbCounterCurrent');
-      const total = cards.length;
-
-      function cardStep() {
-        return cards[0].getBoundingClientRect().width + 24; // ancho + gap
-      }
-
-      function currentIndex() {
-        const step = cardStep();
-        return Math.min(total - 1, Math.round(shelf.scrollLeft / step));
-      }
-
-      function update() {
-        const idx = currentIndex();
-        const max = shelf.scrollWidth - shelf.clientWidth;
-        const pct = max > 0 ? (shelf.scrollLeft / max) * 100 : 0;
-        fill.style.width = Math.min(100, Math.max(4, pct)) + '%';
-        counterCurrent.textContent = idx + 1;
-        prevBtn.disabled = shelf.scrollLeft <= 4;
-        nextBtn.disabled = shelf.scrollLeft >= max - 4;
-      }
-
-      shelf.addEventListener('scroll', update, { passive: true });
-      update();
-
-      prevBtn.addEventListener('click', () => shelf.scrollBy({ left: -cardStep(), behavior: 'smooth' }));
-      nextBtn.addEventListener('click', () => shelf.scrollBy({ left: cardStep(), behavior: 'smooth' }));
-
-      // Drag-to-scroll con mouse (touch ya funciona nativo)
-      let isDown = false, startX = 0, startScroll = 0, moved = false;
-
-      shelf.addEventListener('mousedown', (e) => {
-        isDown = true;
-        moved = false;
-        shelf.classList.add('is-dragging');
-        startX = e.pageX;
-        startScroll = shelf.scrollLeft;
-      });
-
-      window.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        const dx = e.pageX - startX;
-        if (Math.abs(dx) > 4) moved = true;
-        shelf.scrollLeft = startScroll - dx;
-      });
-
-      window.addEventListener('mouseup', () => {
-        isDown = false;
-        shelf.classList.remove('is-dragging');
-      });
-
-      shelf.addEventListener('click', (e) => {
-        if (moved) { e.preventDefault(); e.stopPropagation(); }
-      }, true);
-
-      // Pequeño gesto al cargar: la estantería se corre y vuelve, para que se
-      // note de entrada que se puede deslizar (se salta con reduced-motion).
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!prefersReduced) {
-        const io = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              io.disconnect();
-              setTimeout(() => {
-                shelf.scrollTo({ left: 70, behavior: 'smooth' });
-                setTimeout(() => shelf.scrollTo({ left: 0, behavior: 'smooth' }), 650);
-              }, 500);
-            }
-          });
-        }, { threshold: 0.5 });
-        io.observe(shelf);
-      }
-    })();
-  </script>
 
   <!-- WhatsApp Floating Button -->
   <a href="https://wa.me/5491131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
