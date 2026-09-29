@@ -3208,8 +3208,7 @@ body.no-scroll {
   position: absolute;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .24 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.35;
-  mix-blend-mode: multiply;
+  opacity: 0.3;
   pointer-events: none;
 }
 
@@ -3249,7 +3248,8 @@ body.no-scroll {
   border: 1px solid var(--dz-frame);
   border-bottom: none;
   border-radius: 999px 999px 0 0;
-  transition: inset 0.6s var(--ease-smooth), border-color 0.6s;
+  transform-origin: 50% 100%;
+  transition: transform 0.6s var(--ease-smooth), border-color 0.6s;
 }
 
 /* Repisa bajo la hornacina */
@@ -3277,7 +3277,7 @@ body.no-scroll {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 1.2s var(--ease-smooth), clip-path 1.4s var(--ease-smooth);
+  transition: transform 1.2s var(--ease-smooth);
 }
 
 /* Profundidad del nicho + luz cenital que se enciende al pasar el mouse */
@@ -3296,8 +3296,7 @@ body.no-scroll {
 }
 
 .nicho-foto::after {
-  background: radial-gradient(ellipse 70% 45% at 50% 0%, rgba(255, 246, 228, 0.55), transparent 70%);
-  mix-blend-mode: soft-light;
+  background: radial-gradient(ellipse 70% 45% at 50% 0%, rgba(255, 248, 236, 0.3), transparent 70%);
   opacity: 0;
   transition: opacity 0.6s;
 }
@@ -3349,7 +3348,7 @@ body.no-scroll {
 @media (hover: hover) {
   .nicho:hover .nicho-foto img { transform: scale(1.06); }
   .nicho:hover .nicho-foto::after { opacity: 1; }
-  .nicho:hover .nicho-arco::before { inset: -16px -16px 0; border-color: var(--dz-stone); }
+  .nicho:hover .nicho-arco::before { transform: scale(1.035); border-color: var(--dz-stone); }
   .nicho:hover .nicho-ver { opacity: 1; transform: none; }
 }
 
@@ -3373,14 +3372,30 @@ body.no-scroll {
   transition-delay: calc(var(--i, 0) * 0.12s);
 }
 
+/* Velo de yeso que se retira hacia arriba: la foto aparece de abajo hacia arriba */
+.nicho-velo {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--dz-fill);
+  transform-origin: 50% 0;
+  transform: scaleY(0);
+  pointer-events: none;
+}
+
+.vitrina-js .nicho .nicho-velo {
+  transform: scaleY(1);
+  transition: transform 1.3s var(--ease-smooth) calc(var(--i, 0) * 0.12s + 0.15s);
+}
+
 .vitrina-js .nicho .nicho-foto img {
-  clip-path: inset(100% 0 0 0);
   transform: scale(1.15);
   transition-delay: calc(var(--i, 0) * 0.12s + 0.15s);
 }
 
 .vitrina-js .nicho.is-in { opacity: 1; transform: none; }
-.vitrina-js .nicho.is-in .nicho-foto img { clip-path: inset(0 0 0 0); transform: scale(1); }
+.vitrina-js .nicho.is-in .nicho-velo { transform: scaleY(0); }
+.vitrina-js .nicho.is-in .nicho-foto img { transform: scale(1); }
 
 @media (hover: hover) {
   .vitrina-js .nicho.is-in:hover .nicho-foto img { transform: scale(1.06); transition-delay: 0s; }
@@ -3430,12 +3445,15 @@ body.no-scroll {
   position: absolute;
   inset: 0;
   display: block;
+  overflow: hidden;
   opacity: 0;
   z-index: 0;
 }
 
+/* La foto nueva sube como una cortina: el marco sube y la imagen baja lo mismo,
+   así se ve "destaparse" sin moverse (todo con transform, sin repintar) */
 .obras-foto.is-prev { opacity: 1; z-index: 1; }
-.obras-foto.is-active { opacity: 1; z-index: 2; animation: obrasEntra 1.3s var(--ease-smooth) both; }
+.obras-foto.is-active { opacity: 1; z-index: 2; animation: obrasEntra 1.26s cubic-bezier(0.7, 0, 0.3, 1) both; }
 
 .obras-foto img {
   width: 100%;
@@ -3444,16 +3462,17 @@ body.no-scroll {
   display: block;
 }
 
-.obras-foto.is-active img { animation: obrasZoom 7s var(--ease-out) both; }
+.obras-foto.is-active img { animation: obrasContra 7s linear both; }
 
 @keyframes obrasEntra {
-  from { clip-path: inset(100% 0 0 0); }
-  to { clip-path: inset(0 0 0 0); }
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 
-@keyframes obrasZoom {
-  from { transform: scale(1.12); }
-  to { transform: scale(1); }
+@keyframes obrasContra {
+  0% { transform: translateY(-100%) scale(1.12); animation-timing-function: cubic-bezier(0.7, 0, 0.3, 1); }
+  18% { transform: translateY(0) scale(1.1); animation-timing-function: ease-out; }
+  100% { transform: translateY(0) scale(1); }
 }
 
 /* Contador en la enjuta (el rincón que deja la curva del arco) */
@@ -3569,7 +3588,7 @@ body.no-scroll {
 }
 
 /* Entrada de la sección: nada se anima hasta que está en pantalla */
-.obras-js .obras:not(.is-in) .obras-foto { animation: none; clip-path: inset(100% 0 0 0); }
+.obras-js .obras:not(.is-in) .obras-foto { animation: none; transform: translateY(100%); }
 .obras-js .obras:not(.is-in) .obras-foto img { animation: none; }
 
 .obras-js .obras .obras-escena::before,
