@@ -3173,3 +3173,429 @@ body.no-scroll {
   .bq-input { font-size: 1.25rem; }
   .bq-cuerpo { padding: 1rem; }
 }
+
+/* ============ Home: piezas destacadas (vitrina) y obras realizadas ============ */
+
+.vitrina-seccion,
+.obras {
+  --dz-frame: #C9BEAB;
+  --dz-stone: #6E6150;
+  --dz-fill: #D6CCBC;
+}
+
+.vitrina-seccion h2 em,
+.portfolio .section-header h2 em {
+  font-style: italic;
+  color: var(--stone-brown);
+}
+
+.vitrina-vacia {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: var(--color-text-muted);
+  padding: 3rem 0;
+}
+
+/* Fondo de yeso, igual que "Del molde a la pieza" */
+.vitrina-seccion {
+  position: relative;
+  background: #ECE6DA;
+  overflow: hidden;
+}
+
+.vitrina-seccion::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .24 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.35;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+}
+
+.vitrina-seccion > .container { position: relative; }
+
+/* --- Vitrina de hornacinas --- */
+.vitrina {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3rem 1.4rem;
+}
+
+@media (min-width: 1024px) {
+  .vitrina {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4rem 3rem;
+  }
+}
+
+.nicho {
+  display: block;
+  color: var(--color-text);
+  text-align: center;
+  padding: 12px 12px 0;
+}
+
+.nicho-arco {
+  position: relative;
+  aspect-ratio: 3 / 4;
+}
+
+/* Moldura exterior del arco */
+.nicho-arco::before {
+  content: '';
+  position: absolute;
+  inset: -12px -12px 0;
+  border: 1px solid var(--dz-frame);
+  border-bottom: none;
+  border-radius: 999px 999px 0 0;
+  transition: inset 0.6s var(--ease-smooth), border-color 0.6s;
+}
+
+/* Repisa bajo la hornacina */
+.nicho-arco::after {
+  content: '';
+  position: absolute;
+  left: -18px;
+  right: -18px;
+  bottom: -9px;
+  height: 9px;
+  background: linear-gradient(#DDD4C5, #CFC4B2);
+  box-shadow: 0 10px 18px -8px rgba(46, 40, 32, 0.35);
+}
+
+.nicho-foto {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 999px 999px 0 0;
+  background: var(--dz-fill);
+}
+
+.nicho-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 1.2s var(--ease-smooth), clip-path 1.4s var(--ease-smooth);
+}
+
+/* Profundidad del nicho + luz cenital que se enciende al pasar el mouse */
+.nicho-foto::before,
+.nicho-foto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.nicho-foto::before {
+  box-shadow: inset 0 26px 32px -18px rgba(30, 24, 18, 0.55), inset 0 0 0 1px rgba(46, 40, 32, 0.08);
+}
+
+.nicho-foto::after {
+  background: radial-gradient(ellipse 70% 45% at 50% 0%, rgba(255, 246, 228, 0.55), transparent 70%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity 0.6s;
+}
+
+.nicho-placa {
+  padding: 1.5rem 0.25rem 0;
+}
+
+.nicho-num {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.62rem;
+  letter-spacing: 0.3em;
+  color: var(--dz-stone);
+  margin-bottom: 0.45rem;
+}
+
+.nicho-titulo {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  line-height: 1.15;
+  text-transform: none;
+  letter-spacing: 0.01em;
+  margin: 0 0 0.35rem;
+}
+
+.nicho-cat {
+  display: block;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--color-text-muted);
+}
+
+.nicho-ver {
+  display: inline-block;
+  margin-top: 0.8rem;
+  font-family: var(--font-sans);
+  font-size: 0.64rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dz-stone);
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.4s, transform 0.4s var(--ease-smooth);
+}
+
+@media (hover: hover) {
+  .nicho:hover .nicho-foto img { transform: scale(1.06); }
+  .nicho:hover .nicho-foto::after { opacity: 1; }
+  .nicho:hover .nicho-arco::before { inset: -16px -16px 0; border-color: var(--dz-stone); }
+  .nicho:hover .nicho-ver { opacity: 1; transform: none; }
+}
+
+@media (hover: none) {
+  .nicho-ver { display: none; }
+}
+
+@media (max-width: 640px) {
+  .nicho { padding: 9px 9px 0; }
+  .nicho-arco::before { inset: -9px -9px 0; }
+  .nicho-arco::after { left: -12px; right: -12px; height: 7px; bottom: -7px; }
+  .nicho-placa { padding-top: 1.1rem; }
+  .nicho-cat { font-size: 0.85rem; }
+}
+
+/* Entrada: la hornacina sube y la foto se "llena" de abajo hacia arriba */
+.vitrina-js .nicho {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 1s var(--ease-smooth), transform 1.1s var(--ease-smooth);
+  transition-delay: calc(var(--i, 0) * 0.12s);
+}
+
+.vitrina-js .nicho .nicho-foto img {
+  clip-path: inset(100% 0 0 0);
+  transform: scale(1.15);
+  transition-delay: calc(var(--i, 0) * 0.12s + 0.15s);
+}
+
+.vitrina-js .nicho.is-in { opacity: 1; transform: none; }
+.vitrina-js .nicho.is-in .nicho-foto img { clip-path: inset(0 0 0 0); transform: scale(1); }
+
+@media (hover: hover) {
+  .vitrina-js .nicho.is-in:hover .nicho-foto img { transform: scale(1.06); transition-delay: 0s; }
+}
+
+/* --- Índice de obras --- */
+.obras {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 4rem;
+  align-items: center;
+}
+
+@media (min-width: 960px) {
+  .obras {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: 6rem;
+  }
+}
+
+.obras-escena {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  justify-self: center;
+  aspect-ratio: 4 / 5;
+}
+
+.obras-escena::before {
+  content: '';
+  position: absolute;
+  inset: -16px -16px 0;
+  border: 1px solid var(--dz-frame);
+  border-bottom: none;
+  border-radius: 999px 999px 0 0;
+}
+
+.obras-arco {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 999px 999px 0 0;
+  background: var(--dz-fill);
+}
+
+.obras-foto {
+  position: absolute;
+  inset: 0;
+  display: block;
+  opacity: 0;
+  z-index: 0;
+}
+
+.obras-foto.is-prev { opacity: 1; z-index: 1; }
+.obras-foto.is-active { opacity: 1; z-index: 2; animation: obrasEntra 1.3s var(--ease-smooth) both; }
+
+.obras-foto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.obras-foto.is-active img { animation: obrasZoom 7s var(--ease-out) both; }
+
+@keyframes obrasEntra {
+  from { clip-path: inset(100% 0 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
+@keyframes obrasZoom {
+  from { transform: scale(1.12); }
+  to { transform: scale(1); }
+}
+
+/* Contador en la enjuta (el rincón que deja la curva del arco) */
+.obras-contador {
+  position: absolute;
+  top: -0.6rem;
+  right: -0.8rem;
+  z-index: 3;
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  font-family: var(--font-serif);
+  color: var(--dz-stone);
+  pointer-events: none;
+}
+
+.obras-contador-actual {
+  font-size: clamp(2.4rem, 5vw, 3.6rem);
+  font-weight: 600;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.2px var(--dz-stone);
+  font-variant-numeric: lining-nums;
+}
+
+.obras-contador-total {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+}
+
+.obras-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--color-border);
+}
+
+.obras-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.6rem 0.25rem;
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  transition: color 0.4s;
+}
+
+.obras-num {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+}
+
+.obras-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+  transition: transform 0.5s var(--ease-smooth);
+}
+
+.obras-nombre {
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 2.3vw, 2rem);
+  line-height: 1.1;
+}
+
+.obras-meta {
+  font-family: var(--font-sans);
+  font-size: 0.64rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+}
+
+.obras-meta:empty { display: none; }
+
+.obras-flecha {
+  font-size: 1.3rem;
+  color: var(--color-text);
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: opacity 0.4s, transform 0.4s var(--ease-smooth);
+}
+
+.obras-barra {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: var(--color-text);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.obras-item.is-active { color: var(--color-text); }
+.obras-item.is-active .obras-texto { transform: translateX(0.6rem); }
+.obras-item.is-active .obras-flecha { opacity: 1; transform: none; }
+
+/* La barra de la obra activa marca cuánto falta para pasar a la siguiente */
+.obras.is-in .obras-item.is-active .obras-barra { animation: obrasBarra 6s linear forwards; }
+.obras.is-pausa .obras-item.is-active .obras-barra { animation-play-state: paused; }
+.obras.is-hover .obras-item.is-active .obras-barra { animation: none; transform: scaleX(1); }
+.obras.is-unica .obras-barra { display: none; }
+
+@keyframes obrasBarra {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* Entrada de la sección: nada se anima hasta que está en pantalla */
+.obras-js .obras:not(.is-in) .obras-foto { animation: none; clip-path: inset(100% 0 0 0); }
+.obras-js .obras:not(.is-in) .obras-foto img { animation: none; }
+
+.obras-js .obras .obras-escena::before,
+.obras-js .obras .obras-contador {
+  opacity: 0;
+  transition: opacity 1s var(--ease-smooth) 0.5s;
+}
+
+.obras-js .obras.is-in .obras-escena::before,
+.obras-js .obras.is-in .obras-contador { opacity: 1; }
+
+.obras-js .obras .obras-lista li {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.9s var(--ease-smooth), transform 0.9s var(--ease-smooth);
+}
+
+.obras-js .obras.is-in .obras-lista li { opacity: 1; transform: none; }
+.obras-js .obras.is-in .obras-lista li:nth-child(2) { transition-delay: 0.1s; }
+.obras-js .obras.is-in .obras-lista li:nth-child(3) { transition-delay: 0.2s; }
+.obras-js .obras.is-in .obras-lista li:nth-child(4) { transition-delay: 0.3s; }
+.obras-js .obras.is-in .obras-lista li:nth-child(5) { transition-delay: 0.4s; }
+.obras-js .obras.is-in .obras-lista li:nth-child(6) { transition-delay: 0.5s; }
+
+@media (max-width: 959px) {
+  .obras { gap: 3rem; }
+  .obras-escena { max-width: 420px; width: calc(100% - 32px); }
+  .obras-item { grid-template-columns: 2.4rem minmax(0, 1fr) auto; padding: 1.25rem 0.25rem; }
+}

@@ -22,7 +22,7 @@
     rel="stylesheet">
 
   <!-- Estilos -->
-  <link rel="stylesheet" href="styles.css?v=42">
+  <link rel="stylesheet" href="styles.css?v=43">
   <meta author="Santiago Mussi" url="www.santimussi.com">
 </head>
 
@@ -177,16 +177,17 @@
 
 
   <!-- Catálogo de Productos -->
-  <section class="catalog section" id="catalogo">
+  <section class="catalog vitrina-seccion section" id="catalogo">
     <div class="container">
 
       <div class="section-header reveal">
         <span class="section-label">Colección</span>
-        <h2>Catálogo de piezas</h2>
+        <h2>Piezas <em>destacadas</em></h2>
+        <p class="section-subtitle">Una selección del catálogo, hecha a mano en el taller.</p>
       </div>
 
-      <!-- Grid: se rellena con productos destacados vía JS -->
-      <div class="catalog-grid" id="home-catalog-grid">
+      <!-- Vitrina: se rellena con productos destacados vía JS -->
+      <div class="vitrina" id="home-catalog-grid">
         <div class="grid-loading">
           <span class="spinner"></span>
           <p>Cargando catálogo…</p>
@@ -238,11 +239,11 @@
 
       <div class="section-header reveal">
         <span class="section-label">Proyectos</span>
-        <h2>Obras realizadas</h2>
+        <h2>Obras <em>realizadas</em></h2>
       </div>
 
-      <!-- Grid de Proyectos: se rellena con JS -->
-      <div class="portfolio-masonry" id="home-portfolio-grid">
+      <!-- Índice de obras: se rellena con JS -->
+      <div class="obras" id="home-portfolio-grid">
         <div class="grid-loading">
           <span class="spinner"></span>
           <p>Cargando proyectos…</p>
@@ -366,53 +367,81 @@
     });
 
     function renderDestacados() {
-      const grid = document.getElementById('home-catalog-grid');
+      const nombreCategoria = (slug, tipo) => {
+        const cat = Store.getCategorias(tipo).find(c => c.slug === slug);
+        return capitalizar(cat ? cat.nombre : (slug || '').replace(/-/g, ' '));
+      };
+      const dosDigitos = n => String(n).padStart(2, '0');
 
-      const destacados = Store.getProductosDestacados();
+      // Vitrina de productos: cada pieza en su hornacina
+      const grid = document.getElementById('home-catalog-grid');
+      const destacados = Store.getProductosDestacados().slice(0, 8);
 
       if (destacados.length === 0) {
-        grid.innerHTML = '<p style="color:var(--color-text-muted); text-align:center; padding: 3rem 0; grid-column: 1/-1;">No hay productos destacados.</p>';
+        grid.innerHTML = '<p class="vitrina-vacia">No hay productos destacados.</p>';
       } else {
-        grid.innerHTML = destacados.map(producto => `
-          <a href="producto?id=${producto.id}" class="product-card reveal">
-            <div class="product-image-wrapper">
-              <img src="${escapeHtml(producto.imagen)}" alt="${escapeHtml(producto.titulo)}" loading="lazy" decoding="async">
+        grid.innerHTML = destacados.map((producto, i) => `
+          <a href="producto?id=${producto.id}" class="nicho" style="--i:${i % 4}">
+            <div class="nicho-arco">
+              <div class="nicho-foto">
+                <img src="${escapeHtml(producto.imagen)}" alt="${escapeHtml(producto.titulo)}" loading="lazy" decoding="async">
+              </div>
             </div>
-            <div class="product-body">
-              <span class="product-category">${capitalizar(escapeHtml(producto.categoria))}</span>
-              <h3 class="product-title">${escapeHtml(producto.titulo)}</h3>
-              <p class="product-description">${escapeHtml(producto.descripcion)}</p>
+            <div class="nicho-placa">
+              <span class="nicho-num">Nº ${dosDigitos(i + 1)}</span>
+              <h3 class="nicho-titulo">${escapeHtml(producto.titulo)}</h3>
+              <span class="nicho-cat">${escapeHtml(nombreCategoria(producto.categoria, 'producto'))}</span>
+              <span class="nicho-ver">Ver pieza <span aria-hidden="true">&rarr;</span></span>
             </div>
           </a>
         `).join('');
       }
 
+      // Índice de obras: foto grande en arco + lista numerada
       const gridProyectos = document.getElementById('home-portfolio-grid');
-      const proyectosDestacados = Store.getProyectosDestacados();
+      const proyectos = Store.getProyectosDestacados().slice(0, 6);
 
-      if (proyectosDestacados.length === 0) {
-        gridProyectos.innerHTML = '<p style="color:var(--color-text-muted); text-align:center; padding: 3rem 0; grid-column: 1/-1;">No hay proyectos destacados.</p>';
+      if (proyectos.length === 0) {
+        gridProyectos.innerHTML = '<p class="vitrina-vacia">No hay proyectos destacados.</p>';
       } else {
-        gridProyectos.innerHTML = proyectosDestacados.map((proyecto, index) => {
-          const esTall = index === 0 || index === 3; // Mantenemos el diseño masonry original
-          const tallClass = esTall ? 'portfolio-item--tall' : '';
-          return `
-            <a href="proyecto?id=${proyecto.id}" class="portfolio-item ${tallClass} reveal">
-              <img src="${escapeHtml(proyecto.imagen)}" alt="${escapeHtml(proyecto.titulo)}" loading="lazy" decoding="async">
-              <figcaption class="portfolio-overlay">
-                <h3 class="portfolio-title">${escapeHtml(proyecto.titulo)}</h3>
-                <p class="portfolio-context">${capitalizar(escapeHtml(proyecto.categoria))} — ${escapeHtml(proyecto.anio)}</p>
-              </figcaption>
-            </a>
-          `;
-        }).join('');
+        const meta = p => [nombreCategoria(p.categoria, 'proyecto'), p.ubicacion, p.anio]
+          .filter(Boolean).map(escapeHtml).join(' · ');
+
+        gridProyectos.innerHTML = `
+          <div class="obras-escena">
+            <div class="obras-arco">
+              ${proyectos.map((p, i) => `
+                <a href="proyecto?id=${p.id}" class="obras-foto${i === 0 ? ' is-active' : ''}" tabindex="-1" aria-hidden="${i === 0 ? 'false' : 'true'}">
+                  <img src="${escapeHtml(p.imagen)}" alt="${escapeHtml(p.titulo)}" ${i === 0 ? '' : 'loading="lazy"'} decoding="async">
+                </a>
+              `).join('')}
+            </div>
+            <div class="obras-contador" aria-hidden="true">
+              <span class="obras-contador-actual">01</span>
+              <span class="obras-contador-total">/ ${dosDigitos(proyectos.length)}</span>
+            </div>
+          </div>
+          <ol class="obras-lista">
+            ${proyectos.map((p, i) => `
+              <li>
+                <a href="proyecto?id=${p.id}" class="obras-item${i === 0 ? ' is-active' : ''}" data-i="${i}" style="--i:${i}">
+                  <span class="obras-num">${dosDigitos(i + 1)}</span>
+                  <span class="obras-texto">
+                    <span class="obras-nombre">${escapeHtml(p.titulo)}</span>
+                    <span class="obras-meta">${meta(p)}</span>
+                  </span>
+                  <span class="obras-flecha" aria-hidden="true">&rarr;</span>
+                  <span class="obras-barra" aria-hidden="true"></span>
+                </a>
+              </li>
+            `).join('')}
+          </ol>
+        `;
       }
 
-      // Reinicializar las animaciones para los elementos recién creados
       if (window.initScrollReveal) window.initScrollReveal();
-
-      // Ajustar el fit de las imágenes según su proporción
-      if (window.initSmartImageFit) window.initSmartImageFit();
+      if (window.initVitrina) window.initVitrina();
+      if (window.initObras) window.initObras();
     }
 
     function capitalizar(str) {
@@ -421,7 +450,7 @@
   </script>
 
   <script src="buscador.js?v=1"></script>
-  <script src="script.js?v=19"></script>
+  <script src="script.js?v=20"></script>
   <!-- WhatsApp Floating Button -->
   <a href="https://wa.me/5491131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
     aria-label="Contactar por WhatsApp">

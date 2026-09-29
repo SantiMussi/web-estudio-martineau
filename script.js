@@ -161,6 +161,86 @@ document.addEventListener('DOMContentLoaded', () => {
         actualizarLinea();
     };
 
+    // Espera a que una imagen esté lista para mostrarse, con un tope para conexiones lentas.
+    const imagenLista = (img, tope = 2500) => {
+        if (!img) return Promise.resolve();
+        img.loading = 'eager';
+        const decodificada = img.decode ? img.decode().catch(() => {}) : Promise.resolve();
+        return Promise.race([decodificada, new Promise(r => setTimeout(r, tope))]);
+    };
+
+    // Vitrina de la home: cada hornacina aparece cuando su foto ya cargó.
+    window.initVitrina = () => {
+        const nichos = document.querySelectorAll('.nicho:not([data-vitrina])');
+        if (!nichos.length) return;
+        document.documentElement.classList.add('vitrina-js');
+
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                io.unobserve(entry.target);
+                imagenLista(entry.target.querySelector('img'))
+                    .then(() => entry.target.classList.add('is-in'));
+            });
+        }, { rootMargin: '0px 0px -10% 0px', threshold: 0.1 });
+
+        nichos.forEach(n => { n.dataset.vitrina = '1'; io.observe(n); });
+    };
+
+    // Índice de obras de la home: foto grande en arco + lista. Rota sola (con barra de
+    // progreso) y al pasar el mouse por una obra se muestra esa.
+    window.initObras = () => {
+        const root = document.querySelector('.obras');
+        if (!root || root.dataset.obras) return;
+        const fotos = [...root.querySelectorAll('.obras-foto')];
+        const items = [...root.querySelectorAll('.obras-item')];
+        if (!fotos.length) return;
+        root.dataset.obras = '1';
+        document.documentElement.classList.add('obras-js');
+        if (fotos.length === 1) root.classList.add('is-unica');
+
+        const contador = root.querySelector('.obras-contador-actual');
+        let actual = 0;
+
+        const mostrar = (n) => {
+            if (n === actual || !fotos[n]) return;
+            fotos.forEach(f => f.classList.remove('is-prev'));
+            fotos[actual].classList.replace('is-active', 'is-prev');
+            fotos[actual].setAttribute('aria-hidden', 'true');
+            items[actual].classList.remove('is-active');
+            actual = n;
+            fotos[actual].classList.add('is-active');
+            fotos[actual].setAttribute('aria-hidden', 'false');
+            items[actual].classList.add('is-active');
+            if (contador) contador.textContent = String(actual + 1).padStart(2, '0');
+        };
+
+        // Cuando termina la barra de la obra activa, pasa a la siguiente
+        items.forEach((item, i) => {
+            const barra = item.querySelector('.obras-barra');
+            if (barra) barra.addEventListener('animationend', () => {
+                if (i === actual) mostrar((actual + 1) % fotos.length);
+            });
+            item.addEventListener('mouseenter', () => mostrar(i));
+            item.addEventListener('focus', () => mostrar(i));
+        });
+
+        root.addEventListener('mouseenter', () => root.classList.add('is-hover'));
+        root.addEventListener('mouseleave', () => root.classList.remove('is-hover'));
+
+        // Entra en pantalla: precarga todas las fotos y arranca. Fuera de pantalla: pausa.
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !root.classList.contains('is-in')) {
+                    fotos.forEach(f => { const img = f.querySelector('img'); if (img) img.loading = 'eager'; });
+                    imagenLista(fotos[0].querySelector('img')).then(() => root.classList.add('is-in'));
+                }
+                root.classList.toggle('is-pausa', !entry.isIntersecting);
+            });
+        }, { threshold: 0.25 });
+        io.observe(root);
+    };
+
     // Slideshow del hero. Funciona con cualquier cantidad de imágenes y saltea las que
     // no cargan (p. ej. si se borró el archivo), para que nunca quede un turno en negro.
     const initHeroSlideshow = () => {
