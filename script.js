@@ -418,29 +418,79 @@ document.addEventListener('DOMContentLoaded', () => {
                     setTimeout(() => item.classList.add('revealed'), idx * 50);
                 });
 
-                if (paginationWrapper && paginationWrapper.classList.contains('pagination')) {
-                    paginationWrapper.innerHTML = '';
-
-                    if (totalPages > 1) {
-                        for (let i = 1; i <= totalPages; i++) {
-                            const btn = document.createElement('button');
-                            btn.className = `page-btn ${i === currentPage ? 'active' : ''}`;
-                            btn.innerText = i;
-                            btn.addEventListener('click', () => {
-                                currentPage = i;
-                                render();
-                                const headerHeight = 100;
-                                const elementPosition = container.getBoundingClientRect().top;
-                                window.scrollTo({
-                                    top: elementPosition + window.scrollY - headerHeight - 50,
-                                    behavior: 'smooth'
-                                });
-                            });
-                            paginationWrapper.appendChild(btn);
-                        }
-                    }
-                }
+                renderPagination(totalPages);
             };
+
+            // Paginado compacto: ‹ 1 … 4 5 6 … 22 ›  (menos vecinos en el celu)
+            const mqCompacto = window.matchMedia('(max-width: 640px)');
+            let ultimoTotal = 0;
+
+            const irAPagina = (pagina) => {
+                currentPage = pagina;
+                render();
+                const headerHeight = 100;
+                const elementPosition = container.getBoundingClientRect().top;
+                window.scrollTo({
+                    top: elementPosition + window.scrollY - headerHeight - 50,
+                    behavior: 'smooth'
+                });
+            };
+
+            const crearBoton = (texto, pagina, extra = '') => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = `page-btn ${extra}`.trim();
+                btn.innerHTML = texto;
+                if (pagina === currentPage && !extra) {
+                    btn.classList.add('active');
+                    btn.setAttribute('aria-current', 'page');
+                }
+                if (pagina < 1 || pagina > ultimoTotal) {
+                    btn.disabled = true;
+                } else {
+                    btn.addEventListener('click', () => irAPagina(pagina));
+                }
+                return btn;
+            };
+
+            const renderPagination = (totalPages) => {
+                ultimoTotal = totalPages;
+                if (!paginationWrapper || !paginationWrapper.classList.contains('pagination')) return;
+                paginationWrapper.innerHTML = '';
+                if (totalPages <= 1) return;
+
+                const vecinos = mqCompacto.matches ? 1 : 2;
+                let desde = Math.max(2, currentPage - vecinos);
+                let hasta = Math.min(totalPages - 1, currentPage + vecinos);
+                // Mantener siempre la misma cantidad de botones cerca de los extremos
+                const ancho = vecinos * 2;
+                if (currentPage - vecinos <= 2) hasta = Math.min(totalPages - 1, 1 + ancho + 1);
+                if (currentPage + vecinos >= totalPages - 1) desde = Math.max(2, totalPages - ancho - 1);
+                // Si el salto es de una sola página, mostrar el número en vez de "…"
+                if (desde === 3) desde = 2;
+                if (hasta === totalPages - 2) hasta = totalPages - 1;
+
+                const paginas = [1];
+                if (desde > 2) paginas.push('…');
+                for (let i = desde; i <= hasta; i++) paginas.push(i);
+                if (hasta < totalPages - 1) paginas.push('…');
+                paginas.push(totalPages);
+
+                paginationWrapper.appendChild(crearBoton('&lsaquo;', currentPage - 1, 'page-btn--flecha'));
+                paginas.forEach(p => {
+                    if (p === '…') {
+                        const puntos = document.createElement('span');
+                        puntos.className = 'page-dots';
+                        puntos.textContent = '…';
+                        paginationWrapper.appendChild(puntos);
+                    } else {
+                        paginationWrapper.appendChild(crearBoton(String(p), p));
+                    }
+                });
+                paginationWrapper.appendChild(crearBoton('&rsaquo;', currentPage + 1, 'page-btn--flecha'));
+            };
+
+            mqCompacto.addEventListener('change', () => renderPagination(ultimoTotal));
 
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', () => {

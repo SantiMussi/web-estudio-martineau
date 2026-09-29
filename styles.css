@@ -907,6 +907,17 @@ body.no-scroll {
   background-color: var(--color-bg-alt);
 }
 
+/* En la página Catálogo arranca directo con el buscador, no hace falta tanto aire arriba */
+.catalog.page-catalog {
+  padding-top: 4.5rem;
+}
+
+@media (max-width: 640px) {
+  .catalog.page-catalog {
+    padding-top: 3rem;
+  }
+}
+
 .section-header {
   text-align: center;
   margin-bottom: 6rem;
@@ -1495,7 +1506,9 @@ body.no-scroll {
 
 .pagination {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
+  align-items: center;
   gap: 0.5rem;
   margin-top: 5rem;
 }
@@ -1528,6 +1541,35 @@ body.no-scroll {
   opacity: 0.3;
   cursor: not-allowed;
   pointer-events: none;
+}
+
+.page-btn--flecha {
+  font-size: 1.4rem;
+  line-height: 1;
+  padding-bottom: 0.15em;
+}
+
+.page-dots {
+  min-width: 1.4rem;
+  text-align: center;
+  color: var(--color-text-muted);
+  letter-spacing: 0.05em;
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .pagination {
+    gap: 0.3rem;
+    margin-top: 3rem;
+  }
+
+  .page-btn {
+    width: 34px;
+    height: 34px;
+    font-size: 0.9rem;
+  }
+
+  .page-dots { min-width: 1rem; }
 }
 
 .filter-item.hidden {
