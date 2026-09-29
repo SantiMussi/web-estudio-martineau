@@ -2525,8 +2525,9 @@ body.no-scroll {
   position: absolute;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .24 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  opacity: 0.35;
-  mix-blend-mode: multiply;
+  /* Sin mix-blend-mode: combinado con el backdrop-filter del header genera
+     líneas y manchas en Chrome al repintar (p. ej. al pasar el mouse por el menú) */
+  opacity: 0.3;
   pointer-events: none;
 }
 
