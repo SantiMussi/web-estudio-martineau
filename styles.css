@@ -162,9 +162,15 @@ p:last-child {
   visibility: hidden;
 }
 
+.loader-wrapper.hidden .loader-mark {
+  animation: none;
+  transform: scale(1.06);
+}
+
 .loader-mark {
   position: relative;
   animation: lgBreath 4.5s ease-in-out 3.6s infinite;
+  transition: transform 0.6s var(--ease-out);
 }
 
 /* El monograma se dibuja trazo a trazo (SVG stroke). Corre siempre. */
@@ -185,14 +191,28 @@ p:last-child {
 .lg-frame-o { animation-duration: 0.75s; animation-delay: 0.15s; }
 .lg-frame-i { animation-duration: 0.75s; animation-delay: 0.35s; }
 
-/* La M se revela con un wipe de abajo hacia arriba sobre la imagen real del
-   glifo (en vez de aproximarla con un trazo dibujado a mano), para que nunca
-   queden huecos por desajuste entre el trazo y el arte real de la M. */
-.lg-m-reveal {
-  transform-origin: 140px 300px;
-  transform: scaleY(0);
-  animation: lgReveal 1s cubic-bezier(0.6, 0, 0.35, 1) both;
-  animation-delay: 0.7s;
+/* "Colado": primero se ve la M apenas insinuada (el molde vacío) y después se
+   llena de abajo hacia arriba con la superficie ondulada, como la mezcla al
+   volcarse. Todo sobre la imagen real del glifo, así nunca quedan huecos. */
+.lg-m-molde {
+  opacity: 0;
+  animation: lgMolde 0.6s var(--ease-out) 0.4s both;
+}
+
+.lg-colado {
+  transform: translateY(305px);
+  animation: lgColado 1.35s cubic-bezier(0.45, 0, 0.25, 1) 0.8s both;
+}
+
+/* La ola se desplaza en loop (un período exacto = 50px) mientras sube */
+.lg-ola {
+  animation: lgOla 0.75s linear infinite;
+}
+
+/* La mezcla entra "húmeda" (más apagada) y al terminar fragua hasta el blanco */
+.lg-m-img {
+  opacity: 0.55;
+  animation: lgFrague 0.8s var(--ease-out) 2.05s both;
 }
 
 .lg-cap {
@@ -202,15 +222,28 @@ p:last-child {
   animation: lgFade 0.5s var(--ease-out) both;
 }
 
-.lg-cap-name { font-size: 15px; letter-spacing: 0.3em; animation-delay: 1.7s; }
-.lg-cap-year { font-size: 13px; letter-spacing: 0.44em; animation-delay: 1.85s; }
+.lg-cap-name { font-size: 15px; letter-spacing: 0.3em; animation-delay: 1.95s; }
+.lg-cap-year { font-size: 13px; letter-spacing: 0.44em; animation-delay: 2.1s; }
 
 @keyframes lgDraw {
   to { stroke-dashoffset: 0; }
 }
 
-@keyframes lgReveal {
-  to { transform: scaleY(1); }
+@keyframes lgMolde {
+  to { opacity: 0.16; }
+}
+
+@keyframes lgColado {
+  to { transform: translateY(74px); }
+}
+
+@keyframes lgOla {
+  to { transform: translateX(-50px); }
+}
+
+@keyframes lgFrague {
+  from { opacity: 0.55; }
+  to { opacity: 1; }
 }
 
 @keyframes lgFade {
@@ -1400,30 +1433,79 @@ body.no-scroll {
 
 .ba-ayuda svg { width: 18px; height: 18px; }
 
-/* Marco: arco rebajado con moldura y una repisa abajo */
+/* Marco: una chimenea de piedra (como la de la foto) — repisa arriba, friso con una
+   concha tallada, jambas acanaladas, molduras siguiendo el arco y base abajo. */
 .ba-marco {
+  --piedra-1: #EDE7DC;
+  --piedra-2: #DDD3C2;
+  --piedra-3: #C3B7A2;
+  --piedra-linea: rgba(92, 78, 58, 0.38);
   position: relative;
-  padding: 14px 14px 0;
+  margin: 26px 20px 18px;
+  padding: clamp(46px, 5vw, 68px) clamp(30px, 3.4vw, 50px) 0;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .24 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    linear-gradient(90deg, var(--piedra-3), var(--piedra-1) 7%, var(--piedra-2) 50%, var(--piedra-1) 93%, var(--piedra-3));
+  box-shadow: 0 50px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
-.ba-marco::before {
-  content: '';
+/* Repisa: estante saliente con escalón de moldura debajo */
+.ba-repisa {
   position: absolute;
-  inset: 0;
-  border: 1px solid rgba(244, 241, 237, 0.2);
-  border-bottom: none;
-  border-radius: 50% 50% 0 0 / 22% 22% 0 0;
+  top: -22px;
+  left: -26px;
+  right: -26px;
+  height: 22px;
+  border-radius: 3px;
+  background: linear-gradient(var(--piedra-1), var(--piedra-2) 70%, var(--piedra-3));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.7),
+    0 7px 0 -2px var(--piedra-3),
+    0 8px 0 -2px var(--piedra-linea),
+    0 16px 22px -6px rgba(0, 0, 0, 0.45);
+  z-index: 2;
+}
+
+/* Jambas: dos canaletas verticales a cada lado */
+.ba-jamba {
+  position: absolute;
+  top: 38%;
+  bottom: 0;
+  width: clamp(8px, 0.9vw, 13px);
+  background: linear-gradient(90deg,
+    var(--piedra-linea) 0 1px, rgba(255, 255, 255, 0.35) 1px 2px, transparent 2px calc(100% - 2px),
+    rgba(92, 78, 58, 0.2) calc(100% - 2px) calc(100% - 1px), var(--piedra-linea) calc(100% - 1px));
+  border-radius: 999px 999px 0 0;
+}
+
+.ba-jamba--izq { left: clamp(10px, 1.2vw, 18px); }
+.ba-jamba--der { right: clamp(10px, 1.2vw, 18px); }
+
+/* Concha tallada en la clave del arco */
+.ba-concha {
+  position: absolute;
+  top: clamp(4px, 0.8vw, 10px);
+  left: 50%;
+  width: clamp(74px, 8vw, 118px);
+  transform: translateX(-50%);
+  z-index: 6;
+  filter: drop-shadow(0 4px 5px rgba(60, 48, 34, 0.35));
   pointer-events: none;
 }
 
-.ba-marco::after {
-  content: '';
+.ba-concha svg { display: block; width: 100%; height: auto; }
+
+/* Base (hogar) */
+.ba-base {
   position: absolute;
-  left: -22px;
-  right: -22px;
-  bottom: -8px;
-  height: 8px;
-  background: linear-gradient(rgba(244, 241, 237, 0.16), rgba(244, 241, 237, 0.06));
+  left: -34px;
+  right: -34px;
+  bottom: -16px;
+  height: 16px;
+  z-index: 7;
+  border-radius: 2px;
+  background: linear-gradient(var(--piedra-2), var(--piedra-3));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 18px 26px rgba(0, 0, 0, 0.45);
 }
 
 .ba-container {
@@ -1434,9 +1516,24 @@ body.no-scroll {
   user-select: none;
   touch-action: pan-y;
   border-radius: 50% 50% 0 0 / 20% 20% 0 0;
-  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.45);
+  box-shadow:
+    0 0 0 6px var(--piedra-1),
+    0 0 0 7px var(--piedra-linea),
+    0 0 0 13px var(--piedra-2),
+    0 0 0 14px var(--piedra-linea);
   cursor: ew-resize;
   outline: none;
+}
+
+/* Profundidad de la boca: sombra arriba y a los costados, sobre las fotos */
+.ba-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  box-shadow: inset 0 22px 28px -14px rgba(0, 0, 0, 0.65), inset 14px 0 20px -14px rgba(0, 0, 0, 0.45), inset -14px 0 20px -14px rgba(0, 0, 0, 0.45);
+  pointer-events: none;
 }
 
 .ba-container:focus-visible .ba-slider-button {
@@ -1446,9 +1543,10 @@ body.no-scroll {
 @media (max-width: 768px) {
   .before-after { padding: 7rem 0; }
   .ba-container { aspect-ratio: 4 / 5; border-radius: 50% 50% 0 0 / 14% 14% 0 0; }
-  .ba-marco::before { border-radius: 50% 50% 0 0 / 15% 15% 0 0; }
-  .ba-marco { padding: 10px 10px 0; }
-  .ba-marco::after { left: -12px; right: -12px; }
+  .ba-marco { margin: 22px 12px 16px; padding: 44px 24px 0; }
+  .ba-repisa { left: -14px; right: -14px; height: 18px; top: -18px; }
+  .ba-base { left: -18px; right: -18px; height: 13px; bottom: -13px; }
+  .ba-jamba { top: 30%; }
 }
 
 .ba-image {
