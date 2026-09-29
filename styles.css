@@ -2718,7 +2718,10 @@ body.no-scroll {
   -webkit-background-clip: text;
   background-clip: text;
   transition: background-size 1.8s var(--ease-smooth) 0.3s;
-  margin-bottom: 1.2rem;
+  /* Los números antiguos (3, 4…) bajan de la línea base: el padding agranda la caja
+     para que el relleno los cubra enteros y no pisen la etiqueta de abajo */
+  padding-bottom: 0.24em;
+  margin-bottom: 0.5rem;
 }
 
 .pp-step-label {
