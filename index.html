@@ -22,7 +22,7 @@
     rel="stylesheet">
 
   <!-- Estilos -->
-  <link rel="stylesheet" href="styles.css?v=45">
+  <link rel="stylesheet" href="styles.css?v=46">
   <meta author="Santiago Mussi" url="www.santimussi.com">
 </head>
 
@@ -214,34 +214,55 @@
 
   <!-- Sección Antes y Después -->
   <section class="before-after section" id="transformacion">
-    <div class="container">
-      <div class="section-header reveal">
-        <span class="section-label">Transformación</span>
-        <h2>El impacto del diseño</h2>
-        <p class="section-subtitle">Desliza para ver el antes y después de nuestra intervención</p>
+    <div class="container ba-layout">
+
+      <div class="ba-texto">
+        <span class="section-label reveal">Transformación</span>
+        <h2 class="reveal">El impacto <em>del diseño</em></h2>
+        <p class="ba-lead reveal">Una sola pieza cambia por completo un ambiente. Mové la línea para ver el mismo espacio antes y después de la chimenea.</p>
+
+        <div class="ba-botones reveal" role="group" aria-label="Comparar antes y después">
+          <button type="button" class="ba-boton" data-ba-ir="100">Antes</button>
+          <button type="button" class="ba-boton is-activo" data-ba-ir="50">Comparar</button>
+          <button type="button" class="ba-boton" data-ba-ir="0">Después</button>
+        </div>
+
+        <p class="ba-ayuda reveal">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M3 12h18" /></svg>
+          Arrastrá para comparar
+        </p>
       </div>
 
-      <div class="ba-container reveal">
-        <!-- Imagen de fondo (Despues) -->
-        <div class="ba-image ba-before">
-          <img src="assets/ImgsPrincipales/despuesChimenea.webp" alt="Espacio despues con chimenea Martineau"
-            loading="lazy">
-        </div>
-        <!-- Imagen superpuesta (Antes) Cambie el orden para q esten al reves -->
-        <div class="ba-image ba-after">
-          <img src="assets/ImgsPrincipales/antesChimenea.webp" alt="Espacio antes de la intervención" loading="lazy">
-          <!-- Slider Handle -->
-          <div class="ba-slider">
+      <div class="ba-marco reveal">
+        <div class="ba-container" tabindex="0" role="slider" aria-label="Comparar antes y después"
+          aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+          <!-- Después (fondo) -->
+          <div class="ba-image ba-before">
+            <img src="assets/ImgsPrincipales/despuesChimenea.webp" alt="El ambiente con la chimenea Martineau encendida" loading="lazy">
+          </div>
+          <!-- Antes (encima, se recorta desde la izquierda) -->
+          <div class="ba-image ba-after">
+            <div class="ba-after-inner">
+              <img src="assets/ImgsPrincipales/antesChimenea.webp" alt="El mismo ambiente antes, con la pared vacía" loading="lazy">
+            </div>
+          </div>
+
+          <span class="ba-etiqueta ba-etiqueta--antes" aria-hidden="true">Antes</span>
+          <span class="ba-etiqueta ba-etiqueta--despues" aria-hidden="true">Después</span>
+
+          <div class="ba-slider" aria-hidden="true">
             <div class="ba-slider-line"></div>
             <div class="ba-slider-button">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M11 17l-5-5 5-5M13 17l5-5-5-5" />
+                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 17l-5-5 5-5M14 17l5-5-5-5" />
               </svg>
             </div>
           </div>
         </div>
       </div>
+
+    </div>
   </section>
 
   <!-- Portfolio / Proyectos -->
@@ -462,7 +483,7 @@
   </script>
 
   <script src="buscador.js?v=1"></script>
-  <script src="script.js?v=20"></script>
+  <script src="script.js?v=21"></script>
   <!-- WhatsApp Floating Button -->
   <a href="https://wa.me/5491131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
     aria-label="Contactar por WhatsApp">

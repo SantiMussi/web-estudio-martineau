@@ -612,99 +612,75 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Antes y Después Slider
+    // Antes y Después. La posición vive en la variable CSS --ba-pos de la sección
+    // (0 = todo "después", 100 = todo "antes") y el CSS la traduce a transforms.
     const initBeforeAfter = () => {
+        const seccion = document.querySelector('.before-after');
         const container = document.querySelector('.ba-container');
-        const slider = document.querySelector('.ba-slider');
-        const afterImage = document.querySelector('.ba-after');
+        if (!seccion || !container) return;
 
-        if (!container || !slider || !afterImage) return;
+        const botones = [...seccion.querySelectorAll('[data-ba-ir]')];
+        let pos = 50;
+        let arrastrando = false;
+        let finAnimacion = null;
 
-        let isDragging = false;
-        let isDemoing = false;
-
-        const moveSlider = (e) => {
-            if (!isDragging && e.type !== 'mousedown' && e.type !== 'touchstart') return;
-            isDemoing = false; // Cancelar demo si el usuario interactúa activamente
-
-            const rect = container.getBoundingClientRect();
-            let x = 0;
-
-            if (e.type.startsWith('touch')) {
-                x = e.touches[0].clientX;
-            } else {
-                x = e.clientX;
-            }
-
-            x = x - rect.left;
-
-            // Limit bounds
-            let percentage = (x / rect.width) * 100;
-            if (percentage < 0) percentage = 0;
-            if (percentage > 100) percentage = 100;
-
-            slider.style.left = `${percentage}%`;
-            afterImage.style.clipPath = `polygon(0 0, ${percentage}% 0, ${percentage}% 100%, 0 100%)`;
+        const aplicar = (valor) => {
+            pos = Math.min(100, Math.max(0, valor));
+            seccion.style.setProperty('--ba-pos', pos.toFixed(2));
+            container.setAttribute('aria-valuenow', Math.round(pos));
+            container.classList.toggle('sin-antes', pos < 12);
+            container.classList.toggle('sin-despues', pos > 88);
+            botones.forEach(b => b.classList.toggle('is-activo', Number(b.dataset.baIr) === Math.round(pos)));
         };
 
-        container.addEventListener('mousedown', (e) => {
-            isDragging = true;
-            moveSlider(e);
+        // Movimiento suave (botones, teclado y la entrada)
+        const animarA = (valor) => {
+            seccion.classList.add('is-animando');
+            aplicar(valor);
+            clearTimeout(finAnimacion);
+            finAnimacion = setTimeout(() => seccion.classList.remove('is-animando'), 1150);
+        };
+
+        const posDesdeEvento = (e) => {
+            const rect = container.getBoundingClientRect();
+            return ((e.clientX - rect.left) / rect.width) * 100;
+        };
+
+        container.addEventListener('pointerdown', (e) => {
+            arrastrando = true;
+            clearTimeout(finAnimacion);
+            seccion.classList.remove('is-animando');
+            container.classList.add('is-arrastrando');
+            aplicar(posDesdeEvento(e));
         });
 
-        container.addEventListener('touchstart', (e) => {
-            isDragging = true;
-            moveSlider(e);
+        window.addEventListener('pointermove', (e) => {
+            if (arrastrando) aplicar(posDesdeEvento(e));
         }, { passive: true });
 
-        window.addEventListener('mouseup', () => isDragging = false);
-        window.addEventListener('touchend', () => isDragging = false);
-
-        window.addEventListener('mousemove', moveSlider);
-        window.addEventListener('touchmove', moveSlider, { passive: true });
-
-        // Animación de Demo Automática (2 segundos)
-        const playDemo = () => {
-            if (container.classList.contains('demo-played')) return;
-            container.classList.add('demo-played');
-            isDemoing = true;
-
-            const start = performance.now();
-            const duration = 2000;
-
-            const animateDemo = (time) => {
-                if (!isDemoing) return; // Se detiene si el usuario interactúa
-
-                let elapsed = time - start;
-                let progress = elapsed / duration;
-
-                if (progress > 1) {
-                    isDemoing = false;
-
-                    slider.style.left = `50%`;
-                    afterImage.style.clipPath = `polygon(0 0, 50% 0, 50% 100%, 0 100%)`;
-                    return;
-                }
-
-                const percentage = 50 + Math.sin(progress * Math.PI * 2) * 20;
-
-                slider.style.left = `${percentage}%`;
-                afterImage.style.clipPath = `polygon(0 0, ${percentage}% 0, ${percentage}% 100%, 0 100%)`;
-
-                requestAnimationFrame(animateDemo);
-            };
-
-            requestAnimationFrame(animateDemo);
+        const soltar = () => {
+            arrastrando = false;
+            container.classList.remove('is-arrastrando');
         };
+        window.addEventListener('pointerup', soltar);
+        window.addEventListener('pointercancel', soltar);
 
-        // Observar cuando entra en pantalla
+        container.addEventListener('keydown', (e) => {
+            const pasos = { ArrowLeft: -5, ArrowRight: 5, Home: -100, End: 100 };
+            if (!(e.key in pasos)) return;
+            e.preventDefault();
+            animarA(pos + pasos[e.key]);
+        });
+
+        botones.forEach(b => b.addEventListener('click', () => animarA(Number(b.dataset.baIr))));
+
+        // Entrada: arranca mostrando solo el "antes" (la pared vacía) y se abre hasta la mitad
+        aplicar(100);
         const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                setTimeout(playDemo, 400); // Pequeño retraso para mayor impacto
-                observer.disconnect();
-            }
-        }, { threshold: 0.6 });
-
+            if (!entries[0].isIntersecting) return;
+            observer.disconnect();
+            setTimeout(() => { if (!arrastrando) animarA(50); }, 500);
+        }, { threshold: 0.5 });
         observer.observe(container);
     };
 
