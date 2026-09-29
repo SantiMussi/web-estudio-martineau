@@ -106,6 +106,37 @@ document.addEventListener('DOMContentLoaded', () => {
         // Parallax desactivado intencionalmente
     };
 
+    // Nosotros, "Del molde a la pieza": cada paso se "llena" al entrar en pantalla
+    // y la línea central avanza con el scroll.
+    const initProceso = () => {
+        const steps = document.querySelectorAll('.pp-step');
+        if (!steps.length) return;
+
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-in');
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { rootMargin: '0px 0px -25% 0px', threshold: 0.15 });
+        steps.forEach(step => io.observe(step));
+
+        const list = document.getElementById('ppSteps');
+        if (!list) return;
+        let pendiente = false;
+        const actualizarLinea = () => {
+            pendiente = false;
+            const r = list.getBoundingClientRect();
+            const avance = (window.innerHeight * 0.55 - r.top) / r.height;
+            list.style.setProperty('--pp-progress', Math.min(1, Math.max(0, avance)).toFixed(3));
+        };
+        window.addEventListener('scroll', () => {
+            if (!pendiente) { pendiente = true; requestAnimationFrame(actualizarLinea); }
+        }, { passive: true });
+        actualizarLinea();
+    };
+
     // Slideshow del hero. Funciona con cualquier cantidad de imágenes y saltea las que
     // no cargan (p. ej. si se borró el archivo), para que nunca quede un turno en negro.
     const initHeroSlideshow = () => {
@@ -548,6 +579,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initFormHandling();
         initBeforeAfter();
         initHeroSlideshow();
+        initProceso();
         window.initFiltersAndPagination();
     };
 
