@@ -692,7 +692,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.addEventListener('load', () => {
             setTimeout(() => {
                 loader.classList.add('hidden');
-                setTimeout(() => loader.style.display = 'none', 600);
+                setTimeout(() => loader.style.display = 'none', 1400);
             }, 2900);
         });
     };

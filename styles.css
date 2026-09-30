@@ -142,41 +142,208 @@ p:last-child {
 
 /* Loader / Splash — logo Martineau */
 .loader-wrapper {
+  /* Medidas del logo: las líneas guía se calculan a partir de acá */
+  --lw: clamp(155px, 34vw, 250px);
+  --lh: calc(var(--lw) * 375 / 280);
+  --inset: clamp(12px, 2.4vw, 30px);
+  --ink: #F4EFEA;
+
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100vw;
   height: 100vh;
-  background-color: #A99F94;
-  background-image: radial-gradient(circle at 50% 44%, rgba(255, 255, 255, 0.08) 0%, transparent 60%);
+  height: 100dvh;
+  overflow: hidden;
   z-index: 10000;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  transition: opacity 0.55s var(--ease-smooth), visibility 0.55s;
+  transition: visibility 0s linear 1.35s;
 }
 
 .loader-wrapper.hidden {
-  opacity: 0;
   visibility: hidden;
+  pointer-events: none;
+}
+
+/* Las dos mitades del "molde": fondo piedra con viñeta y grano */
+.loader-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: calc(50% + 1px);
+  background-color: #A99F94;
+  background-image:
+    radial-gradient(ellipse 60% 55% at 50% 45%, rgba(255, 255, 255, 0.11) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 80% at 50% 50%, transparent 55%, rgba(62, 52, 40, 0.3) 100%);
+  background-size: 100vw 100%;
+  background-repeat: no-repeat;
+  transition: transform 1.05s var(--ease-smooth) 0.3s;
+}
+
+.loader-panel-l { left: 0; background-position: left top; }
+.loader-panel-r { right: 0; background-position: right top; }
+
+.loader-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .16 0 0 0 0 .12 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* El borde de la mitad derecha: una línea de luz en la junta al abrirse */
+.loader-panel-r::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: rgba(244, 239, 234, 0.5);
+  opacity: 0;
+  transition: opacity 0.3s ease 0.3s;
+}
+
+.loader-wrapper.hidden .loader-panel-l { transform: translateX(-101%); }
+.loader-wrapper.hidden .loader-panel-r { transform: translateX(101%); }
+.loader-wrapper.hidden .loader-panel-r::after { opacity: 1; }
+
+/* Marco de pantalla completa: eco del doble marco redondeado del logo */
+.loader-frame {
+  position: absolute;
+  inset: var(--inset);
+  width: calc(100% - 2 * var(--inset));
+  height: calc(100% - 2 * var(--inset));
+  overflow: visible;
+  fill: none;
+  stroke: rgba(244, 239, 234, 0.32);
+  stroke-width: 1;
+}
+
+.loader-frame .lg-line {
+  animation-duration: 1.6s;
+  animation-delay: 0.1s;
+}
+
+/* Relieve: surcos que nacen junto al logo y se abren hacia los bordes.
+   Los paths los genera el script inline de index.html según la pantalla. */
+.loader-relief {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: var(--ink);
+  stroke-linecap: round;
+  clip-path: inset(var(--inset) round 26px);
+  /* Se desvanecen arriba y abajo para no pisar los textos de los bordes */
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 95px, #000 calc(100% - 95px), transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 95px, #000 calc(100% - 95px), transparent 100%);
+  /* Sombra de 1px debajo de cada línea: se leen como surcos tallados */
+  filter: drop-shadow(0 1px 0 rgba(62, 52, 40, 0.28));
+}
+
+.loader-relief path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: lgDraw 1.7s cubic-bezier(0.3, 0.6, 0.25, 1) both;
+}
+
+.loader-relief.sin-anim path {
+  animation: none;
+  stroke-dashoffset: 0;
+}
+
+/* Datos en los bordes, como el rótulo de un plano */
+.loader-meta {
+  position: absolute;
+  inset: calc(var(--inset) + clamp(14px, 2.2vw, 26px)) calc(var(--inset) + clamp(18px, 3vw, 40px));
+  pointer-events: none;
+}
+
+.lm {
+  font-family: var(--font-serif);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: rgba(244, 239, 234, 0.82);
+  white-space: nowrap;
+  opacity: 0;
+  animation: lgMeta 0.8s var(--ease-out) both;
+}
+
+.lm-tl { position: absolute; top: 0; left: 0; animation-delay: 0.6s; }
+.lm-tr { position: absolute; top: 0; right: 0; animation-delay: 0.75s; }
+.lm-bl { animation-delay: 0.9s; }
+.lm-br { animation-delay: 1.05s; }
+
+.lm-bottom {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: clamp(14px, 2.5vw, 32px);
+}
+
+/* Barra de progreso: termina justo cuando la M termina de tallarse */
+.lm-progress {
+  flex: 1;
+  min-width: 40px;
+  height: 1px;
+  background: rgba(244, 239, 234, 0.2);
+  overflow: hidden;
+}
+
+.lm-progress i {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: lgProgress 2.6s cubic-bezier(0.6, 0, 0.3, 1) 0.3s both;
+}
+
+/* Al salir: primero se va el contenido, después se abre el molde */
+.loader-frame,
+.loader-relief,
+.loader-meta {
+  transition: opacity 0.4s var(--ease-out);
+}
+
+.loader-wrapper.hidden .loader-frame,
+.loader-wrapper.hidden .loader-relief,
+.loader-wrapper.hidden .loader-meta {
+  opacity: 0;
 }
 
 .loader-wrapper.hidden .loader-mark {
   animation: none;
+  opacity: 0;
   transform: scale(1.06);
 }
 
 .loader-mark {
   position: relative;
   animation: lgBreath 4.5s ease-in-out 3.6s infinite;
-  transition: transform 0.6s var(--ease-out);
+  transition: transform 0.6s var(--ease-out), opacity 0.45s var(--ease-out);
+}
+
+@media (max-width: 640px) {
+  .lm { font-size: 10px; letter-spacing: 0.24em; }
+  .lm-tr,
+  .lm-br { display: none; }
 }
 
 /* El monograma se dibuja trazo a trazo (SVG stroke). Corre siempre. */
 .loader-logo {
   display: block;
-  width: clamp(155px, 34vw, 250px);
+  width: var(--lw);
   height: auto;
   overflow: visible;
   filter: drop-shadow(0 0 30px rgba(244, 239, 234, 0.18));
@@ -191,28 +358,16 @@ p:last-child {
 .lg-frame-o { animation-duration: 0.75s; animation-delay: 0.15s; }
 .lg-frame-i { animation-duration: 0.75s; animation-delay: 0.35s; }
 
-/* "Colado": primero se ve la M apenas insinuada (el molde vacío) y después se
-   llena de abajo hacia arriba con la superficie ondulada, como la mezcla al
-   volcarse. Todo sobre la imagen real del glifo, así nunca quedan huecos. */
-.lg-m-molde {
+/* "Talla": un frente diagonal de borde suave (como la pasada de una gubia)
+   descubre la M; después aparece su sombra y el glifo toma volumen de relieve. */
+.lg-talla {
+  transform: translateX(-100px);
+  animation: lgTalla 1.35s cubic-bezier(0.55, 0, 0.3, 1) 0.85s both;
+}
+
+.lg-m-sombra {
   opacity: 0;
-  animation: lgMolde 0.6s var(--ease-out) 0.4s both;
-}
-
-.lg-colado {
-  transform: translateY(305px);
-  animation: lgColado 1.35s cubic-bezier(0.45, 0, 0.25, 1) 0.8s both;
-}
-
-/* La ola se desplaza en loop (un período exacto = 50px) mientras sube */
-.lg-ola {
-  animation: lgOla 0.75s linear infinite;
-}
-
-/* La mezcla entra "húmeda" (más apagada) y al terminar fragua hasta el blanco */
-.lg-m-img {
-  opacity: 0.55;
-  animation: lgFrague 0.8s var(--ease-out) 2.05s both;
+  animation: lgFade 0.7s var(--ease-out) 1.95s both;
 }
 
 .lg-cap {
@@ -229,21 +384,8 @@ p:last-child {
   to { stroke-dashoffset: 0; }
 }
 
-@keyframes lgMolde {
-  to { opacity: 0.16; }
-}
-
-@keyframes lgColado {
-  to { transform: translateY(74px); }
-}
-
-@keyframes lgOla {
-  to { transform: translateX(-50px); }
-}
-
-@keyframes lgFrague {
-  from { opacity: 0.55; }
-  to { opacity: 1; }
+@keyframes lgTalla {
+  to { transform: translateX(560px); }
 }
 
 @keyframes lgFade {
@@ -255,9 +397,21 @@ p:last-child {
   50% { transform: scale(1.018); }
 }
 
-/* Con "reduce": el dibujo igual corre; solo se quita el latido en bucle */
+@keyframes lgMeta {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes lgProgress {
+  to { transform: scaleX(1); }
+}
+
+/* Con "reduce": el dibujo igual corre; se quita el latido en bucle y el
+   molde no se abre deslizando, simplemente se desvanece */
 @media (prefers-reduced-motion: reduce) {
   .loader-mark { animation: none; }
+  .loader-panel { transition: opacity 0.5s ease 0.2s; }
+  .loader-wrapper.hidden .loader-panel { transform: none; opacity: 0; }
 }
 
 /* Layout y utilidades */
