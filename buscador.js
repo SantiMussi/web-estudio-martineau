@@ -298,6 +298,22 @@
     return frag;
   }
 
+  // Las miniaturas se crean una sola vez por producto y se reutilizan entre búsquedas:
+  // así cada tecla no vuelve a decodificar las fotos grandes.
+  const miniaturas = new Map();
+  function miniatura(p) {
+    let img = miniaturas.get(p.id);
+    if (!img) {
+      img = document.createElement('img');
+      img.alt = '';
+      img.decoding = 'async';
+      img.loading = 'lazy';
+      img.src = p.imagen;
+      miniaturas.set(p.id, img);
+    }
+    return img;
+  }
+
   function render() {
     activo = -1;
     lista.innerHTML = '';
@@ -350,13 +366,7 @@
 
       const foto = document.createElement('span');
       foto.className = 'bq-item-foto';
-      if (p.imagen) {
-        const img = document.createElement('img');
-        img.src = p.imagen;
-        img.alt = '';
-        img.loading = 'lazy';
-        foto.appendChild(img);
-      }
+      if (p.imagen) foto.appendChild(miniatura(p));
 
       const textoItem = document.createElement('span');
       textoItem.className = 'bq-item-texto';
