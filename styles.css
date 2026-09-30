@@ -1433,107 +1433,52 @@ body.no-scroll {
 
 .ba-ayuda svg { width: 18px; height: 18px; }
 
-/* Marco: una chimenea de piedra (como la de la foto) — repisa arriba, friso con una
-   concha tallada, jambas acanaladas, molduras siguiendo el arco y base abajo. */
+/* Marco: chimenea Luis XV tallada en SVG (como la de la foto). La foto va debajo,
+   ocupando el recuadro de la boca, y la chimenea encima con la boca calada.
+   Las medidas del .ba-container salen del viewBox del SVG (1000 x 620):
+   boca de x 112 a 888 y de y 118 a 592. */
 .ba-marco {
-  --piedra-1: #EDE7DC;
-  --piedra-2: #DDD3C2;
-  --piedra-3: #C3B7A2;
-  --piedra-linea: rgba(92, 78, 58, 0.38);
   position: relative;
-  margin: 26px 20px 18px;
-  padding: clamp(46px, 5vw, 68px) clamp(30px, 3.4vw, 50px) 0;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .24 0 0 0 .35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
-    linear-gradient(90deg, var(--piedra-3), var(--piedra-1) 7%, var(--piedra-2) 50%, var(--piedra-1) 93%, var(--piedra-3));
-  box-shadow: 0 50px 80px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto;
+  aspect-ratio: 1000 / 620;
 }
 
-/* Repisa: estante saliente con escalón de moldura debajo */
-.ba-repisa {
+/* Sombra de la chimenea sobre el piso */
+.ba-marco::after {
+  content: '';
   position: absolute;
-  top: -22px;
-  left: -26px;
-  right: -26px;
-  height: 22px;
-  border-radius: 3px;
-  background: linear-gradient(var(--piedra-1), var(--piedra-2) 70%, var(--piedra-3));
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.7),
-    0 7px 0 -2px var(--piedra-3),
-    0 8px 0 -2px var(--piedra-linea),
-    0 16px 22px -6px rgba(0, 0, 0, 0.45);
-  z-index: 2;
-}
-
-/* Jambas: dos canaletas verticales a cada lado */
-.ba-jamba {
-  position: absolute;
-  top: 38%;
-  bottom: 0;
-  width: clamp(8px, 0.9vw, 13px);
-  background: linear-gradient(90deg,
-    var(--piedra-linea) 0 1px, rgba(255, 255, 255, 0.35) 1px 2px, transparent 2px calc(100% - 2px),
-    rgba(92, 78, 58, 0.2) calc(100% - 2px) calc(100% - 1px), var(--piedra-linea) calc(100% - 1px));
-  border-radius: 999px 999px 0 0;
-}
-
-.ba-jamba--izq { left: clamp(10px, 1.2vw, 18px); }
-.ba-jamba--der { right: clamp(10px, 1.2vw, 18px); }
-
-/* Concha tallada en la clave del arco */
-.ba-concha {
-  position: absolute;
-  top: clamp(4px, 0.8vw, 10px);
-  left: 50%;
-  width: clamp(74px, 8vw, 118px);
-  transform: translateX(-50%);
-  z-index: 6;
-  filter: drop-shadow(0 4px 5px rgba(60, 48, 34, 0.35));
+  left: 4%;
+  right: 4%;
+  bottom: -26px;
+  height: 40px;
+  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), transparent 70%);
   pointer-events: none;
 }
 
-.ba-concha svg { display: block; width: 100%; height: auto; }
-
-/* Base (hogar) */
-.ba-base {
+.ba-chimenea {
   position: absolute;
-  left: -34px;
-  right: -34px;
-  bottom: -16px;
-  height: 16px;
-  z-index: 7;
-  border-radius: 2px;
-  background: linear-gradient(var(--piedra-2), var(--piedra-3));
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55), 0 18px 26px rgba(0, 0, 0, 0.45);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+  overflow: visible;
 }
 
 .ba-container {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
+  position: absolute;
+  left: 11.2%;
+  top: 19.03%;
+  width: 77.6%;
+  height: 76.45%;
   overflow: hidden;
   user-select: none;
   touch-action: pan-y;
-  border-radius: 50% 50% 0 0 / 20% 20% 0 0;
-  box-shadow:
-    0 0 0 6px var(--piedra-1),
-    0 0 0 7px var(--piedra-linea),
-    0 0 0 13px var(--piedra-2),
-    0 0 0 14px var(--piedra-linea);
+  background: #1C1712;
   cursor: ew-resize;
   outline: none;
-}
-
-/* Profundidad de la boca: sombra arriba y a los costados, sobre las fotos */
-.ba-container::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  border-radius: inherit;
-  box-shadow: inset 0 22px 28px -14px rgba(0, 0, 0, 0.65), inset 14px 0 20px -14px rgba(0, 0, 0, 0.45), inset -14px 0 20px -14px rgba(0, 0, 0, 0.45);
-  pointer-events: none;
 }
 
 .ba-container:focus-visible .ba-slider-button {
@@ -1542,11 +1487,12 @@ body.no-scroll {
 
 @media (max-width: 768px) {
   .before-after { padding: 7rem 0; }
-  .ba-container { aspect-ratio: 4 / 5; border-radius: 50% 50% 0 0 / 14% 14% 0 0; }
-  .ba-marco { margin: 22px 12px 16px; padding: 44px 24px 0; }
-  .ba-repisa { left: -14px; right: -14px; height: 18px; top: -18px; }
-  .ba-base { left: -18px; right: -18px; height: 13px; bottom: -13px; }
-  .ba-jamba { top: 30%; }
+  .ba-slider-button { width: 36px; height: 36px; margin: -18px 0 0 -18px; }
+  .ba-slider-button svg { width: 14px; height: 14px; }
+  .ba-slider-button::before { inset: -5px; }
+  .ba-etiqueta { bottom: 0.7rem; font-size: 0.52rem; padding: 0.4rem 0.65rem; }
+  .ba-etiqueta--antes { left: 0.9rem; }
+  .ba-etiqueta--despues { right: 0.9rem; }
 }
 
 .ba-image {
