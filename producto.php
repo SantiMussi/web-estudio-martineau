@@ -1,11 +1,19 @@
+<?php
+require __DIR__ . '/inc/ficha.php';
+
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+$item = ficha_cargar('producto', $id);   // array | null (no existe) | false (la base no respondió)
+if ($item === null) http_response_code(404);
+$seo = ficha_seo('producto', $item, $id);
+header('Content-Type: text/html; charset=utf-8');
+?>
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es-AR">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Detalle de proyecto - Martineau.">
-  <title>Proyecto — Martineau</title>
+<?php ficha_head($seo); ?>
 
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
@@ -18,12 +26,11 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
     rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=66">
+  <link rel="stylesheet" href="styles.css?v=67">
 </head>
 
 <body class="page-detail">
-
-  <!-- Header -->
+  <!-- Header y Navegacion -->
   <header class="site-header" id="header">
     <div class="container header-inner">
       <a href="/" class="logo" aria-label="Martineau - Ir al inicio"><img src="assets/logo-wordmark.webp"
@@ -36,7 +43,7 @@
             <ul class="nav-dropdown" data-nav-dropdown="producto"></ul>
           </li>
           <li class="nav-item has-dropdown">
-            <a href="portfolio" class="nav-link active">Portfolio</a>
+            <a href="portfolio" class="nav-link">Portfolio</a>
             <ul class="nav-dropdown" data-nav-dropdown="proyecto"></ul>
           </li>
           <li><a href="#contacto" class="nav-link">Contacto</a></li>
@@ -74,9 +81,9 @@
     </nav>
   </header>
 
-  <!-- Detalle del proyecto: rellena dinamicamente por JS -->
-  <main class="product-detail-page container" id="proyecto-detail-root">
-    <!-- Generado por renderProyecto() -->
+  <!-- Detalle: lo arma el servidor (inc/ficha.php); el JS de abajo es el respaldo -->
+  <main class="product-detail-page container" id="product-detail-root"<?= $item !== false ? ' data-ssr="1"' : '' ?>>
+<?php if ($item) ficha_cuerpo('producto', $item); elseif ($item === null) ficha_no_encontrada('producto'); ?>
   </main>
 
   <!-- Sección Contacto -->
@@ -118,9 +125,9 @@
           </span>
           <h3>Comunicación</h3>
           <p>
-            <a href="tel:+541131917014">+54 11 15-3191-7014</a><br>
+            <a href="tel:+5491131917014">+54 9 11 3191-7014</a><br>
             <a href="https://wa.me/5491131917014" target="_blank" rel="noopener">WhatsApp</a><br>
-            <a href="mailto:info@martineau.studio">contacto@armartineau.com.ar</a>
+            <a href="mailto:contacto@armartineau.com.ar">contacto@armartineau.com.ar</a>
           </p>
         </div>
 
@@ -184,78 +191,84 @@
     <span class="whatsapp-text">Hablemos!</span>
   </a>
 
-  <!-- Store compartido (capa de datos / simulacion) -->
+  <!-- Store compartido -->
   <script src="store.js?v=8"></script>
-
   <script>
 
     document.addEventListener('DOMContentLoaded', async () => {
+      // La ficha llega armada desde el servidor (SEO); si la base no respondió, se arma acá
+      const ssr = document.getElementById('product-detail-root').dataset.ssr;
+      if (ssr) activarGaleria();
       await Store.init();
-      renderProyecto();
+      if (!ssr) renderProducto();
       renderNavCategorias();
     });
 
-    function renderProyecto() {
-      const root = document.getElementById('proyecto-detail-root');
-      const params = new URLSearchParams(window.location.search);
-      const id = params.get('id');
-
-      if (!id) { root.innerHTML = notFound('No se especifico ningun proyecto.'); return; }
-
-      const proyecto = Store.getProyectoById(id);
-      if (!proyecto) { root.innerHTML = notFound('Proyecto no encontrado.'); return; }
-
-      document.title = proyecto.titulo + ' — Martineau';
-
-      const imagenes = [proyecto.imagen];
-      if (proyecto.imagenes && proyecto.imagenes.length > 0) {
-        imagenes.push(...proyecto.imagenes);
-      }
-
-      const thumbsHTML = imagenes.map((src, i) =>
-        '<div class="gallery-thumb ' + (i === 0 ? 'active' : '') + '" data-src="' + escapeHtml(src) + '">' +
-        '<img src="' + escapeHtml(src) + '" alt="Vista ' + (i + 1) + '" loading="lazy" decoding="async"></div>'
-      ).join('');
-
-      const specsHTML = (proyecto.specs || []).map(s =>
-        '<div class="spec-item"><span class="spec-label">' + escapeHtml(s.label) + '</span><span class="spec-value">' + escapeHtml(s.value) + '</span></div>'
-      ).join('');
-
-      const categoriaUrl = new URLSearchParams(window.location.search).get('categoria');
-      const linkPortfolio = categoriaUrl ? 'portfolio?categoria=' + encodeURIComponent(categoriaUrl) : 'portfolio';
-
-      const mensajeWhatsapp = encodeURIComponent('Hola! Quería consultar por el proyecto "' + proyecto.titulo + '".');
-      const linkWhatsapp = 'https://wa.me/5491131917014?text=' + mensajeWhatsapp;
-
-      root.innerHTML =
-        '<div class="back-link-wrapper reveal">' +
-        '<a href="' + linkPortfolio + '" class="back-link">' +
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
-        '<line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>' +
-        '</svg> Volver al Portfolio' +
-        '</a>' +
-        '</div>' +
-        '<div class="product-detail-grid">' +
-        '<div class="product-gallery reveal">' +
-        '<div class="gallery-main"><img src="' + escapeHtml(imagenes[0]) + '" alt="' + escapeHtml(proyecto.titulo) + '" id="main-proyecto-image"></div>' +
-        '<div class="gallery-thumbnails">' + thumbsHTML + '</div>' +
-        '</div>' +
-        '<div class="product-info reveal">' +
-        '<span class="product-info-category">' + capitalizar(escapeHtml(proyecto.categoria)) + ' — ' + escapeHtml(proyecto.anio || '') + '</span>' +
-        '<h1 class="product-info-title">' + escapeHtml(proyecto.titulo) + '</h1>' +
-        '<p class="product-info-desc">' + escapeHtml(proyecto.descripcion || '') + '</p>' +
-        (specsHTML ? '<div class="product-specs">' + specsHTML + '</div>' : '') +
-        '<div class="product-actions"><a href="' + linkWhatsapp + '" class="btn" target="_blank" rel="noopener">Consultar por este proyecto</a></div>' +
-        '</div>' +
-        '</div>';
-
+    function activarGaleria() {
       document.querySelectorAll('.gallery-thumb').forEach(thumb => {
         thumb.addEventListener('click', function () {
           document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
           this.classList.add('active');
-          document.getElementById('main-proyecto-image').src = this.dataset.src;
+          document.getElementById('main-product-image').src = this.dataset.src;
         });
       });
+    }
+
+    function renderProducto() {
+      const root = document.getElementById('product-detail-root');
+      const params = new URLSearchParams(window.location.search);
+      const id = params.get('id');
+
+      if (!id) { root.innerHTML = notFound('No se especifico ningun producto.'); return; }
+
+      const producto = Store.getProductoById(id);
+      if (!producto) { root.innerHTML = notFound('Producto no encontrado.'); return; }
+
+      document.title = producto.titulo + ' - Martineau';
+
+      const categoriaUrl = params.get('categoria');
+      const linkCatalogo = categoriaUrl ? 'catalogo?categoria=' + encodeURIComponent(categoriaUrl) : 'catalogo';
+
+      const imagenes = [producto.imagen];
+      if (producto.imagenes && producto.imagenes.length > 0) {
+        imagenes.push(...producto.imagenes);
+      }
+
+      const thumbsHTML = imagenes.map((src, i) =>
+        '<div class="gallery-thumb ' + (i === 0 ? 'active' : '') + '" data-src="' + escapeHtml(src) + '">' +
+        '<img src="' + escapeHtml(src) + '" alt="' + escapeHtml(producto.titulo + ' — vista ' + (i + 1)) + '" loading="lazy" decoding="async"></div>'
+      ).join('');
+
+      const specsHTML = (producto.specs || []).map(s =>
+        '<div class="spec-item"><span class="spec-label">' + escapeHtml(s.label) + '</span><span class="spec-value">' + escapeHtml(s.value) + '</span></div>'
+      ).join('');
+
+      const mensajeWhatsapp = encodeURIComponent('Hola! Quería consultar por "' + producto.titulo + '".');
+      const linkWhatsapp = 'https://wa.me/5491131917014?text=' + mensajeWhatsapp;
+
+      root.innerHTML =
+        '<div class="back-link-wrapper reveal">' +
+        '<a href="' + escapeHtml(linkCatalogo) + '" class="back-link">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">' +
+        '<line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>' +
+        '</svg> Volver al Catalogo' +
+        '</a>' +
+        '</div>' +
+        '<div class="product-detail-grid">' +
+        '<div class="product-gallery reveal">' +
+        '<div class="gallery-main"><img src="' + escapeHtml(imagenes[0]) + '" alt="' + escapeHtml(producto.titulo) + '" id="main-product-image"></div>' +
+        '<div class="gallery-thumbnails">' + thumbsHTML + '</div>' +
+        '</div>' +
+        '<div class="product-info reveal">' +
+        '<span class="product-info-category">' + capitalizar(escapeHtml(producto.categoria)) + '</span>' +
+        '<h1 class="product-info-title">' + escapeHtml(producto.titulo) + '</h1>' +
+        '<p class="product-info-desc">' + escapeHtml(producto.descripcion) + '</p>' +
+        (specsHTML ? '<div class="product-specs">' + specsHTML + '</div>' : '') +
+        '<div class="product-actions"><a href="' + linkWhatsapp + '" class="btn" target="_blank" rel="noopener">Solicitar Cotización</a></div>' +
+        '</div>' +
+        '</div>';
+
+      activarGaleria();
 
       // Reinicializar animaciones
       if (window.initScrollReveal) window.initScrollReveal();
@@ -267,10 +280,9 @@
 
     function notFound(msg) {
       return '<div style="text-align:center;padding:8rem 2rem"><p style="color:var(--color-text-muted)">' + msg + '</p>' +
-        '<a href="portfolio" class="btn" style="margin-top:2rem;display:inline-block">Ver portfolio</a></div>';
+        '<a href="catalogo" class="btn" style="margin-top:2rem;display:inline-block">Ver catalogo</a></div>';
     }
   </script>
-
   <script src="buscador.js?v=2"></script>
   <script src="script.js?v=23"></script>
 </body>

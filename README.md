@@ -12,7 +12,8 @@ El sitio busca reflejar la identidad visual del estudio: elegante, sobrio, con e
 - **Catálogo de productos** con filtros por categoría, cargado dinámicamente desde la API
 - **Portfolio de proyectos** en layout masonry con navegación a detalle individual
 - **Página "Nosotros"** con timeline histórico del estudio (1922 → hoy)
-- **Detalle de producto/proyecto** con galería de imágenes y specs
+- **Detalle de producto/proyecto** con galería de imágenes y specs. Se arman en el servidor (`producto.php`, `proyecto.php` + `inc/ficha.php`) para que cada ficha tenga su propio título, descripción, imagen al compartir y datos estructurados
+- **SEO**: meta tags y Open Graph en todas las páginas, datos estructurados (schema.org), `robots.txt` y `sitemap.xml` generado desde la base (`sitemap.php`)
 - **Panel admin** (PHP) para gestionar productos, proyectos y categorías con upload de imágenes y conversión a WebP
 - **Botón flotante de WhatsApp** con animación pulse
 - **Diseño full responsive** — mobile-first con menú hamburguesa animado

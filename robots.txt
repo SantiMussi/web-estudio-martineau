@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /sim/
+# /api/ queda permitido: Google lo necesita para ver el catálogo y el portfolio,
+# que se cargan con JavaScript.
+
+Sitemap: https://armartineau.com.ar/sitemap.xml

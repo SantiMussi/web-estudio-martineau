@@ -1,4 +1,32 @@
 RewriteEngine On
+
+# --- Una sola versión de cada URL (SEO: evita contenido duplicado) ---
+# Solo en el dominio real, para no afectar el desarrollo local.
+# www → sin www
+RewriteCond %{HTTP_HOST} ^www\.armartineau\.com\.ar$ [NC]
+RewriteRule ^ https://armartineau.com.ar%{REQUEST_URI} [L,R=301]
+# http → https (X-Forwarded-Proto por si el hosting está detrás de un proxy/CDN)
+RewriteCond %{HTTP_HOST} ^armartineau\.com\.ar$ [NC]
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^ https://armartineau.com.ar%{REQUEST_URI} [L,R=301]
+
+# /index o /index.html → /
+RewriteCond %{THE_REQUEST} \s/+index(\.html)?[\s?] [NC]
+RewriteRule ^ / [L,R=301]
+# /catalogo.html → /catalogo (y las fichas viejas /producto.html → /producto)
+RewriteCond %{THE_REQUEST} \s/+([^?\s]+?)\.html[\s?] [NC]
+RewriteRule ^ /%1 [L,R=301]
+# /producto.php → /producto
+RewriteCond %{THE_REQUEST} \s/+(producto|proyecto)\.php[\s?] [NC]
+RewriteRule ^ /%1 [L,R=301]
+
+# --- URLs limpias ---
+# Fichas armadas en PHP (título, descripción e imagen propios para cada pieza)
+RewriteRule ^(producto|proyecto)$ $1.php [NC,L]
+# Sitemap generado desde la base
+RewriteRule ^sitemap\.xml$ sitemap.php [NC,L]
+# El resto de las páginas son HTML estático
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([^\.]+)$ $1.html [NC,L]
@@ -16,9 +44,14 @@ Options -Indexes
     Header always set Strict-Transport-Security "max-age=31536000"
     Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
 
-    <FilesMatch "\.html$">
+    <FilesMatch "(\.html|^producto\.php|^proyecto\.php)$">
         Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com; frame-src https://www.google.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none';"
     </FilesMatch>
+</IfModule>
+
+# Compresión de texto (HTML, CSS, JS, JSON, SVG, XML): páginas más livianas y rápidas
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/xml application/javascript text/javascript application/json image/svg+xml
 </IfModule>
 
 # Cache de navegador para archivos estáticos (imágenes, CSS, JS, fuentes)

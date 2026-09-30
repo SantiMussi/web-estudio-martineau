@@ -919,6 +919,18 @@ body.no-scroll {
   padding: 0 1.5rem;
 }
 
+/* El h1 envuelve subtítulo + título (SEO); visualmente no suma nada */
+.hero-heading {
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  letter-spacing: normal;
+}
+
+.hero-heading > span {
+  display: block;
+}
+
 .hero-title {
   font-size: clamp(1.75rem, 4.9vw, 3.9rem);
   line-height: 1.12;
@@ -936,6 +948,7 @@ body.no-scroll {
   text-transform: uppercase;
   color: var(--ink-on-dark);
   text-shadow: 0 1px 3px rgba(24, 20, 16, 0.75), 0 2px 16px rgba(24, 20, 16, 0.65);
+  line-height: 1.7;
   margin-bottom: 2rem;
 }
 
