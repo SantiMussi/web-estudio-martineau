@@ -958,44 +958,21 @@ body.no-scroll {
   margin-bottom: 2rem;
 }
 
-/* Botón "placa de piedra tallada": se lee como un relieve, no como un dibujo.
-   - Cara de piedra con grano y la luz entrando desde arriba a la izquierda.
-   - Bisel: el canto de arriba/izquierda iluminado y el de abajo/derecha en sombra.
-   - Esquinas rebajadas en cuarto de círculo (como los paneles de una chimenea).
-   - Moldura interior incisa: surco oscuro con su labio de luz abajo.
-   - Letras y rosetas grabadas (sombra clara debajo, como talladas en hueco).
-   El marco es un SVG en border-image (las esquinas quedan fijas y los lados se
-   estiran) y una máscara recorta las esquinas para que la cara y el relleno las
-   respeten. Al pasar el mouse se llena de abajo hacia arriba con la superficie
-   ondulada, como la mezcla al volcarse en el molde; el relieve queda encima.
-   Solo anima transform (no repinta). */
+/* Botón: moderno y sobrio. Bloque sólido espresso, esquinas rectas y una flecha
+   que avanza al pasar el mouse. Anima solo color y transform (sin repintar). */
 .btn {
-  --btn-relleno: var(--stone-brown);
-  --btn-ola: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 10' preserveAspectRatio='none'%3E%3Cpath d='M0 10V5Q10 0 20 5T40 5V10Z' fill='%236E6150'/%3E%3C/svg%3E");
-  --btn-marco: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48' fill='none'%3E%3Cpath d='M1.25 38.835V9.165A9.25 9.25 0 0 0 9.165 1.25H38.835' stroke='%23fff' stroke-opacity='.6' stroke-width='2.5'/%3E%3Cpath d='M38.835 1.25A9.25 9.25 0 0 0 46.75 9.165' stroke='%23fff' stroke-opacity='.25' stroke-width='2.5'/%3E%3Cpath d='M9.165 46.75A9.25 9.25 0 0 0 1.25 38.835' stroke='%233C3228' stroke-opacity='.12' stroke-width='2.5'/%3E%3Cpath d='M46.75 9.165V38.835A9.25 9.25 0 0 0 38.835 46.75H9.165' stroke='%233C3228' stroke-opacity='.3' stroke-width='2.5'/%3E%3Cpath d='M8 .5H40A8 8 0 0 0 47.5 8V40A8 8 0 0 0 40 47.5H8A8 8 0 0 0 .5 40V8A8 8 0 0 0 8 .5Z' stroke='%235A4E40' stroke-opacity='.45'/%3E%3Cpath d='M12.65 6H35.35A14 14 0 0 0 42 12.65V35.35A14 14 0 0 0 35.35 42H12.65A14 14 0 0 0 6 35.35V12.65A14 14 0 0 0 12.65 6Z' transform='translate(.8 .8)' stroke='%23fff' stroke-opacity='.6'/%3E%3Cpath d='M12.65 6H35.35A14 14 0 0 0 42 12.65V35.35A14 14 0 0 0 35.35 42H12.65A14 14 0 0 0 6 35.35V12.65A14 14 0 0 0 12.65 6Z' stroke='%234A3F33' stroke-opacity='.5'/%3E%3C/svg%3E");
-  --btn-roseta: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 13 13' fill='none'%3E%3Cg transform='translate(.7 .7)' stroke='%23fff' stroke-opacity='.65'%3E%3Cpath d='M6 1C7.6 2.6 7.6 4.4 6 6C4.4 4.4 4.4 2.6 6 1ZM6 11C7.6 9.4 7.6 7.6 6 6C4.4 7.6 4.4 9.4 6 11ZM1 6C2.6 4.4 4.4 4.4 6 6C4.4 7.6 2.6 7.6 1 6ZM11 6C9.4 4.4 7.6 4.4 6 6C7.6 7.6 9.4 7.6 11 6Z'/%3E%3C/g%3E%3Cg stroke='%234A3F33' stroke-opacity='.6'%3E%3Cpath d='M6 1C7.6 2.6 7.6 4.4 6 6C4.4 4.4 4.4 2.6 6 1ZM6 11C7.6 9.4 7.6 7.6 6 6C4.4 7.6 4.4 9.4 6 11ZM1 6C2.6 4.4 4.4 4.4 6 6C4.4 7.6 2.6 7.6 1 6ZM11 6C9.4 4.4 7.6 4.4 6 6C7.6 7.6 9.4 7.6 11 6Z'/%3E%3Ccircle cx='6' cy='6' r='1' fill='%234A3F33' fill-opacity='.6' stroke='none'/%3E%3C/g%3E%3C/svg%3E");
-  --btn-grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .2 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  --btn-esquina: 8px;
-  display: inline-block;
+  --btn-fondo: var(--color-text);
+  --btn-texto: var(--ink-on-dark);
+  --btn-fondo-hover: var(--stone-brown);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.9rem;
   /* Un poco más abajo que arriba: las mayúsculas de Cormorant quedan ópticamente centradas */
-  padding: 1.17rem 3.5rem 1.33rem;
-  border: 1px solid transparent;
-  -webkit-mask:
-    radial-gradient(circle at 0 0, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 0 0 / 51% 51% no-repeat,
-    radial-gradient(circle at 100% 0, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 100% 0 / 51% 51% no-repeat,
-    radial-gradient(circle at 0 100%, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 0 100% / 51% 51% no-repeat,
-    radial-gradient(circle at 100% 100%, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 100% 100% / 51% 51% no-repeat;
-  mask:
-    radial-gradient(circle at 0 0, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 0 0 / 51% 51% no-repeat,
-    radial-gradient(circle at 100% 0, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 100% 0 / 51% 51% no-repeat,
-    radial-gradient(circle at 0 100%, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 0 100% / 51% 51% no-repeat,
-    radial-gradient(circle at 100% 100%, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 100% 100% / 51% 51% no-repeat;
-  background:
-    linear-gradient(165deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 45%, rgba(60, 50, 40, 0.1) 100%),
-    var(--btn-grano),
-    #E2DBCF;
-  color: #3A3128;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+  padding: 1.1rem 2rem 1.2rem 2.2rem;
+  border: 1px solid var(--btn-fondo);
+  background-color: var(--btn-fondo);
+  color: var(--btn-texto);
   font-family: var(--font-sans);
   font-weight: 700;
   /* 700 es el máximo de Cormorant: un trazo fino del mismo color le suma cuerpo */
@@ -1003,58 +980,42 @@ body.no-scroll {
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.75rem;
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-  transition: color 0.5s var(--ease-out) 0.1s, text-shadow 0.5s var(--ease-out) 0.1s;
+  line-height: 1;
+  transition: background-color 0.4s var(--ease-out), border-color 0.4s var(--ease-out), color 0.4s var(--ease-out);
 }
 
-/* La mezcla: franja ondulada arriba + relleno liso abajo */
-.btn::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: calc(100% + 10px);
-  z-index: -1;
-  background:
-    var(--btn-ola) 0 0 / 40px 10px repeat-x,
-    linear-gradient(var(--btn-relleno), var(--btn-relleno)) 0 9px / 100% calc(100% - 9px) no-repeat;
-  transform: translateY(100%);
-  transition: transform 0.75s cubic-bezier(0.5, 0, 0.2, 1);
-}
-
-/* Bisel, moldura y rosetas en la capa de arriba: el relieve sigue sobre el relleno */
+/* Flecha fina que avanza */
 .btn::after {
   content: '';
-  position: absolute;
-  inset: -1px;
-  border: 1px solid transparent;
-  border-image: var(--btn-marco) 16 / 16px stretch;
-  background:
-    var(--btn-roseta) left calc(1.1rem + 1px) center / 12px no-repeat,
-    var(--btn-roseta) right calc(1.1rem + 1px) center / 12px no-repeat;
-  pointer-events: none;
+  width: 22px;
+  height: 10px;
+  flex-shrink: 0;
+  background-color: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 10' fill='none' stroke='%23000' stroke-width='1.2'%3E%3Cpath d='M0 5h20.5M16.5 1l4 4-4 4'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 10' fill='none' stroke='%23000' stroke-width='1.2'%3E%3Cpath d='M0 5h20.5M16.5 1l4 4-4 4'/%3E%3C/svg%3E") center / contain no-repeat;
+  transition: transform 0.45s var(--ease-out);
 }
 
 .btn:hover {
-  color: var(--ink-on-dark);
-  text-shadow: 0 -1px 0 rgba(30, 24, 18, 0.45);
+  background-color: var(--btn-fondo-hover);
+  border-color: var(--btn-fondo-hover);
 }
 
-.btn:hover::before {
-  transform: translateY(0);
+.btn:hover::after {
+  transform: translateX(5px);
 }
 
-/* La máscara recortaría el outline de foco por fuera: va por dentro */
 .btn:focus-visible {
-  outline: 1px solid currentColor;
-  outline-offset: -11px;
+  outline: 1px solid var(--btn-fondo);
+  outline-offset: 4px;
 }
 
-/* .btn-outline-light (sobre imágenes / héroes): la placa de piedra ya se lee sola
-   sobre fondos oscuros, así que la variante queda igual que el botón base. */
+/* Sobre imágenes / héroes: bloque claro, se lee sobre cualquier foto */
+.btn-outline-light {
+  --btn-fondo: var(--ink-on-dark);
+  --btn-texto: var(--color-text);
+  --btn-fondo-hover: #FFFFFF;
+}
 
 /* Indicador de scroll */
 .scroll-indicator {
@@ -1560,15 +1521,18 @@ body.no-scroll {
   margin: 0;
 }
 
-/* Sección Antes y Después: sección oscura, foto en arco rebajado y un resplandor
-   de fuego que crece a medida que se ve la chimenea encendida.
+/* Sección Antes y Después: fondo greige (paleta de la clienta), foto limpia en
+   rectángulo con un marco de línea desplazado, y un resplandor cálido suave que
+   crece a medida que se ve la chimenea encendida.
    --ba-pos (0-100) = cuánto se ve del "antes", desde la izquierda. */
 .before-after {
   --ba-pos: 50;
+  --ba-fondo: #D4CEC2;
+  --ba-linea: rgba(56, 50, 42, 0.35);
   position: relative;
   padding: 9rem 0;
-  background-color: var(--color-black);
-  color: var(--ink-on-dark);
+  background-color: var(--ba-fondo);
+  color: var(--color-text);
   overflow: hidden;
   isolation: isolate;
 }
@@ -1578,8 +1542,8 @@ body.no-scroll {
   position: absolute;
   inset: -10% -10% -10% 20%;
   z-index: -1;
-  background: radial-gradient(ellipse 50% 55% at 60% 55%, rgba(222, 150, 70, 0.28), rgba(222, 150, 70, 0.08) 45%, transparent 70%);
-  opacity: calc(0.15 + (100 - var(--ba-pos)) / 100 * 0.85);
+  background: radial-gradient(ellipse 50% 55% at 62% 52%, rgba(214, 150, 80, 0.22), rgba(214, 150, 80, 0.06) 45%, transparent 70%);
+  opacity: calc(0.2 + (100 - var(--ba-pos)) / 100 * 0.8);
   will-change: opacity;
   pointer-events: none;
 }
@@ -1598,82 +1562,55 @@ body.no-scroll {
   }
 }
 
-.ba-texto .section-label { color: var(--dusty-taupe-2); }
-.ba-texto .section-label::before { background-color: var(--dusty-taupe-2); }
+.ba-texto .section-label { color: var(--stone-brown); }
+.ba-texto .section-label::before { background-color: var(--stone-brown); }
 
 .ba-texto h2 {
-  color: var(--ink-on-dark);
+  color: var(--color-text);
   margin-bottom: 1.4rem;
 }
 
 .ba-texto h2 em {
   font-style: italic;
-  color: #D9BC93;
+  color: var(--stone-brown);
 }
 
 .ba-lead {
   font-size: 1.1rem;
   line-height: 1.75;
-  color: rgba(244, 241, 237, 0.72);
+  color: #4E453A;
   margin: 0 0 2.2rem;
   max-width: 400px;
 }
 
-/* Mismo lenguaje que .btn: moldura doble y la opción activa se "cuela" de abajo
-   hacia arriba con la superficie ondulada */
+/* Control segmentado: línea fina, la opción activa en bloque sólido */
 .ba-botones {
-  position: relative;
   display: inline-flex;
-  padding: 5px;
-  border: 1px solid rgba(244, 241, 237, 0.4);
-}
-
-.ba-botones::after {
-  content: '';
-  position: absolute;
-  inset: 3px;
-  border: 1px solid rgba(244, 241, 237, 0.14);
-  pointer-events: none;
+  border: 1px solid var(--color-text);
 }
 
 .ba-boton {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
   font-family: var(--font-sans);
-  font-size: 0.64rem;
+  font-weight: 700;
+  font-size: 0.66rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  padding: 0.75rem 1.15rem;
+  padding: 0.85rem 1.2rem 0.9rem;
   border: none;
   background: transparent;
-  color: rgba(244, 241, 237, 0.7);
+  color: var(--color-text);
   cursor: pointer;
-  transition: color 0.45s var(--ease-out) 0.1s;
+  transition: background-color 0.35s var(--ease-out), color 0.35s var(--ease-out);
 }
 
-/* Separador fino entre opciones */
-.ba-boton + .ba-boton { border-left: 1px solid rgba(244, 241, 237, 0.14); }
+.ba-boton + .ba-boton { border-left: 1px solid var(--ba-linea); }
 
-.ba-boton::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: calc(100% + 8px);
-  z-index: -1;
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 10' preserveAspectRatio='none'%3E%3Cpath d='M0 10V5Q10 0 20 5T40 5V10Z' fill='%23F4F1ED'/%3E%3C/svg%3E") 0 0 / 32px 8px repeat-x,
-    linear-gradient(var(--ink-on-dark), var(--ink-on-dark)) 0 7px / 100% calc(100% - 7px) no-repeat;
-  transform: translateY(100%);
-  transition: transform 0.6s cubic-bezier(0.5, 0, 0.2, 1);
+.ba-boton:hover { background-color: rgba(56, 50, 42, 0.08); }
+
+.ba-boton.is-activo {
+  background-color: var(--color-text);
+  color: var(--ink-on-dark);
 }
-
-.ba-boton:hover { color: var(--ink-on-dark); }
-
-.ba-boton.is-activo { color: var(--color-black); }
-.ba-boton.is-activo::before { transform: translateY(0); }
 
 .ba-ayuda {
   display: flex;
@@ -1684,72 +1621,60 @@ body.no-scroll {
   font-size: 0.62rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: rgba(244, 241, 237, 0.45);
+  color: var(--stone-brown);
 }
 
 .ba-ayuda svg { width: 18px; height: 18px; }
 
-/* Marco: chimenea Luis XV tallada en SVG (como la de la foto). La foto va debajo,
-   ocupando el recuadro de la boca, y la chimenea encima con la boca calada.
-   Las medidas del .ba-container salen del viewBox del SVG (1000 x 620):
-   boca de x 112 a 888; la foto arranca en y 154 (debajo del borde de arriba,
-   para que se vea entera la chimenea de la foto) y llega hasta y 592. */
+/* Marco moderno: la foto en rectángulo limpio (2:1, se ve completa) y una línea
+   fina desplazada detrás, como un marco de galería. Nada pisa la foto. */
 .ba-marco {
   position: relative;
   width: 100%;
-  max-width: 880px;
+  max-width: 900px;
   margin: 0 auto;
-  aspect-ratio: 1000 / 620;
+  padding: 0 18px 18px 0;
 }
 
-/* Sombra de la chimenea sobre el piso */
-.ba-marco::after {
+.ba-marco::before {
   content: '';
   position: absolute;
-  left: 4%;
-  right: 4%;
-  bottom: -26px;
-  height: 40px;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), transparent 70%);
+  top: 18px;
+  left: 18px;
+  right: 0;
+  bottom: 0;
+  border: 1px solid var(--ba-linea);
   pointer-events: none;
-}
-
-.ba-chimenea {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 5;
-  pointer-events: none;
-  overflow: visible;
 }
 
 .ba-container {
-  position: absolute;
-  left: 11.2%;
-  top: 24.839%;
-  width: 77.6%;
-  height: 70.645%;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 1;
   overflow: hidden;
   user-select: none;
   touch-action: pan-y;
   background: #1C1712;
+  box-shadow: 0 30px 60px -20px rgba(42, 36, 29, 0.45);
   cursor: ew-resize;
   outline: none;
 }
 
 .ba-container:focus-visible .ba-slider-button {
-  box-shadow: 0 0 0 3px rgba(217, 188, 147, 0.7);
+  box-shadow: 0 0 0 3px rgba(56, 50, 42, 0.6);
 }
 
 @media (max-width: 768px) {
   .before-after { padding: 7rem 0; }
+  .ba-marco { padding: 0 12px 12px 0; }
+  .ba-marco::before { top: 12px; left: 12px; }
+  .ba-container { aspect-ratio: 3 / 2; }
   .ba-slider-button { width: 36px; height: 36px; margin: -18px 0 0 -18px; }
   .ba-slider-button svg { width: 14px; height: 14px; }
   .ba-slider-button::before { inset: -5px; }
   .ba-etiqueta { bottom: 0.7rem; font-size: 0.52rem; padding: 0.4rem 0.65rem; }
-  .ba-etiqueta--antes { left: 0.9rem; }
-  .ba-etiqueta--despues { right: 0.9rem; }
+  .ba-etiqueta--antes { left: 0.8rem; }
+  .ba-etiqueta--despues { right: 0.8rem; }
 }
 
 .ba-image {
