@@ -1433,50 +1433,77 @@ body.no-scroll {
 
 .ba-ayuda svg { width: 18px; height: 18px; }
 
-/* Marco: chimenea Luis XV tallada en SVG (como la de la foto). La foto va debajo,
-   ocupando el recuadro de la boca, y la chimenea encima con la boca calada.
-   Las medidas del .ba-container salen del viewBox del SVG (1000 x 620):
-   boca de x 112 a 888 y de y 118 a 592. */
+/* Marco: la foto va limpia y grande (2:1, sin recortes ni nada encima). El adorno
+   queda afuera: orla de doble línea, rosetas en las esquinas y una concha como
+   clave arriba al centro. */
 .ba-marco {
   position: relative;
   width: 100%;
-  max-width: 880px;
+  max-width: 980px;
   margin: 0 auto;
-  aspect-ratio: 1000 / 620;
+  padding: 22px;
 }
 
-/* Sombra de la chimenea sobre el piso */
+/* Doble línea de la orla */
+.ba-marco::before,
 .ba-marco::after {
   content: '';
   position: absolute;
-  left: 4%;
-  right: 4%;
-  bottom: -26px;
-  height: 40px;
-  background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), transparent 70%);
   pointer-events: none;
 }
 
-.ba-chimenea {
-  position: absolute;
+/* La línea de arriba se dibuja aparte, con un hueco al centro para la concha */
+.ba-marco::before {
   inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 5;
-  pointer-events: none;
-  overflow: visible;
+  border: 1px solid rgba(217, 188, 147, 0.45);
+  border-top: none;
+  background: linear-gradient(90deg, rgba(217, 188, 147, 0.45) calc(50% - 46px), transparent calc(50% - 46px) calc(50% + 46px), rgba(217, 188, 147, 0.45) calc(50% + 46px)) top / 100% 1px no-repeat;
 }
+
+.ba-marco::after {
+  inset: 7px;
+  border: 1px solid rgba(217, 188, 147, 0.2);
+  border-top: none;
+  background: linear-gradient(90deg, rgba(217, 188, 147, 0.2) calc(50% - 46px), transparent calc(50% - 46px) calc(50% + 46px), rgba(217, 188, 147, 0.2) calc(50% + 46px)) top / 100% 1px no-repeat;
+}
+
+/* Rosetas en las cuatro esquinas */
+.ba-orla {
+  position: absolute;
+  inset: -7px;
+  pointer-events: none;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cg fill='%232A241D' stroke='%23D9BC93' stroke-width='.9'%3E%3Cpath d='M7 .8 13.2 7 7 13.2.8 7Z'/%3E%3Ccircle cx='7' cy='7' r='2.2'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cg fill='%232A241D' stroke='%23D9BC93' stroke-width='.9'%3E%3Cpath d='M7 .8 13.2 7 7 13.2.8 7Z'/%3E%3Ccircle cx='7' cy='7' r='2.2'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cg fill='%232A241D' stroke='%23D9BC93' stroke-width='.9'%3E%3Cpath d='M7 .8 13.2 7 7 13.2.8 7Z'/%3E%3Ccircle cx='7' cy='7' r='2.2'/%3E%3C/g%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14'%3E%3Cg fill='%232A241D' stroke='%23D9BC93' stroke-width='.9'%3E%3Cpath d='M7 .8 13.2 7 7 13.2.8 7Z'/%3E%3Ccircle cx='7' cy='7' r='2.2'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-size: 14px 14px;
+  background-position: 0 0, 100% 0, 0 100%, 100% 100%;
+}
+
+/* Concha como clave, cortando la línea de arriba */
+.ba-clave {
+  position: absolute;
+  top: -19px;
+  left: 50%;
+  width: 58px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.ba-clave svg { display: block; width: 100%; height: auto; }
 
 .ba-container {
-  position: absolute;
-  left: 11.2%;
-  top: 19.03%;
-  width: 77.6%;
-  height: 76.45%;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2 / 1;
   overflow: hidden;
   user-select: none;
   touch-action: pan-y;
+  border-radius: 2px;
   background: #1C1712;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.5);
   cursor: ew-resize;
   outline: none;
 }
@@ -1487,12 +1514,16 @@ body.no-scroll {
 
 @media (max-width: 768px) {
   .before-after { padding: 7rem 0; }
-  .ba-slider-button { width: 36px; height: 36px; margin: -18px 0 0 -18px; }
+  .ba-marco { padding: 14px; }
+  .ba-marco::after { inset: 5px; }
+  .ba-container { aspect-ratio: 3 / 2; }
+  .ba-clave { width: 48px; top: -15px; }
+  .ba-slider-button { width: 38px; height: 38px; margin: -19px 0 0 -19px; }
   .ba-slider-button svg { width: 14px; height: 14px; }
   .ba-slider-button::before { inset: -5px; }
   .ba-etiqueta { bottom: 0.7rem; font-size: 0.52rem; padding: 0.4rem 0.65rem; }
-  .ba-etiqueta--antes { left: 0.9rem; }
-  .ba-etiqueta--despues { right: 0.9rem; }
+  .ba-etiqueta--antes { left: 0.8rem; }
+  .ba-etiqueta--despues { right: 0.8rem; }
 }
 
 .ba-image {
