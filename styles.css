@@ -972,10 +972,10 @@ body.no-scroll {
     linear-gradient(165deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 45%, rgba(60, 50, 40, 0.1) 100%),
     var(--btn-grano),
     #E2DBCF;
-  color: #4E4337;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+  color: #3A3128;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
   font-family: var(--font-sans);
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.75rem;
@@ -4039,4 +4039,29 @@ body.no-scroll {
   .obras { gap: 3rem; }
   .obras-escena { max-width: 420px; width: calc(100% - 32px); }
   .obras-item { grid-template-columns: 2.4rem minmax(0, 1fr) auto; padding: 1.25rem 0.25rem; }
+}
+
+/* Rótulos chicos en mayúsculas sobre fondos claros: Cormorant a 400 en tamaños
+   de 0.6–0.8rem queda muy fino y se pierde, así que van a 600. (Los que van
+   sobre fondos oscuros —menú, héroe, comparador— se dejan como están.) */
+.section-label,
+.product-category,
+.grid-loading p,
+.filter-btn,
+.back-link,
+.product-info-category,
+.about-founded-badge span:first-child,
+.testimonio-autor span,
+.taller-gallery figcaption,
+.taller-dato span,
+.taller-cta,
+.pp-mix-label,
+.pp-step-label,
+.pp-tags li,
+.bq-cerrar,
+.bq-chips-titulo,
+.bq-item-cat,
+.nicho-ver,
+.obras-meta {
+  font-weight: 600;
 }
