@@ -143,7 +143,7 @@ p:last-child {
 /* Loader / Splash — logo Martineau */
 .loader-wrapper {
   /* Medidas del logo: las líneas guía se calculan a partir de acá */
-  --lw: clamp(155px, 34vw, 250px);
+  --lw: clamp(118px, 34vw, 250px);
   --lh: calc(var(--lw) * 375 / 280);
   --inset: clamp(12px, 2.4vw, 30px);
   --ink: #F4EFEA;
@@ -184,6 +184,8 @@ p:last-child {
 
 .loader-panel-l { left: 0; background-position: left top; }
 .loader-panel-r { right: 0; background-position: right top; }
+/* Las mitades se pisan 2px para no dejar rendija; el grano no se duplica ahí */
+.loader-panel-r::before { left: 2px; }
 
 .loader-panel::before {
   content: '';
@@ -227,7 +229,7 @@ p:last-child {
   animation-delay: 0.1s;
 }
 
-/* Relieve: surcos que nacen junto al logo y se abren hacia los bordes.
+/* Relieve: una chimenea de la casa dibujada en alzado alrededor del logo.
    Los paths los genera el script inline de index.html según la pantalla. */
 .loader-relief {
   position: absolute;
@@ -245,15 +247,22 @@ p:last-child {
   filter: drop-shadow(0 1px 0 rgba(62, 52, 40, 0.28));
 }
 
-.loader-relief path {
+.loader-relief path:not(.rl-fill) {
   stroke-dasharray: 1;
   stroke-dashoffset: 1;
   animation: lgDraw 1.7s cubic-bezier(0.3, 0.6, 0.25, 1) both;
 }
 
+.loader-relief .rl-fill {
+  stroke: none;
+  opacity: 0;
+  animation: lgFade 1.2s var(--ease-out) both;
+}
+
 .loader-relief.sin-anim path {
   animation: none;
   stroke-dashoffset: 0;
+  opacity: 1;
 }
 
 /* Datos en los bordes, como el rótulo de un plano */
