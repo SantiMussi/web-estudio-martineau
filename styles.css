@@ -936,25 +936,53 @@ body.no-scroll {
   margin-bottom: 2rem;
 }
 
-/* Botón "placa con moldura": doble línea como los marcos del sitio y, al pasar el
-   mouse, se llena de abajo hacia arriba con la superficie ondulada, como la mezcla
-   al volcarse en el molde. Solo anima transform (no repinta). */
+/* Botón "placa de piedra tallada": se lee como un relieve, no como un dibujo.
+   - Cara de piedra con grano y la luz entrando desde arriba a la izquierda.
+   - Bisel: el canto de arriba/izquierda iluminado y el de abajo/derecha en sombra.
+   - Esquinas rebajadas en cuarto de círculo (como los paneles de una chimenea).
+   - Moldura interior incisa: surco oscuro con su labio de luz abajo.
+   - Letras y rosetas grabadas (sombra clara debajo, como talladas en hueco).
+   El marco es un SVG en border-image (las esquinas quedan fijas y los lados se
+   estiran) y una máscara recorta las esquinas para que la cara y el relleno las
+   respeten. Al pasar el mouse se llena de abajo hacia arriba con la superficie
+   ondulada, como la mezcla al volcarse en el molde; el relieve queda encima.
+   Solo anima transform (no repinta). */
 .btn {
   --btn-relleno: var(--stone-brown);
   --btn-ola: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 10' preserveAspectRatio='none'%3E%3Cpath d='M0 10V5Q10 0 20 5T40 5V10Z' fill='%236E6150'/%3E%3C/svg%3E");
+  --btn-marco: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48' fill='none'%3E%3Cpath d='M1.25 38.835V9.165A9.25 9.25 0 0 0 9.165 1.25H38.835' stroke='%23fff' stroke-opacity='.6' stroke-width='2.5'/%3E%3Cpath d='M38.835 1.25A9.25 9.25 0 0 0 46.75 9.165' stroke='%23fff' stroke-opacity='.25' stroke-width='2.5'/%3E%3Cpath d='M9.165 46.75A9.25 9.25 0 0 0 1.25 38.835' stroke='%233C3228' stroke-opacity='.12' stroke-width='2.5'/%3E%3Cpath d='M46.75 9.165V38.835A9.25 9.25 0 0 0 38.835 46.75H9.165' stroke='%233C3228' stroke-opacity='.3' stroke-width='2.5'/%3E%3Cpath d='M8 .5H40A8 8 0 0 0 47.5 8V40A8 8 0 0 0 40 47.5H8A8 8 0 0 0 .5 40V8A8 8 0 0 0 8 .5Z' stroke='%235A4E40' stroke-opacity='.45'/%3E%3Cpath d='M12.65 6H35.35A14 14 0 0 0 42 12.65V35.35A14 14 0 0 0 35.35 42H12.65A14 14 0 0 0 6 35.35V12.65A14 14 0 0 0 12.65 6Z' transform='translate(.8 .8)' stroke='%23fff' stroke-opacity='.6'/%3E%3Cpath d='M12.65 6H35.35A14 14 0 0 0 42 12.65V35.35A14 14 0 0 0 35.35 42H12.65A14 14 0 0 0 6 35.35V12.65A14 14 0 0 0 12.65 6Z' stroke='%234A3F33' stroke-opacity='.5'/%3E%3C/svg%3E");
+  --btn-roseta: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 13 13' fill='none'%3E%3Cg transform='translate(.7 .7)' stroke='%23fff' stroke-opacity='.65'%3E%3Cpath d='M6 1C7.6 2.6 7.6 4.4 6 6C4.4 4.4 4.4 2.6 6 1ZM6 11C7.6 9.4 7.6 7.6 6 6C4.4 7.6 4.4 9.4 6 11ZM1 6C2.6 4.4 4.4 4.4 6 6C4.4 7.6 2.6 7.6 1 6ZM11 6C9.4 4.4 7.6 4.4 6 6C7.6 7.6 9.4 7.6 11 6Z'/%3E%3C/g%3E%3Cg stroke='%234A3F33' stroke-opacity='.6'%3E%3Cpath d='M6 1C7.6 2.6 7.6 4.4 6 6C4.4 4.4 4.4 2.6 6 1ZM6 11C7.6 9.4 7.6 7.6 6 6C4.4 7.6 4.4 9.4 6 11ZM1 6C2.6 4.4 4.4 4.4 6 6C4.4 7.6 2.6 7.6 1 6ZM11 6C9.4 4.4 7.6 4.4 6 6C7.6 7.6 9.4 7.6 11 6Z'/%3E%3Ccircle cx='6' cy='6' r='1' fill='%234A3F33' fill-opacity='.6' stroke='none'/%3E%3C/g%3E%3C/svg%3E");
+  --btn-grano: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .25 0 0 0 0 .2 0 0 0 .2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --btn-esquina: 8px;
   display: inline-block;
-  padding: 1.25rem 3.5rem;
-  border: 1px solid var(--stone-brown);
-  background-color: transparent;
-  color: var(--color-text);
+  /* Un poco más abajo que arriba: las mayúsculas de Cormorant quedan ópticamente centradas */
+  padding: 1.17rem 3.5rem 1.33rem;
+  border: 1px solid transparent;
+  -webkit-mask:
+    radial-gradient(circle at 0 0, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 0 0 / 51% 51% no-repeat,
+    radial-gradient(circle at 100% 0, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 100% 0 / 51% 51% no-repeat,
+    radial-gradient(circle at 0 100%, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 0 100% / 51% 51% no-repeat,
+    radial-gradient(circle at 100% 100%, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 100% 100% / 51% 51% no-repeat;
+  mask:
+    radial-gradient(circle at 0 0, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 0 0 / 51% 51% no-repeat,
+    radial-gradient(circle at 100% 0, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 100% 0 / 51% 51% no-repeat,
+    radial-gradient(circle at 0 100%, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 0 100% / 51% 51% no-repeat,
+    radial-gradient(circle at 100% 100%, transparent calc(var(--btn-esquina) - 0.5px), #000 var(--btn-esquina)) 100% 100% / 51% 51% no-repeat;
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0) 45%, rgba(60, 50, 40, 0.1) 100%),
+    var(--btn-grano),
+    #E2DBCF;
+  color: #4E4337;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
   font-family: var(--font-sans);
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.75rem;
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  transition: color 0.5s var(--ease-out) 0.1s, border-color 0.5s var(--ease-out);
+  transition: color 0.5s var(--ease-out) 0.1s, text-shadow 0.5s var(--ease-out) 0.1s;
 }
 
 /* La mezcla: franja ondulada arriba + relleno liso abajo */
@@ -973,43 +1001,36 @@ body.no-scroll {
   transition: transform 0.75s cubic-bezier(0.5, 0, 0.2, 1);
 }
 
-/* Moldura interior */
+/* Bisel, moldura y rosetas en la capa de arriba: el relieve sigue sobre el relleno */
 .btn::after {
   content: '';
   position: absolute;
-  inset: 4px;
-  border: 1px solid currentColor;
-  opacity: 0.28;
+  inset: -1px;
+  border: 1px solid transparent;
+  border-image: var(--btn-marco) 16 / 16px stretch;
+  background:
+    var(--btn-roseta) left calc(1.1rem + 1px) center / 12px no-repeat,
+    var(--btn-roseta) right calc(1.1rem + 1px) center / 12px no-repeat;
   pointer-events: none;
-  transition: opacity 0.5s;
 }
 
 .btn:hover {
   color: var(--ink-on-dark);
+  text-shadow: 0 -1px 0 rgba(30, 24, 18, 0.45);
 }
 
 .btn:hover::before {
   transform: translateY(0);
 }
 
-.btn:hover::after {
-  opacity: 0.5;
+/* La máscara recortaría el outline de foco por fuera: va por dentro */
+.btn:focus-visible {
+  outline: 1px solid currentColor;
+  outline-offset: -11px;
 }
 
-/* Variante para colocar sobre imágenes / fondos oscuros (héroes). Sin backdrop-filter:
-   va sobre el slideshow animado y desenfocarlo en cada cuadro baja los fps. */
-.btn-outline-light {
-  --btn-relleno: var(--ink-on-dark);
-  --btn-ola: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 10' preserveAspectRatio='none'%3E%3Cpath d='M0 10V5Q10 0 20 5T40 5V10Z' fill='%23F4F1ED'/%3E%3C/svg%3E");
-  border-color: rgba(255, 255, 255, 0.45);
-  background-color: rgba(20, 16, 12, 0.22);
-  color: var(--ink-on-dark);
-}
-
-.btn-outline-light:hover {
-  color: var(--color-black);
-  border-color: var(--ink-on-dark);
-}
+/* .btn-outline-light (sobre imágenes / héroes): la placa de piedra ya se lee sola
+   sobre fondos oscuros, así que la variante queda igual que el botón base. */
 
 /* Indicador de scroll */
 .scroll-indicator {
