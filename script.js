@@ -264,9 +264,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
         container.querySelectorAll('.hero-slide img').forEach(img => {
             const slide = img.closest('.hero-slide');
-            if (img.complete && img.naturalWidth === 0) quitar(slide);
+            // Las diferidas (data-src) todavía no tienen src: no están rotas, se cargan abajo
+            if (!img.dataset.src && img.complete && img.naturalWidth === 0) quitar(slide);
             else img.addEventListener('error', () => quitar(slide));
         });
+
+        // Las fotos 2 en adelante se piden recién cuando la página terminó de cargar,
+        // así no le compiten a la primera (que es la que se ve apenas entrás)
+        const cargarDiferidas = () => {
+            container.querySelectorAll('source[data-srcset]').forEach(s => {
+                s.srcset = s.dataset.srcset;
+                s.removeAttribute('data-srcset');
+            });
+            container.querySelectorAll('img[data-src]').forEach(img => {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+            });
+        };
+        if (document.readyState === 'complete') cargarDiferidas();
+        else window.addEventListener('load', cargarDiferidas, { once: true });
 
         const avanzar = () => {
             const slides = Array.from(container.querySelectorAll('.hero-slide'));
@@ -684,17 +700,33 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(container);
     };
 
-    // Loader Premium
+    // Loader Premium: se va cuando termina su animación (la barra de progreso) y la
+    // primera foto del hero ya está lista, sin esperar a que cargue toda la página
+    // (antes esperaba el "load" completo + 2,9 s y en celulares tardaba mucho más).
     const initLoader = () => {
         const loader = document.querySelector('.loader-wrapper');
         if (!loader) return;
 
-        window.addEventListener('load', () => {
-            setTimeout(() => {
+        const esperar = ms => new Promise(r => setTimeout(r, ms));
+
+        // La animación dura 2,9 s (la barra de progreso: 0,3 s de demora + 2,6 s) y
+        // arranca con el primer pintado, que es antes de que corra este script
+        const animacionLista = esperar(2900);
+
+        const hero = document.querySelector('.hero-slide.is-active img');
+        const heroLista = new Promise(listo => {
+            if (!hero || hero.complete) return listo();
+            hero.addEventListener('load', listo, { once: true });
+            hero.addEventListener('error', listo, { once: true });
+        });
+
+        animacionLista
+            // Si la foto viene lenta, se le da como mucho 1,5 s más
+            .then(() => Promise.race([heroLista, esperar(1500)]))
+            .then(() => {
                 loader.classList.add('hidden');
                 setTimeout(() => loader.style.display = 'none', 1400);
-            }, 2900);
-        });
+            });
     };
 
     // Inicialización de componentes

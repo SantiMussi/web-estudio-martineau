@@ -91,12 +91,18 @@
   <!-- Fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
-    rel="stylesheet">
+  <!-- La primera foto del hero es lo más grande que se pinta (LCP): se pide de entrada -->
+  <link rel="preload" as="image" href="assets/ImgsPrincipales/portada/hero-portada-1-movil.webp"
+    media="(max-width: 767px)" fetchpriority="high">
+  <link rel="preload" as="image" href="assets/ImgsPrincipales/portada/hero-portada-1.webp"
+    media="(min-width: 768px)" fetchpriority="high">
+
+  <!-- Fuente sin bloquear el primer pintado: se pide ya y se aplica apenas llega -->
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"></noscript>
 
   <!-- Estilos -->
-  <link rel="stylesheet" href="styles.css?v=67">
+  <link rel="stylesheet" href="styles.css?v=68">
 </head>
 
 <body>
@@ -344,17 +350,32 @@
   <!-- Sección Hero -->
   <section class="hero" id="inicio">
     <div class="hero-slides" aria-hidden="true">
+      <!-- En celulares va un recorte vertical liviano (-movil, 750×1210: el mismo encuadre
+           que se ve en pantalla). Solo la primera carga de entrada; el resto usa data-src
+           y lo carga initHeroSlideshow() cuando la página ya terminó (salen recién a los 7 s). -->
       <div class="hero-slide is-active">
-        <img src="assets/ImgsPrincipales/portada/hero-portada-1.webp" alt="" loading="eager" fetchpriority="high">
+        <picture>
+          <source media="(max-width: 767px)" srcset="assets/ImgsPrincipales/portada/hero-portada-1-movil.webp">
+          <img src="assets/ImgsPrincipales/portada/hero-portada-1.webp" alt="" loading="eager" fetchpriority="high">
+        </picture>
       </div>
       <div class="hero-slide">
-        <img src="assets/ImgsPrincipales/portada/hero-portada-2.webp" alt="" fetchpriority="low">
+        <picture>
+          <source media="(max-width: 767px)" data-srcset="assets/ImgsPrincipales/portada/hero-portada-2-movil.webp">
+          <img data-src="assets/ImgsPrincipales/portada/hero-portada-2.webp" alt="" decoding="async">
+        </picture>
       </div>
       <div class="hero-slide">
-        <img src="assets/ImgsPrincipales/portada/hero-portada-4.webp" alt="" fetchpriority="low">
+        <picture>
+          <source media="(max-width: 767px)" data-srcset="assets/ImgsPrincipales/portada/hero-portada-4-movil.webp">
+          <img data-src="assets/ImgsPrincipales/portada/hero-portada-4.webp" alt="" decoding="async">
+        </picture>
       </div>
       <div class="hero-slide">
-        <img src="assets/ImgsPrincipales/portada/hero-portada-5.webp" alt="" fetchpriority="low">
+        <picture>
+          <source media="(max-width: 767px)" data-srcset="assets/ImgsPrincipales/portada/hero-portada-5-movil.webp">
+          <img data-src="assets/ImgsPrincipales/portada/hero-portada-5.webp" alt="" decoding="async">
+        </picture>
       </div>
     </div>
     <div class="hero-overlay" aria-hidden="true"></div>
@@ -836,7 +857,7 @@
   </script>
 
   <script src="buscador.js?v=2"></script>
-  <script src="script.js?v=23"></script>
+  <script src="script.js?v=24"></script>
   <!-- WhatsApp Floating Button -->
   <a href="https://wa.me/5491131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
     aria-label="Contactar por WhatsApp">
