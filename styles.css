@@ -1433,15 +1433,16 @@ body.no-scroll {
 
 .ba-ayuda svg { width: 18px; height: 18px; }
 
-/* Marco: chimenea Luis XV tallada en SVG alrededor de la foto. La boca es un
-   rectángulo 2:1 del tamaño exacto de la foto (viewBox 1000 x 566, boca de
-   x 120 a 880 y de y 150 a 530), así la chimenea nunca tapa el antes/después. */
+/* Marco: chimenea Luis XV tallada en SVG (como la de la foto). La foto va debajo,
+   ocupando el recuadro de la boca, y la chimenea encima con la boca calada.
+   Las medidas del .ba-container salen del viewBox del SVG (1000 x 620):
+   boca de x 112 a 888 y de y 118 a 592. */
 .ba-marco {
   position: relative;
   width: 100%;
-  max-width: 940px;
+  max-width: 880px;
   margin: 0 auto;
-  aspect-ratio: 1000 / 566;
+  aspect-ratio: 1000 / 620;
 }
 
 /* Sombra de la chimenea sobre el piso */
@@ -1450,8 +1451,8 @@ body.no-scroll {
   position: absolute;
   left: 4%;
   right: 4%;
-  bottom: -24px;
-  height: 38px;
+  bottom: -26px;
+  height: 40px;
   background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.55), transparent 70%);
   pointer-events: none;
 }
@@ -1468,10 +1469,10 @@ body.no-scroll {
 
 .ba-container {
   position: absolute;
-  left: 12%;
-  top: 26.502%;
-  width: 76%;
-  height: 67.138%;
+  left: 11.2%;
+  top: 19.03%;
+  width: 77.6%;
+  height: 76.45%;
   overflow: hidden;
   user-select: none;
   touch-action: pan-y;
@@ -1486,14 +1487,12 @@ body.no-scroll {
 
 @media (max-width: 768px) {
   .before-after { padding: 7rem 0; }
-  /* En el celu la chimenea usa todo el ancho para que la foto no quede chica */
-  .ba-marco { width: calc(100% + 2.5rem); margin: 0 -1.25rem; max-width: none; }
-  .ba-slider-button { width: 34px; height: 34px; margin: -17px 0 0 -17px; }
-  .ba-slider-button svg { width: 13px; height: 13px; }
+  .ba-slider-button { width: 36px; height: 36px; margin: -18px 0 0 -18px; }
+  .ba-slider-button svg { width: 14px; height: 14px; }
   .ba-slider-button::before { inset: -5px; }
-  .ba-etiqueta { bottom: 0.6rem; font-size: 0.5rem; padding: 0.35rem 0.6rem; }
-  .ba-etiqueta--antes { left: 0.6rem; }
-  .ba-etiqueta--despues { right: 0.6rem; }
+  .ba-etiqueta { bottom: 0.7rem; font-size: 0.52rem; padding: 0.4rem 0.65rem; }
+  .ba-etiqueta--antes { left: 0.9rem; }
+  .ba-etiqueta--despues { right: 0.9rem; }
 }
 
 .ba-image {
