@@ -976,6 +976,8 @@ body.no-scroll {
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
   font-family: var(--font-sans);
   font-weight: 700;
+  /* 700 es el máximo de Cormorant: un trazo fino del mismo color le suma cuerpo */
+  -webkit-text-stroke: 0.35px currentColor;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   font-size: 0.75rem;
@@ -4042,8 +4044,9 @@ body.no-scroll {
 }
 
 /* Rótulos chicos en mayúsculas sobre fondos claros: Cormorant a 400 en tamaños
-   de 0.6–0.8rem queda muy fino y se pierde, así que van a 600. (Los que van
-   sobre fondos oscuros —menú, héroe, comparador— se dejan como están.) */
+   de 0.6–0.8rem queda muy fino y se pierde, así que van a 700 (el máximo de la
+   fuente). Los que van sobre fondos oscuros —menú, héroe, comparador— se dejan
+   como están. */
 .section-label,
 .product-category,
 .grid-loading p,
@@ -4063,5 +4066,5 @@ body.no-scroll {
 .bq-item-cat,
 .nicho-ver,
 .obras-meta {
-  font-weight: 600;
+  font-weight: 700;
 }
