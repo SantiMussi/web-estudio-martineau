@@ -4,13 +4,15 @@ require_once __DIR__ . '/auth.php';
 
 $msg = $_SESSION['flash_msg'] ?? null;
 unset($_SESSION['flash_msg']);
+
+$pagina_activa = 'importar.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Importar — Martineau Admin</title>
+    <title>Importar y exportar — Martineau Admin</title>
 
     <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=2">
@@ -20,7 +22,7 @@ unset($_SESSION['flash_msg']);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=7">
+    <link rel="stylesheet" href="admin.css?v=8">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -29,47 +31,12 @@ unset($_SESSION['flash_msg']);
     </button>
 
     <div class="admin-layout">
-        <!-- Sidebar -->
-        <aside class="admin-sidebar">
-            <div class="sidebar-logo">Martineau</div>
-            <div class="sidebar-label">Administración</div>
-
-            <nav class="sidebar-nav">
-                <a href="index.php">
-                    <svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                    Productos
-                </a>
-                <a href="proyectos.php">
-                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    Proyectos
-                </a>
-                <a href="categorias.php">
-                    <svg viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
-                    Categorías
-                </a>
-                <a href="importar.php" class="active">
-                    <svg viewBox="0 0 24 24"><path d="M12 3v12m0-12l4 4m-4-4L8 7"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-                    Importar
-                </a>
-            </nav>
-
-            <div class="sidebar-footer">
-                <a href="../" target="_blank">
-                    <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                    Ver sitio
-                </a>
-                <br>
-                <a href="logout.php">
-                    <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                    Cerrar sesión
-                </a>
-            </div>
-        </aside>
+        <?php require __DIR__ . '/sidebar.php'; ?>
 
         <!-- Main Content -->
         <main class="admin-main">
             <div class="admin-topbar">
-                <h1>Importar</h1>
+                <h1>Importar y exportar</h1>
             </div>
 
             <!-- Flash Messages -->
@@ -82,6 +49,34 @@ unset($_SESSION['flash_msg']);
             <p style="color:var(--admin-text-muted); font-size:0.85rem; margin-bottom:1.5rem; max-width: 65ch;">
                 Cargá varias categorías, proyectos o productos de una sola vez pegando datos separados por coma (o punto y coma) o subiendo un archivo <code>.csv</code> exportado de una planilla de cálculo (Excel, Google Sheets). La primera línea debe ser el encabezado con los nombres de columna. Las imágenes no se importan por este medio: se agregan después editando cada ítem desde su sección correspondiente.
             </p>
+
+            <!-- EXPORTAR Y BACKUP -->
+            <div class="import-card">
+                <h2>Exportar y backup</h2>
+                <p>
+                    Las planillas bajan con las mismas columnas que se usan para importar, así se pueden abrir en Excel o Google Sheets y volver a cargar. No incluyen las imágenes ni lo que está en la papelera.
+                </p>
+                <div class="exportar-botones">
+                    <?php foreach (['productos' => 'Productos', 'proyectos' => 'Proyectos', 'categorias' => 'Categorías'] as $que => $nombre): ?>
+                        <form method="POST" action="actions/exportar.php">
+                            <?= csrf_field() ?>
+                            <input type="hidden" name="que" value="<?= $que ?>">
+                            <button type="submit" class="btn-admin btn-secondary">Planilla de <?= $nombre ?> (.csv)</button>
+                        </form>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="import-divider">backup</div>
+
+                <p class="exportar-ayuda">
+                    El backup es una copia completa de la base (productos, proyectos, categorías, datos de contacto y usuarios del panel) en un archivo <code>.sql</code>. Conviene bajarlo antes de un cambio grande. Para volver a ese estado se importa desde phpMyAdmin, y reemplaza todo lo que haya en ese momento. Las fotos no van en el backup: están en la carpeta <code>admin/uploads</code> del servidor.
+                </p>
+                <form method="POST" action="actions/exportar.php">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="que" value="backup">
+                    <button type="submit" class="btn-admin btn-primary">Descargar backup de la base</button>
+                </form>
+            </div>
 
             <!-- OPTIMIZAR IMÁGENES YA SUBIDAS -->
             <div class="import-card">
@@ -192,6 +187,6 @@ Pieza Monolith,Esculturas,Pieza escultórica monolítica,,</div>
         </main>
     </div>
 
-    <script src="admin.js?v=18"></script>
+    <script src="admin.js?v=19"></script>
 </body>
 </html>

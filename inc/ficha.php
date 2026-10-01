@@ -8,8 +8,33 @@
  * contenido salen del servidor; el JS queda de respaldo si la base no responde.
  */
 
+require_once __DIR__ . '/ajustes.php';
+
 const SEO_SITIO = 'https://armartineau.com.ar';
 const SEO_EMPRESA_ID = SEO_SITIO . '/#empresa';
+
+/** Conexión a la base, una sola vez por pedido (config.php no se puede incluir dos veces) */
+function ficha_pdo(): ?PDO
+{
+    static $pdo = false;
+    if ($pdo !== false) return $pdo;
+
+    $pdo = null;
+    try {
+        if (!defined('IS_API_ENDPOINT')) define('IS_API_ENDPOINT', true);
+        require __DIR__ . '/../admin/config.php';
+    } catch (Throwable $e) {
+        error_log('[ficha.php] ' . $e->getMessage());
+    }
+    return $pdo;
+}
+
+/** Datos de contacto cargados desde el panel, con los links ya armados */
+function ficha_contacto(): array
+{
+    $datos = ajustes_cargar(ficha_pdo());
+    return ['datos' => $datos, 'links' => contacto_links($datos)];
+}
 
 /**
  * Trae el ítem publicado (no oculto) de la base.
@@ -24,8 +49,8 @@ function ficha_cargar(string $tipo, int $id)
     $extra = $tipo === 'proyecto' ? 'p.ubicacion, p.anio,' : '';
 
     try {
-        if (!defined('IS_API_ENDPOINT')) define('IS_API_ENDPOINT', true);
-        require __DIR__ . '/../admin/config.php';
+        $pdo = ficha_pdo();
+        if (!$pdo) return false;
 
         $stmt = $pdo->prepare("
             SELECT p.id, p.titulo, c.slug AS categoria, c.nombre AS categoria_nombre, $extra
@@ -224,7 +249,7 @@ function ficha_cuerpo(string $tipo, array $item): void
     $mensaje = $esProyecto
         ? 'Hola! Quería consultar por el proyecto "' . $item['titulo'] . '".'
         : 'Hola! Quería consultar por "' . $item['titulo'] . '".';
-    $whatsapp = 'https://wa.me/5491131917014?text=' . rawurlencode($mensaje);
+    $whatsapp = ficha_contacto()['links']['whatsapp'] . '?text=' . rawurlencode($mensaje);
     ?>
     <div class="back-link-wrapper reveal">
       <a href="<?= seo_e($volver) ?>" class="back-link">
@@ -271,5 +296,113 @@ function ficha_no_encontrada(string $tipo): void
       <p style="color:var(--color-text-muted)"><?= $esProyecto ? 'Proyecto no encontrado.' : 'Producto no encontrado.' ?></p>
       <a href="<?= $esProyecto ? 'portfolio' : 'catalogo' ?>" class="btn" style="margin-top:2rem;display:inline-block"><?= $esProyecto ? 'Ver portfolio' : 'Ver catalogo' ?></a>
     </div>
+<?php
+}
+
+/** Sección "Contacto" del pie, con los datos cargados desde el panel (la misma que las páginas HTML) */
+function ficha_contacto_seccion(): void
+{
+    ['datos' => $d, 'links' => $l] = ficha_contacto();
+    ?>
+  <section class="contact section" id="contacto">
+    <div class="container">
+
+      <div class="contact-header reveal">
+        <span class="section-label">Contacto</span>
+        <h2>Estamos para escucharte</h2>
+      </div>
+
+      <div class="contact-blocks reveal">
+
+        <div class="contact-block">
+          <span class="contact-block-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+          </span>
+          <h3>Ubicación</h3>
+          <p>
+            <?= seo_e($d['direccion']) ?> <br>
+            <?= seo_e($d['zona']) ?><br>
+            Argentina
+          </p>
+        </div>
+
+        <div class="contact-block-divider" aria-hidden="true"></div>
+
+        <div class="contact-block">
+          <span class="contact-block-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.4 2 2 0 0 1 3.6 1.22h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.78a16 16 0 0 0 6 6l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.49 16l.43.92z" />
+            </svg>
+          </span>
+          <h3>Comunicación</h3>
+          <p>
+            <a href="<?= seo_e($l['tel']) ?>"><?= seo_e($d['telefono']) ?></a><br>
+            <a href="<?= seo_e($l['whatsapp']) ?>" target="_blank" rel="noopener">WhatsApp</a><br>
+            <a href="<?= seo_e($l['mailto']) ?>"><?= seo_e($d['email']) ?></a>
+          </p>
+        </div>
+
+        <div class="contact-block-divider" aria-hidden="true"></div>
+
+        <div class="contact-block">
+          <span class="contact-block-icon" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <polyline points="12 6 12 12 16 14" />
+            </svg>
+          </span>
+          <h3>Horario</h3>
+          <p>
+            <?= implode('<br>', array_map('seo_e', contacto_lineas($d['horario']))) ?>
+          </p>
+        </div>
+
+        <div class="contact-block-divider" aria-hidden="true"></div>
+
+        <div class="contact-block">
+          <span class="contact-block-icon" aria-hidden="true"></span>
+          <h3>Redes</h3>
+          <div class="contact-social">
+            <a href="<?= seo_e($d['instagram']) ?>" class="social-link" aria-label="Instagram" target="_blank"
+              rel="noopener">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+              </svg>
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+<?php
+}
+
+/** Botón flotante de WhatsApp */
+function ficha_whatsapp_flotante(): void
+{
+    $l = ficha_contacto()['links'];
+    ?>
+  <a href="<?= seo_e($l['whatsapp']) ?>" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
+    aria-label="Contactar por WhatsApp">
+    <div class="whatsapp-pulse"></div>
+    <div class="whatsapp-icon-wrapper">
+      <svg class="whatsapp-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+        <path fill="currentColor"
+          d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zM223.9 414.8c-32 0-63.1-8.4-90.6-24.3l-6.5-3.8-67.4 17.7 18-65.7-4.2-6.7c-17.5-27.9-26.7-60.2-26.7-93.1 0-103.5 84.3-187.8 187.9-187.8 50.1 0 97.2 19.5 132.6 55 35.4 35.4 55 82.5 55 132.7 0 103.5-84.3 187.8-187.9 187.8zm102.7-140.2c-5.6-2.8-33.4-16.5-38.6-18.4-5.2-1.9-9-2.8-12.8 2.8-3.8 5.6-14.7 18.4-18 22.1-3.3 3.8-6.6 4.2-12.2 1.4-5.6-2.8-23.8-8.8-45.3-27.9-16.7-14.9-28-33.3-31.3-38.9-3.3-5.6-.4-8.6 2.4-11.4 2.5-2.5 5.6-6.6 8.4-9.9 2.8-3.3 3.8-5.6 5.6-9.4 1.9-3.8.9-7.1-.4-9.9-1.4-2.8-12.8-30.9-17.5-42.3-4.6-11.1-9.3-9.6-12.8-9.8-3.3-.2-7.1-.2-10.9-.2-3.8 0-9.9 1.4-15.2 7.1-5.2 5.6-20 19.5-20 47.4 0 27.9 20.4 55 23.3 58.8 2.8 3.8 40 61.1 96.9 85.6 13.5 5.8 24.1 9.3 32.3 11.9 13.6 4.3 26 3.7 35.8 2.2 11-1.7 33.4-13.6 38.1-26.8 4.7-13.2 4.7-24.5 3.3-26.8-1.4-2.3-5.2-3.8-10.8-6.6z" />
+      </svg>
+    </div>
+    <span class="whatsapp-text">¡Hablemos!</span>
+  </a>
 <?php
 }

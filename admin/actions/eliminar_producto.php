@@ -8,38 +8,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 verificar_csrf();
 
+// No borra: lo manda a la papelera, desde donde se puede restaurar
 try {
     $id = (int)($_POST['id'] ?? 0);
 
-    if ($id <= 0) {
-        throw new Exception('ID de producto inválido.');
-    }
-
-    $stmt = $pdo->prepare('SELECT imagen, imagenes FROM productos WHERE id = :id');
-    $stmt->execute(['id' => $id]);
-    $producto = $stmt->fetch();
-
-    if (!$producto) {
+    if ($id <= 0 || papelera_enviar($pdo, 'producto', [$id]) === 0) {
         throw new Exception('Producto no encontrado.');
     }
 
-    if ($producto['imagen']) {
-        eliminar_imagen($producto['imagen']);
-    }
-
-    if ($producto['imagenes']) {
-        $galeria = json_decode($producto['imagenes'], true);
-        if (is_array($galeria)) {
-            foreach ($galeria as $img) {
-                eliminar_imagen($img);
-            }
-        }
-    }
-
-    $stmt = $pdo->prepare('DELETE FROM productos WHERE id = :id');
-    $stmt->execute(['id' => $id]);
-
-    $_SESSION['flash_msg'] = ['type' => 'success', 'text' => 'Producto eliminado correctamente.'];
+    $_SESSION['flash_msg'] = ['type' => 'success', 'text' => 'Producto enviado a la papelera. Lo podés restaurar desde ahí durante ' . PAPELERA_DIAS . ' días.'];
 
 } catch (Exception $e) {
     $_SESSION['flash_msg'] = ['type' => 'error', 'text' => $e->getMessage()];

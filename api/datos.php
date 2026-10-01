@@ -1,6 +1,7 @@
 <?php
 define('IS_API_ENDPOINT', true);
 require_once __DIR__ . '/../admin/config.php';
+require_once __DIR__ . '/../inc/ajustes.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
@@ -120,6 +121,13 @@ try {
                 $stmt = $pdo->query('SELECT id, nombre, slug, tipo FROM categorias ORDER BY tipo, nombre');
             }
             echo json_encode($stmt->fetchAll());
+            break;
+
+        case 'contacto':
+            // Lo piden todas las páginas HTML: que el navegador lo reuse un minuto
+            header('Cache-Control: public, max-age=60');
+            $ajustes = ajustes_cargar($pdo);
+            echo json_encode($ajustes + ['links' => contacto_links($ajustes)]);
             break;
 
         default:

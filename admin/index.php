@@ -6,6 +6,7 @@ $stmt = $pdo->query('
     SELECT p.*, c.nombre AS categoria_nombre 
     FROM productos p 
     LEFT JOIN categorias c ON p.categoria_id = c.id 
+    WHERE p.eliminado_at IS NULL
     ORDER BY p.orden ASC, p.created_at DESC
 ');
 $productos = $stmt->fetchAll();
@@ -16,6 +17,8 @@ $categorias = $stmt_cat->fetchAll();
 
 $msg = $_SESSION['flash_msg'] ?? null;
 unset($_SESSION['flash_msg']);
+
+$pagina_activa = 'index.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -32,7 +35,7 @@ unset($_SESSION['flash_msg']);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=7">
+    <link rel="stylesheet" href="admin.css?v=8">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -41,42 +44,7 @@ unset($_SESSION['flash_msg']);
     </button>
 
     <div class="admin-layout">
-        <!-- Sidebar -->
-        <aside class="admin-sidebar">
-            <div class="sidebar-logo">Martineau</div>
-            <div class="sidebar-label">Administración</div>
-
-            <nav class="sidebar-nav">
-                <a href="index.php" class="active">
-                    <svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                    Productos
-                </a>
-                <a href="proyectos.php">
-                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    Proyectos
-                </a>
-                <a href="categorias.php">
-                    <svg viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
-                    Categorías
-                </a>
-                <a href="importar.php">
-                    <svg viewBox="0 0 24 24"><path d="M12 3v12m0-12l4 4m-4-4L8 7"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-                    Importar
-                </a>
-            </nav>
-
-            <div class="sidebar-footer">
-                <a href="../" target="_blank">
-                    <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                    Ver sitio
-                </a>
-                <br>
-                <a href="logout.php">
-                    <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                    Cerrar sesión
-                </a>
-            </div>
-        </aside>
+        <?php require __DIR__ . '/sidebar.php'; ?>
 
         <!-- Main Content -->
         <main class="admin-main">
@@ -121,10 +89,30 @@ unset($_SESSION['flash_msg']);
                     </select>
                     <span class="admin-filter-count" data-filtro-count="sortable-productos"></span>
                 </div>
+                <!-- Acciones sobre los seleccionados (las casillas de la tabla apuntan a este form) -->
+                <form method="POST" action="actions/acciones_masivas.php" id="form-seleccion" class="barra-seleccion" data-seleccion="sortable-productos" hidden>
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="tipo" value="producto">
+                    <span class="barra-seleccion-cuenta" data-seleccion-cuenta></span>
+                    <button type="submit" name="accion" value="mostrar" class="btn-admin btn-secondary btn-sm">Mostrar</button>
+                    <button type="submit" name="accion" value="ocultar" class="btn-admin btn-secondary btn-sm">Ocultar</button>
+                    <button type="submit" name="accion" value="destacar" class="btn-admin btn-secondary btn-sm">Destacar</button>
+                    <button type="submit" name="accion" value="no_destacar" class="btn-admin btn-secondary btn-sm">Quitar destacado</button>
+                    <select name="categoria_id" class="form-control" aria-label="Categoría a la que moverlos">
+                        <option value="">Mover a categoría…</option>
+                        <?php foreach ($categorias as $cat): ?>
+                            <option value="<?= (int)$cat['id'] ?>"><?= e($cat['nombre']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" name="accion" value="categoria" class="btn-admin btn-secondary btn-sm">Mover</button>
+                    <button type="submit" name="accion" value="eliminar" class="btn-admin btn-danger btn-sm" title="Se pueden restaurar desde la Papelera">Eliminar</button>
+                </form>
+
                 <div class="admin-table-wrapper">
                     <table class="admin-table">
                         <thead>
                             <tr>
+                                <th class="col-check"><input type="checkbox" data-seleccion-todos="sortable-productos" aria-label="Seleccionar todos"></th>
                                 <th style="width: 40px;"></th>
                                 <th>Imagen</th>
                                 <th>Título</th>
@@ -137,6 +125,7 @@ unset($_SESSION['flash_msg']);
                         <tbody id="sortable-productos">
                             <?php foreach ($productos as $prod): ?>
                                 <tr data-id="<?= $prod['id'] ?>" data-categoria-id="<?= (int)($prod['categoria_id'] ?? 0) ?>">
+                                    <td class="col-check"><input type="checkbox" name="items[]" value="<?= (int)$prod['id'] ?>" form="form-seleccion" aria-label="Seleccionar <?= e($prod['titulo']) ?>"></td>
                                     <td class="drag-handle" title="Arrastrar para reordenar">☰</td>
                                     <td>
                                         <?php if ($prod['imagen']): ?>
@@ -207,7 +196,7 @@ unset($_SESSION['flash_msg']);
                                             <form method="POST" action="actions/eliminar_producto.php" style="display:inline">
                                                 <?= csrf_field() ?>
                                                 <input type="hidden" name="id" value="<?= (int)$prod['id'] ?>">
-                                                <button type="submit" class="btn-admin btn-danger btn-sm btn-eliminar">Eliminar</button>
+                                                <button type="submit" class="btn-admin btn-danger btn-sm" title="Se puede restaurar desde la Papelera">Eliminar</button>
                                             </form>
                                         </div>
                                     </td>
@@ -329,6 +318,6 @@ unset($_SESSION['flash_msg']);
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="admin.js?v=18"></script>
+    <script src="admin.js?v=19"></script>
 </body>
 </html>

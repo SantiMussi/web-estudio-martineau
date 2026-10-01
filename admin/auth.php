@@ -32,3 +32,13 @@ if (isset($_SESSION['ultima_actividad']) && (time() - $_SESSION['ultima_activida
 }
 
 $_SESSION['ultima_actividad'] = time();
+
+require_once __DIR__ . '/migraciones.php';
+require_once __DIR__ . '/papelera_funciones.php';
+
+try {
+    migrar_base($pdo);
+} catch (Exception $e) {
+    // Se vuelve a intentar en el próximo pedido; mientras, lo nuevo del panel puede fallar
+    error_log('[migraciones.php] ' . $e->getMessage());
+}

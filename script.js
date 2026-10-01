@@ -729,8 +729,61 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     };
 
+    // Datos de contacto: se editan desde el panel. Las páginas HTML traen escritos los
+    // de siempre y, si la API responde, se reemplazan por los cargados (las fichas PHP
+    // ya salen armadas del servidor y no tienen data-contacto).
+    const initContacto = () => {
+        const elementos = document.querySelectorAll('[data-contacto]');
+        if (!elementos.length || window.location.protocol === 'file:') return;
+
+        const lineas = texto => String(texto || '').split('\n').map(l => l.trim()).filter(Boolean);
+        const conSaltos = (el, partes) => el.replaceChildren(
+            ...partes.flatMap((parte, i) => i ? [document.createElement('br'), parte] : [parte])
+        );
+        // Solo si cambió: volver a poner el mismo src recarga el mapa
+        const fijar = (el, atributo, valor) => {
+            if (valor && el.getAttribute(atributo) !== valor) el.setAttribute(atributo, valor);
+        };
+        const actualizarDatosEstructurados = (el, c) => {
+            try {
+                const ld = JSON.parse(el.textContent);
+                const empresa = (ld['@graph'] || [ld]).find(n => String(n['@id'] || '').endsWith('#empresa'));
+                if (!empresa) return;
+                empresa.telephone = c.telefono;
+                empresa.email = c.email;
+                if (empresa.address) empresa.address.streetAddress = c.direccion;
+                empresa.sameAs = [c.instagram];
+                el.textContent = JSON.stringify(ld);
+            } catch (e) { /* se queda el que viene en el HTML */ }
+        };
+
+        fetch(new URL('api/datos.php?tipo=contacto', document.baseURI))
+            .then(res => res.ok ? res.json() : Promise.reject(res.status))
+            .then(c => {
+                if (!c || !c.links) return;
+                elementos.forEach(el => {
+                    switch (el.dataset.contacto) {
+                        case 'telefono': fijar(el, 'href', c.links.tel); el.textContent = c.telefono; break;
+                        case 'whatsapp': fijar(el, 'href', c.links.whatsapp); break;
+                        case 'email': fijar(el, 'href', c.links.mailto); el.textContent = c.email; break;
+                        case 'instagram': fijar(el, 'href', c.instagram); break;
+                        case 'ubicacion': conSaltos(el, [c.direccion, c.zona, 'Argentina']); break;
+                        case 'ubicacion-taller': conSaltos(el, [c.direccion, c.zona + ' — Argentina']); break;
+                        case 'horario': conSaltos(el, lineas(c.horario)); break;
+                        case 'horario-linea': el.textContent = lineas(c.horario).join(', '); break;
+                        case 'mapa-ir': fijar(el, 'href', c.links.mapa_ir); break;
+                        case 'mapa-embed': fijar(el, 'src', c.links.mapa_embed); break;
+                        case 'ld': actualizarDatosEstructurados(el, c); break;
+                    }
+                });
+            })
+            // Sin API (vista previa local, base caída): quedan los datos escritos en el HTML
+            .catch(() => {});
+    };
+
     // Inicialización de componentes
     const init = () => {
+        initContacto();
         initLoader();
         initHeader();
         initMobileNav();

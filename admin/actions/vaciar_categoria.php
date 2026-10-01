@@ -29,33 +29,13 @@ try {
         throw new Exception('El texto de confirmación no coincide con el nombre de la categoría. No se borró nada.');
     }
 
-    $tabla = $categoria['tipo'] === 'producto' ? 'productos' : 'proyectos';
-
-    $stmt = $pdo->prepare("SELECT id, imagen, imagenes FROM $tabla WHERE categoria_id = :id");
+    $stmt = $pdo->prepare('SELECT id FROM ' . papelera_tabla($categoria['tipo']) . ' WHERE categoria_id = :id AND eliminado_at IS NULL');
     $stmt->execute(['id' => $id]);
-    $items = $stmt->fetchAll();
-
-    foreach ($items as $item) {
-        if ($item['imagen']) {
-            eliminar_imagen($item['imagen']);
-        }
-        if ($item['imagenes']) {
-            $galeria = json_decode($item['imagenes'], true);
-            if (is_array($galeria)) {
-                foreach ($galeria as $img) {
-                    eliminar_imagen($img);
-                }
-            }
-        }
-    }
-
-    $stmt = $pdo->prepare("DELETE FROM $tabla WHERE categoria_id = :id");
-    $stmt->execute(['id' => $id]);
-    $borrados = $stmt->rowCount();
+    $enviados = papelera_enviar($pdo, $categoria['tipo'], $stmt->fetchAll(PDO::FETCH_COLUMN));
 
     $_SESSION['flash_msg'] = [
         'type' => 'success',
-        'text' => "Se eliminaron $borrados ítem(s) de \"{$categoria['nombre']}\" junto con sus imágenes. La categoría sigue existiendo, ahora vacía.",
+        'text' => "Se mandaron $enviados ítem(s) de \"{$categoria['nombre']}\" a la papelera. La categoría sigue existiendo, ahora vacía.",
     ];
 
 } catch (Exception $e) {

@@ -4,14 +4,16 @@ require_once __DIR__ . '/auth.php';
 
 $categorias = $pdo->query('
     SELECT c.*, 
-        (SELECT COUNT(*) FROM productos WHERE categoria_id = c.id) AS total_productos,
-        (SELECT COUNT(*) FROM proyectos WHERE categoria_id = c.id) AS total_proyectos
+        (SELECT COUNT(*) FROM productos WHERE categoria_id = c.id AND eliminado_at IS NULL) AS total_productos,
+        (SELECT COUNT(*) FROM proyectos WHERE categoria_id = c.id AND eliminado_at IS NULL) AS total_proyectos
     FROM categorias c 
     ORDER BY c.tipo, c.nombre
 ')->fetchAll();
 
 $msg = $_SESSION['flash_msg'] ?? null;
 unset($_SESSION['flash_msg']);
+
+$pagina_activa = 'categorias.php';
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -28,7 +30,7 @@ unset($_SESSION['flash_msg']);
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=7">
+    <link rel="stylesheet" href="admin.css?v=8">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -37,42 +39,7 @@ unset($_SESSION['flash_msg']);
     </button>
 
     <div class="admin-layout">
-        <!-- Sidebar -->
-        <aside class="admin-sidebar">
-            <div class="sidebar-logo">Martineau</div>
-            <div class="sidebar-label">Administración</div>
-
-            <nav class="sidebar-nav">
-                <a href="index.php">
-                    <svg viewBox="0 0 24 24"><path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                    Productos
-                </a>
-                <a href="proyectos.php">
-                    <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-                    Proyectos
-                </a>
-                <a href="categorias.php" class="active">
-                    <svg viewBox="0 0 24 24"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
-                    Categorías
-                </a>
-                <a href="importar.php">
-                    <svg viewBox="0 0 24 24"><path d="M12 3v12m0-12l4 4m-4-4L8 7"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-                    Importar
-                </a>
-            </nav>
-
-            <div class="sidebar-footer">
-                <a href="../" target="_blank">
-                    <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                    Ver sitio
-                </a>
-                <br>
-                <a href="logout.php">
-                    <svg viewBox="0 0 24 24" style="width:14px;height:14px"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                    Cerrar sesión
-                </a>
-            </div>
-        </aside>
+        <?php require __DIR__ . '/sidebar.php'; ?>
 
         <!-- Main Content -->
         <main class="admin-main">
@@ -295,7 +262,7 @@ unset($_SESSION['flash_msg']);
         </div>
     </div>
 
-    <script src="admin.js?v=18"></script>
+    <script src="admin.js?v=19"></script>
     <script>
         const TODAS_CATEGORIAS = <?= json_encode(array_map(function ($c) {
             return ['id' => (int)$c['id'], 'nombre' => $c['nombre'], 'tipo' => $c['tipo']];
@@ -337,7 +304,7 @@ unset($_SESSION['flash_msg']);
             document.getElementById('vaciar-origen-id').value = cat.id;
             document.getElementById('vaciar-nombre-esperado').textContent = cat.nombre;
             document.getElementById('vaciar-texto-intro').textContent =
-                `Esto borra para siempre ${cat.total} ítem(s) de "${cat.nombre}" y sus imágenes. No se puede deshacer.`;
+                `Esto manda a la papelera los ${cat.total} ítem(s) de "${cat.nombre}". Desde ahí los podés restaurar durante 30 días.`;
 
             document.getElementById('vaciar-confirmacion').value = '';
             document.getElementById('vaciar-submit-btn').disabled = true;

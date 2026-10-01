@@ -381,25 +381,25 @@
 
           <div class="taller-dato">
             <span>Dirección</span>
-            <p>Santos Dumont 4457<br>Chacarita, CABA — Argentina</p>
+            <p data-contacto="ubicacion-taller">Santos Dumont 4457<br>Chacarita, CABA — Argentina</p>
           </div>
 
           <div class="taller-dato">
             <span>Horario</span>
-            <p>Lunes a Viernes, Coordinar visita</p>
+            <p data-contacto="horario-linea">Lunes a Viernes, Coordinar visita</p>
           </div>
 
 
-          <a class="taller-cta"
-            href="https://www.google.com/maps/dir/?api=1&destination=Santos%20Dumont%204457%2C%20Buenos%20Aires%2C%20Argentina"
+          <a class="taller-cta" data-contacto="mapa-ir"
+            href="https://www.google.com/maps/dir/?api=1&destination=Santos%20Dumont%204457%2C%20Chacarita%2C%20CABA%2C%20Argentina"
             target="_blank" rel="noopener">
             Abrir en Google Maps
           </a>
         </div>
 
         <div class="taller-mapa">
-          <iframe
-            src="https://www.google.com/maps?q=Santos%20Dumont%204457%2C%20Buenos%20Aires%2C%20Argentina&output=embed"
+          <iframe data-contacto="mapa-embed"
+            src="https://www.google.com/maps?q=Santos%20Dumont%204457%2C%20Chacarita%2C%20CABA%2C%20Argentina&output=embed"
             title="Mapa de ubicación del taller de Martineau" loading="lazy"
             referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
@@ -544,7 +544,7 @@
             </svg>
           </span>
           <h3>Ubicación</h3>
-          <p>
+          <p data-contacto="ubicacion">
             Santos Dumont 4457 <br>
             Chacarita, CABA<br>
             Argentina
@@ -563,9 +563,9 @@
           </span>
           <h3>Comunicación</h3>
           <p>
-            <a href="tel:+5491131917014">+54 9 11 3191-7014</a><br>
-            <a href="https://wa.me/5491131917014" target="_blank" rel="noopener">WhatsApp</a><br>
-            <a href="mailto:contacto@armartineau.com.ar">contacto@armartineau.com.ar</a>
+            <a href="tel:+5491131917014" data-contacto="telefono">+54 9 11 3191-7014</a><br>
+            <a href="https://wa.me/5491131917014" target="_blank" rel="noopener" data-contacto="whatsapp">WhatsApp</a><br>
+            <a href="mailto:contacto@armartineau.com.ar" data-contacto="email">contacto@armartineau.com.ar</a>
           </p>
         </div>
 
@@ -580,7 +580,7 @@
             </svg>
           </span>
           <h3>Horario</h3>
-          <p>
+          <p data-contacto="horario">
             Lunes a Viernes<br>
             Coordinar visita
           </p>
@@ -592,7 +592,7 @@
           <span class="contact-block-icon" aria-hidden="true"></span>
           <h3>Redes</h3>
           <div class="contact-social">
-            <a href="https://www.instagram.com/armartineau/" class="social-link" aria-label="Instagram" target="_blank"
+            <a href="https://www.instagram.com/armartineau/" data-contacto="instagram" class="social-link" aria-label="Instagram" target="_blank"
               rel="noopener">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="22" height="22">
@@ -628,10 +628,10 @@
     });
   </script>
   <script src="buscador.js?v=2"></script>
-  <script src="script.js?v=24"></script>
+  <script src="script.js?v=25"></script>
 
   <!-- WhatsApp Floating Button -->
-  <a href="https://wa.me/5491131917014" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
+  <a href="https://wa.me/5491131917014" data-contacto="whatsapp" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
     aria-label="Contactar por WhatsApp">
     <div class="whatsapp-pulse"></div>
     <div class="whatsapp-icon-wrapper">

@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSlugGenerator();
     initDeleteConfirmations();
     initTableFilters();
+    initSeleccion();
     initCapitalizarTitulo();
 });
 
@@ -487,6 +488,60 @@ function initDeleteConfirmations() {
                 e.preventDefault();
             }
         });
+    });
+
+    // Botones con su propio mensaje de confirmación
+    document.querySelectorAll('[data-confirmar]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if (!confirm(btn.getAttribute('data-confirmar'))) {
+                e.preventDefault();
+            }
+        });
+    });
+}
+
+// Casillas para operar sobre varias filas de una tabla a la vez.
+// El form de la barra lleva data-seleccion="<id del tbody>" y las casillas de cada fila
+// apuntan a ese form con el atributo form="...". Solo cuentan las filas visibles:
+// si el filtro de categoría o el buscador esconden una fila marcada, no se manda.
+function initSeleccion() {
+    document.querySelectorAll('form[data-seleccion]').forEach(barra => {
+        const tbody = document.getElementById(barra.getAttribute('data-seleccion'));
+        if (!tbody) return;
+
+        const todos = document.querySelector(`[data-seleccion-todos="${tbody.id}"]`);
+        const cuenta = barra.querySelector('[data-seleccion-cuenta]');
+        const casillas = () => [...tbody.querySelectorAll(`input[type="checkbox"][form="${barra.id}"]`)];
+        const visible = casilla => casilla.closest('tr').style.display !== 'none';
+
+        const actualizar = () => {
+            const visibles = casillas().filter(visible);
+            const marcadas = visibles.filter(c => c.checked).length;
+            barra.hidden = marcadas === 0;
+            if (cuenta) cuenta.textContent = marcadas === 1 ? '1 seleccionado' : `${marcadas} seleccionados`;
+            if (todos) {
+                todos.checked = marcadas > 0 && marcadas === visibles.length;
+                todos.indeterminate = marcadas > 0 && marcadas < visibles.length;
+            }
+        };
+
+        if (todos) {
+            todos.addEventListener('change', () => {
+                casillas().filter(visible).forEach(c => { c.checked = todos.checked; });
+                actualizar();
+            });
+        }
+        // Las casillas, el filtro y el buscador cambian la cuenta. La casilla "todos" se
+        // excluye: su evento input llega antes que el change y la destildaría antes de usarla.
+        const alCambiar = e => { if (e.target !== todos) actualizar(); };
+        document.addEventListener('input', alCambiar);
+        document.addEventListener('change', alCambiar);
+
+        barra.addEventListener('submit', () => {
+            casillas().filter(c => !visible(c)).forEach(c => { c.checked = false; });
+        });
+
+        actualizar();
     });
 }
 

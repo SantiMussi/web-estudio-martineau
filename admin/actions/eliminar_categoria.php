@@ -23,11 +23,9 @@ try {
         throw new Exception('Categoría no encontrada.');
     }
 
-    if ($cat['tipo'] === 'producto') {
-        $stmt = $pdo->prepare('SELECT COUNT(*) AS total FROM productos WHERE categoria_id = :id');
-    } else {
-        $stmt = $pdo->prepare('SELECT COUNT(*) AS total FROM proyectos WHERE categoria_id = :id');
-    }
+    $tabla = $cat['tipo'] === 'producto' ? 'productos' : 'proyectos';
+
+    $stmt = $pdo->prepare("SELECT COUNT(*) AS total FROM $tabla WHERE categoria_id = :id AND eliminado_at IS NULL");
     $stmt->execute(['id' => $id]);
     $count = $stmt->fetch();
 
@@ -35,12 +33,21 @@ try {
         throw new Exception('No se puede eliminar: tiene ' . $count['total'] . ' ítem(s) asociado(s). Eliminá o reasigná los ítems primero.');
     }
 
+    $pdo->beginTransaction();
+
+    // Lo que está en la papelera queda sin categoría (si se restaura, se le asigna otra al editarlo)
+    $stmt = $pdo->prepare("UPDATE $tabla SET categoria_id = NULL WHERE categoria_id = :id");
+    $stmt->execute(['id' => $id]);
+
     $stmt = $pdo->prepare('DELETE FROM categorias WHERE id = :id');
     $stmt->execute(['id' => $id]);
+
+    $pdo->commit();
 
     $_SESSION['flash_msg'] = ['type' => 'success', 'text' => 'Categoría eliminada correctamente.'];
 
 } catch (Exception $e) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
     $_SESSION['flash_msg'] = ['type' => 'error', 'text' => $e->getMessage()];
 }
 
