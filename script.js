@@ -781,9 +781,65 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(() => {});
     };
 
+    // Reseñas de Nosotros: se cargan desde el panel. El HTML trae escritas las de
+    // siempre; si la API responde, se reemplazan (y si no hay ninguna visible, la
+    // sección se oculta).
+    const initResenas = () => {
+        const grilla = document.querySelector('[data-resenas]');
+        if (!grilla || window.location.protocol === 'file:') return;
+
+        const firma = lista => lista.map(r => [r.texto, r.nombre, r.detalle || ''].join('|')).join('||');
+        const actuales = [...grilla.querySelectorAll('.testimonio-card')].map(card => ({
+            texto: card.querySelector('.testimonio-text').textContent.replace(/\s+/g, ' ').trim(),
+            nombre: card.querySelector('.testimonio-autor strong').textContent.trim(),
+            detalle: (card.querySelector('.testimonio-autor span') || {}).textContent || ''
+        }));
+
+        fetch(new URL('api/datos.php?tipo=resenas', document.baseURI))
+            .then(res => res.ok ? res.json() : Promise.reject(res.status))
+            .then(resenas => {
+                if (!Array.isArray(resenas)) return;
+
+                const seccion = grilla.closest('section');
+                if (resenas.length === 0) {
+                    if (seccion) seccion.hidden = true;
+                    return;
+                }
+                // Si son las mismas que ya están escritas, no se tocan (no se repite la animación)
+                if (firma(resenas) === firma(actuales)) return;
+
+                grilla.replaceChildren(...resenas.map(r => {
+                    const card = document.createElement('div');
+                    card.className = 'testimonio-card reveal';
+
+                    const texto = document.createElement('p');
+                    texto.className = 'testimonio-text';
+                    texto.textContent = r.texto;
+
+                    const autor = document.createElement('div');
+                    autor.className = 'testimonio-autor';
+                    const nombre = document.createElement('strong');
+                    nombre.textContent = r.nombre;
+                    autor.append(nombre);
+                    if (r.detalle) {
+                        const detalle = document.createElement('span');
+                        detalle.textContent = r.detalle;
+                        autor.append(detalle);
+                    }
+
+                    card.append(texto, autor);
+                    return card;
+                }));
+                window.initScrollReveal();
+            })
+            // Sin API (vista previa local, base caída): quedan las reseñas escritas en el HTML
+            .catch(() => {});
+    };
+
     // Inicialización de componentes
     const init = () => {
         initContacto();
+        initResenas();
         initLoader();
         initHeader();
         initMobileNav();

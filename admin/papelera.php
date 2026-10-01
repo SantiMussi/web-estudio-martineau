@@ -164,6 +164,6 @@ $pagina_activa = 'papelera.php';
         </main>
     </div>
 
-    <script src="admin.js?v=19"></script>
+    <script src="admin.js?v=20"></script>
 </body>
 </html>

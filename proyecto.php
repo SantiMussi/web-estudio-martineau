@@ -196,7 +196,7 @@ header('Content-Type: text/html; charset=utf-8');
   </script>
 
   <script src="buscador.js?v=2"></script>
-  <script src="script.js?v=25"></script>
+  <script src="script.js?v=26"></script>
 </body>
 
 </html>

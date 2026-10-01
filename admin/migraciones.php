@@ -9,7 +9,7 @@
  * Al agregar un paso nuevo, subir ESQUEMA_VERSION para que se vuelva a revisar.
  */
 
-const ESQUEMA_VERSION = 1;
+const ESQUEMA_VERSION = 2;
 
 function migrar_base(PDO $pdo): void
 {
@@ -35,6 +35,35 @@ function migrar_base(PDO $pdo): void
         }
     }
 
+    // Reseñas de clientes (admin/resenas.php). Al crearla se cargan las dos que estaban
+    // escritas en nosotros.html, para que la sección no quede vacía.
+    if (!migracion_tabla_existe($pdo, 'resenas')) {
+        $pdo->exec('
+            CREATE TABLE resenas (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                nombre VARCHAR(120) NOT NULL,
+                detalle VARCHAR(120) NULL,
+                texto TEXT NOT NULL,
+                oculto TINYINT(1) NOT NULL DEFAULT 0,
+                orden INT NOT NULL DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        ');
+        $stmt = $pdo->prepare('INSERT INTO resenas (nombre, detalle, texto, orden) VALUES (:nombre, :detalle, :texto, :orden)');
+        $stmt->execute([
+            'nombre' => 'José María Del Bonnis',
+            'detalle' => 'Arquitecto',
+            'texto' => 'Excelente terminación y calidad de los productos. Las piezas de piedra pueden ser usadas en el exterior bajo cualquier clima.',
+            'orden' => 0,
+        ]);
+        $stmt->execute([
+            'nombre' => 'Agustín Sacco',
+            'detalle' => 'Particular',
+            'texto' => 'Navegando por internet encontré esta empresa que me aconsejó en el tipo de producto. No tengo otra cosa que palabras de agradecimiento por el asesoramiento.',
+            'orden' => 1,
+        ]);
+    }
+
     $_SESSION['esquema_version'] = ESQUEMA_VERSION;
 }
 
@@ -45,5 +74,15 @@ function migracion_columna_existe(PDO $pdo, string $tabla, string $columna): boo
         WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :tabla AND COLUMN_NAME = :columna
     ');
     $stmt->execute(['tabla' => $tabla, 'columna' => $columna]);
+    return (int)$stmt->fetchColumn() > 0;
+}
+
+function migracion_tabla_existe(PDO $pdo, string $tabla): bool
+{
+    $stmt = $pdo->prepare('
+        SELECT COUNT(*) FROM information_schema.TABLES
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :tabla
+    ');
+    $stmt->execute(['tabla' => $tabla]);
     return (int)$stmt->fetchColumn() > 0;
 }

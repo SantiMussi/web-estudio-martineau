@@ -762,6 +762,15 @@ select.form-control {
     max-width: 75ch;
 }
 
+/* ─── RESEÑAS ─── */
+.resena-texto {
+    max-width: 48ch;
+    font-style: italic;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--admin-text-muted);
+}
+
 /* ─── SELECCIÓN DE VARIAS FILAS ─── */
 .col-check {
     width: 40px;

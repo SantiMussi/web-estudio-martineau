@@ -318,6 +318,6 @@ $pagina_activa = 'index.php';
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="admin.js?v=19"></script>
+    <script src="admin.js?v=20"></script>
 </body>
 </html>

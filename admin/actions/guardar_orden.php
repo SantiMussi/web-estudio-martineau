@@ -21,7 +21,7 @@ if (!isset($data['csrf_token']) || !hash_equals($_SESSION['csrf_token'], (string
 
 $tabla = $data['tabla'];
 
-if (!in_array($tabla, ['productos', 'proyectos'])) {
+if (!in_array($tabla, ['productos', 'proyectos', 'resenas'], true)) {
     http_response_code(403);
     echo json_encode(['success' => false, 'error' => 'Tabla no permitida.']);
     exit;

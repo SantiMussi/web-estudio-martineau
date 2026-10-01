@@ -123,6 +123,17 @@ try {
             echo json_encode($stmt->fetchAll());
             break;
 
+        case 'resenas':
+            // Las de la sección Testimonios de nosotros.html (se cargan desde el panel)
+            header('Cache-Control: public, max-age=60');
+            $stmt = $pdo->query('
+                SELECT nombre, detalle, texto FROM resenas
+                WHERE oculto = 0
+                ORDER BY orden ASC, created_at DESC
+            ');
+            echo json_encode($stmt->fetchAll());
+            break;
+
         case 'contacto':
             // Lo piden todas las páginas HTML: que el navegador lo reuse un minuto
             header('Cache-Control: public, max-age=60');

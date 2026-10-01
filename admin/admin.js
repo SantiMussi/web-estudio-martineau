@@ -137,7 +137,7 @@ function initModals() {
                     if (specsContainer) specsContainer.innerHTML = '';
                     
                     const title = overlay.querySelector('.modal-header h2');
-                    if (title) title.textContent = 'Nuevo';
+                    if (title) title.textContent = title.dataset.tituloNuevo || 'Nuevo';
                     
                     const currentMainImgDiv = form.querySelector('#current-main-image');
                     if (currentMainImgDiv) currentMainImgDiv.style.display = 'none';
@@ -638,4 +638,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initSortable('sortable-productos', 'productos');
     initSortable('sortable-proyectos', 'proyectos');
+    initSortable('sortable-resenas', 'resenas');
 });
