@@ -1,12 +1,17 @@
 /*
  * Editor básico de las fotos de la portada (admin/portada.php).
  *
+ * - Recortar: un recuadro sobre la foto que se mueve y se achica desde las esquinas
+ *   (proporción libre o fija). Lo recortado es la foto que se ve en computadora.
+ * - Celular: dentro del recorte, qué parte se ve en un teléfono parado (la versión
+ *   para celular es un recorte vertical de 750×1210).
  * - Brillo, contraste y saturación, con vista previa en vivo.
- * - Un recuadro que se arrastra para elegir qué parte de la foto se ve en celulares
- *   (la versión para celular es un recorte vertical de 750×1210).
  * - Siempre parte de la foto ORIGINAL: al guardar se aplica todo sobre ella en tamaño
  *   completo y se mandan las dos versiones (computadora y celular) a
  *   actions/editar_portada.php, que las guarda como WebP.
+ *
+ * Los ajustes se guardan normalizados (0–1): recorte = {x, y, w, h} sobre la foto
+ * original y foco_x / foco_y = centro del recuadro del celular dentro del recorte.
  */
 (() => {
     const overlay = document.getElementById('modal-editor-portada');
@@ -14,21 +19,40 @@
 
     const MOVIL_ANCHO = 750;
     const MOVIL_ALTO = 1210;
-    const PROPORCION = MOVIL_ANCHO / MOVIL_ALTO;
-    const VISTA_ANCHO_MAX = 900;   // la vista previa se procesa achicada, para que sea fluida
+    const PROPORCION_MOVIL = MOVIL_ANCHO / MOVIL_ALTO;
+    const VISTA_ANCHO_MAX = 900;    // la vista previa se procesa achicada, para que sea fluida
+    const RECORTE_MINIMO = 0.15;    // el recorte no puede ser menor al 15% de la foto
+    const ANCHO_RECOMENDADO = 1600; // por debajo de esto, en pantallas grandes se ve borroso
 
     const vista = overlay.querySelector('[data-editor-vista]');
+    const zona = overlay.querySelector('.editor-foto');
     const celular = overlay.querySelector('[data-editor-celular]');
+    const cajaRecorte = overlay.querySelector('[data-editor-recorte]');
     const marco = overlay.querySelector('[data-editor-marco]');
     const estado = overlay.querySelector('[data-editor-estado]');
+    const ayuda = overlay.querySelector('[data-editor-ayuda]');
+    const aviso = overlay.querySelector('[data-editor-resolucion]');
+    const selectorProporcion = overlay.querySelector('[data-editor-proporcion]');
     const guardar = overlay.querySelector('[data-editor-guardar]');
     const deslizadores = [...overlay.querySelectorAll('[data-editor-ajuste]')];
+    const botonesModo = [...overlay.querySelectorAll('[data-editor-modo]')];
 
-    const AJUSTES_INICIALES = { brillo: 0, contraste: 0, saturacion: 0, foco_x: 0.5, foco_y: 0.5 };
-    let foto = null;          // { id, original }
+    const AYUDAS = {
+        recorte: 'Mové el recuadro o achicalo desde las esquinas: lo de adentro es la foto que se ve en computadora.',
+        celular: 'Arrastrá el recuadro para elegir qué parte del recorte se ve en celulares.',
+    };
+
+    const iniciales = () => ({
+        brillo: 0, contraste: 0, saturacion: 0,
+        foco_x: 0.5, foco_y: 0.5,
+        recorte: { x: 0, y: 0, w: 1, h: 1 },
+        proporcion: 0,
+    });
+
+    let foto = null;          // { id, original, ajustes }
     let imagen = null;        // la original cargada
     let base = null;          // píxeles de la vista previa sin ajustes
-    let ajustes = { ...AJUSTES_INICIALES };
+    let ajustes = iniciales();
 
     // Brillo, contraste y saturación sobre los píxeles (igual en la vista previa y al guardar)
     const aplicar = (datos, a) => {
@@ -37,9 +61,9 @@
         const s = 1 + a.saturacion / 100;
         const p = datos.data;
         for (let i = 0; i < p.length; i += 4) {
-            let r = ((p[i] * b) - 128) * c + 128;
-            let g = ((p[i + 1] * b) - 128) * c + 128;
-            let v = ((p[i + 2] * b) - 128) * c + 128;
+            const r = ((p[i] * b) - 128) * c + 128;
+            const g = ((p[i + 1] * b) - 128) * c + 128;
+            const v = ((p[i + 2] * b) - 128) * c + 128;
             const lum = 0.299 * r + 0.587 * g + 0.114 * v;
             p[i] = lum + (r - lum) * s;          // Uint8ClampedArray: recorta solo a 0–255
             p[i + 1] = lum + (g - lum) * s;
@@ -48,34 +72,57 @@
         return datos;
     };
 
-    // Zona de la foto que va al celular, en coordenadas de una imagen de ancho × alto
-    const recorte = (ancho, alto) => {
+    // El recorte en píxeles de una imagen de ancho × alto
+    const enPixeles = (ancho, alto) => {
+        const r = ajustes.recorte;
+        return { x: r.x * ancho, y: r.y * alto, w: r.w * ancho, h: r.h * alto };
+    };
+
+    // Lo que va al celular, dentro de "caja" (el recorte, en las mismas coordenadas)
+    const zonaMovil = caja => {
         let w, h;
-        if (ancho / alto > PROPORCION) { h = alto; w = alto * PROPORCION; }
-        else { w = ancho; h = ancho / PROPORCION; }
-        const x = Math.min(Math.max(ajustes.foco_x * ancho - w / 2, 0), ancho - w);
-        const y = Math.min(Math.max(ajustes.foco_y * alto - h / 2, 0), alto - h);
+        if (caja.w / caja.h > PROPORCION_MOVIL) { h = caja.h; w = h * PROPORCION_MOVIL; }
+        else { w = caja.w; h = w / PROPORCION_MOVIL; }
+        const x = caja.x + Math.min(Math.max(ajustes.foco_x * caja.w - w / 2, 0), caja.w - w);
+        const y = caja.y + Math.min(Math.max(ajustes.foco_y * caja.h - h / 2, 0), caja.h - h);
         return { x, y, w, h };
     };
 
-    const dibujarMarco = () => {
-        const r = recorte(vista.width, vista.height);
+    const ubicar = (el, r, escala) => Object.assign(el.style, {
+        left: r.x * escala + 'px', top: r.y * escala + 'px',
+        width: r.w * escala + 'px', height: r.h * escala + 'px',
+    });
+
+    const dibujarMarcos = () => {
         const escala = vista.clientWidth / vista.width;
-        Object.assign(marco.style, {
-            left: r.x * escala + 'px',
-            top: r.y * escala + 'px',
-            width: r.w * escala + 'px',
-            height: r.h * escala + 'px',
-        });
-        const ctx = celular.getContext('2d');
-        ctx.drawImage(vista, r.x, r.y, r.w, r.h, 0, 0, celular.width, celular.height);
+        const caja = enPixeles(vista.width, vista.height);
+        const movil = zonaMovil(caja);
+        ubicar(cajaRecorte, caja, escala);
+        ubicar(marco, movil, escala);
+        celular.getContext('2d').drawImage(vista, movil.x, movil.y, movil.w, movil.h, 0, 0, celular.width, celular.height);
+
+        if (imagen) {
+            const ancho = Math.round(ajustes.recorte.w * imagen.naturalWidth);
+            aviso.hidden = ancho >= ANCHO_RECOMENDADO;
+            aviso.textContent = `El recorte queda de ${ancho} px de ancho: en pantallas grandes se puede ver un poco borroso.`;
+        }
     };
 
     const actualizar = () => {
         if (!base) return;
         const copia = new ImageData(new Uint8ClampedArray(base.data), base.width, base.height);
         vista.getContext('2d').putImageData(aplicar(copia, ajustes), 0, 0);
-        dibujarMarco();
+        dibujarMarcos();
+    };
+
+    const cambiarModo = modo => {
+        zona.dataset.modo = modo;
+        botonesModo.forEach(b => {
+            const activo = b.dataset.editorModo === modo;
+            b.classList.toggle('is-activo', activo);
+            b.setAttribute('aria-selected', activo ? 'true' : 'false');
+        });
+        ayuda.textContent = AYUDAS[modo];
     };
 
     const sincronizarControles = () => {
@@ -83,16 +130,21 @@
             d.value = ajustes[d.dataset.editorAjuste];
             overlay.querySelector(`[data-editor-valor="${d.dataset.editorAjuste}"]`).textContent = d.value;
         });
+        const opcion = [...selectorProporcion.options].find(o => Math.abs(Number(o.value) - ajustes.proporcion) < 0.001);
+        selectorProporcion.value = opcion ? opcion.value : '0';
     };
 
     const abrir = datos => {
         foto = datos;
-        ajustes = { ...AJUSTES_INICIALES, ...(datos.ajustes || {}) };
+        const guardados = datos.ajustes || {};
+        ajustes = { ...iniciales(), ...guardados, recorte: { ...iniciales().recorte, ...(guardados.recorte || {}) } };
         sincronizarControles();
+        cambiarModo('recorte');
         base = null;
         imagen = null;
         guardar.disabled = true;
-        marco.hidden = true;
+        zona.classList.add('is-cargando');
+        aviso.hidden = true;
         estado.hidden = false;
         estado.textContent = 'Cargando la foto…';
         openModal('modal-editor-portada');
@@ -108,7 +160,7 @@
             ctx.drawImage(img, 0, 0, vista.width, vista.height);
             base = ctx.getImageData(0, 0, vista.width, vista.height);
             estado.hidden = true;
-            marco.hidden = false;
+            zona.classList.remove('is-cargando');
             guardar.disabled = false;
             // El tamaño en pantalla del lienzo se conoce recién después de pintarlo
             requestAnimationFrame(actualizar);
@@ -121,43 +173,105 @@
         btn.addEventListener('click', () => abrir(JSON.parse(btn.dataset.editarPortada)));
     });
 
+    botonesModo.forEach(b => b.addEventListener('click', () => cambiarModo(b.dataset.editorModo)));
+
     deslizadores.forEach(d => d.addEventListener('input', () => {
         ajustes[d.dataset.editorAjuste] = Number(d.value);
         overlay.querySelector(`[data-editor-valor="${d.dataset.editorAjuste}"]`).textContent = d.value;
         actualizar();
     }));
 
+    // Al elegir una proporción, el recorte pasa a la más grande que entra, centrada
+    selectorProporcion.addEventListener('change', () => {
+        ajustes.proporcion = Number(selectorProporcion.value);
+        if (ajustes.proporcion > 0 && base) {
+            const W = vista.width, H = vista.height;
+            const c = enPixeles(W, H);
+            let w = c.w, h = c.h;
+            if (w / h > ajustes.proporcion) w = h * ajustes.proporcion;
+            else h = w / ajustes.proporcion;
+            ajustes.recorte = { x: (c.x + (c.w - w) / 2) / W, y: (c.y + (c.h - h) / 2) / H, w: w / W, h: h / H };
+            dibujarMarcos();
+        }
+    });
+
     overlay.querySelector('[data-editor-restablecer]').addEventListener('click', () => {
-        ajustes = { ...AJUSTES_INICIALES };
+        ajustes = iniciales();
         sincronizarControles();
         actualizar();
     });
 
-    window.addEventListener('resize', () => { if (base) dibujarMarco(); });
+    window.addEventListener('resize', () => { if (base) dibujarMarcos(); });
 
-    // Arrastrar el recuadro del celular (mouse o dedo)
-    marco.addEventListener('pointerdown', e => {
-        e.preventDefault();
-        marco.setPointerCapture(e.pointerId);
-        const inicio = { x: e.clientX, y: e.clientY, fx: ajustes.foco_x, fy: ajustes.foco_y };
-        const mover = ev => {
-            const rect = vista.getBoundingClientRect();
-            const r = recorte(vista.width, vista.height);
-            // Límites del centro del recuadro (no se puede salir de la foto)
-            const minX = (r.w / 2) / vista.width, maxX = 1 - minX;
-            const minY = (r.h / 2) / vista.height, maxY = 1 - minY;
-            ajustes.foco_x = Math.min(maxX, Math.max(minX, inicio.fx + (ev.clientX - inicio.x) / rect.width));
-            ajustes.foco_y = Math.min(maxY, Math.max(minY, inicio.fy + (ev.clientY - inicio.y) / rect.height));
-            dibujarMarco();
-        };
-        const soltar = () => {
-            marco.removeEventListener('pointermove', mover);
-            marco.removeEventListener('pointerup', soltar);
-            marco.removeEventListener('pointercancel', soltar);
-        };
-        marco.addEventListener('pointermove', mover);
-        marco.addEventListener('pointerup', soltar);
-        marco.addEventListener('pointercancel', soltar);
+    // Arrastre genérico: llama a mover(dx, dy) con el desplazamiento en píxeles de la vista
+    const arrastrar = (el, alEmpezar, mover) => {
+        el.addEventListener('pointerdown', e => {
+            if (!base) return;
+            e.preventDefault();
+            e.stopPropagation();
+            el.setPointerCapture(e.pointerId);
+            const escala = vista.width / vista.getBoundingClientRect().width;
+            const inicio = { x: e.clientX, y: e.clientY, estado: alEmpezar(e) };
+            const alMover = ev => {
+                mover((ev.clientX - inicio.x) * escala, (ev.clientY - inicio.y) * escala, inicio.estado);
+                dibujarMarcos();
+            };
+            const soltar = () => {
+                el.removeEventListener('pointermove', alMover);
+                el.removeEventListener('pointerup', soltar);
+                el.removeEventListener('pointercancel', soltar);
+            };
+            el.addEventListener('pointermove', alMover);
+            el.addEventListener('pointerup', soltar);
+            el.addEventListener('pointercancel', soltar);
+        });
+    };
+
+    const limitar = (v, min, max) => Math.min(max, Math.max(min, v));
+
+    // Mover el recorte entero
+    arrastrar(cajaRecorte, () => ({ ...ajustes.recorte }), (dx, dy, r0) => {
+        ajustes.recorte.x = limitar(r0.x + dx / vista.width, 0, 1 - r0.w);
+        ajustes.recorte.y = limitar(r0.y + dy / vista.height, 0, 1 - r0.h);
+    });
+
+    // Cambiar el tamaño desde una esquina (la opuesta queda fija)
+    cajaRecorte.querySelectorAll('[data-esquina]').forEach(esquina => {
+        const lado = esquina.dataset.esquina;   // nw, ne, sw, se
+        arrastrar(esquina, () => enPixeles(vista.width, vista.height), (dx, dy, c) => {
+            const W = vista.width, H = vista.height;
+            const izquierda = lado.includes('w'), arriba = lado.includes('n');
+            const fijoX = izquierda ? c.x + c.w : c.x;
+            const fijoY = arriba ? c.y + c.h : c.y;
+            const px = limitar((izquierda ? c.x : c.x + c.w) + dx, 0, W);
+            const py = limitar((arriba ? c.y : c.y + c.h) + dy, 0, H);
+            let w = Math.abs(px - fijoX);
+            let h = Math.abs(py - fijoY);
+            if (ajustes.proporcion > 0) {
+                if (w / h > ajustes.proporcion) w = h * ajustes.proporcion;
+                else h = w / ajustes.proporcion;
+            }
+            if (w < W * RECORTE_MINIMO || h < H * RECORTE_MINIMO) return;
+            ajustes.recorte = {
+                x: (izquierda ? fijoX - w : fijoX) / W,
+                y: (arriba ? fijoY - h : fijoY) / H,
+                w: w / W,
+                h: h / H,
+            };
+        });
+    });
+
+    // Mover el recuadro del celular dentro del recorte
+    arrastrar(marco, () => {
+        const caja = enPixeles(vista.width, vista.height);
+        return { caja, movil: zonaMovil(caja) };
+    }, (dx, dy, { caja, movil }) => {
+        // Centro nuevo del recuadro, expresado como fracción del recorte
+        const cx = (movil.x + movil.w / 2 + dx - caja.x) / caja.w;
+        const cy = (movil.y + movil.h / 2 + dy - caja.y) / caja.h;
+        const mx = (movil.w / 2) / caja.w, my = (movil.h / 2) / caja.h;
+        ajustes.foco_x = limitar(cx, mx, 1 - mx);
+        ajustes.foco_y = limitar(cy, my, 1 - my);
     });
 
     const aBlob = (canvas, calidad) => new Promise(listo => canvas.toBlob(listo, 'image/jpeg', calidad));
@@ -169,20 +283,21 @@
         guardar.textContent = 'Guardando…';
 
         try {
-            // Foto completa con los ajustes, en tamaño original
+            // Lo recortado, en tamaño original, con los ajustes
+            const c = enPixeles(imagen.naturalWidth, imagen.naturalHeight);
             const grande = document.createElement('canvas');
-            grande.width = imagen.naturalWidth;
-            grande.height = imagen.naturalHeight;
+            grande.width = Math.max(1, Math.round(c.w));
+            grande.height = Math.max(1, Math.round(c.h));
             const ctx = grande.getContext('2d', { willReadFrequently: true });
-            ctx.drawImage(imagen, 0, 0);
+            ctx.drawImage(imagen, c.x, c.y, c.w, c.h, 0, 0, grande.width, grande.height);
             ctx.putImageData(aplicar(ctx.getImageData(0, 0, grande.width, grande.height), ajustes), 0, 0);
 
-            // Recorte para celular
-            const r = recorte(grande.width, grande.height);
+            // Versión para celular, sacada de lo recortado
+            const m = zonaMovil({ x: 0, y: 0, w: grande.width, h: grande.height });
             const movil = document.createElement('canvas');
             movil.width = MOVIL_ANCHO;
             movil.height = MOVIL_ALTO;
-            movil.getContext('2d').drawImage(grande, r.x, r.y, r.w, r.h, 0, 0, MOVIL_ANCHO, MOVIL_ALTO);
+            movil.getContext('2d').drawImage(grande, m.x, m.y, m.w, m.h, 0, 0, MOVIL_ANCHO, MOVIL_ALTO);
 
             const datos = new FormData();
             datos.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);

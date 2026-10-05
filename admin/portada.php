@@ -30,7 +30,7 @@ $pagina_activa = 'portada.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=10">
+    <link rel="stylesheet" href="admin.css?v=11">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -157,12 +157,20 @@ $pagina_activa = 'portada.php';
 
             <div class="modal-body editor-cuerpo">
                 <div class="editor-lienzo">
-                    <div class="editor-foto">
+                    <div class="editor-modos" role="tablist" aria-label="Qué editar">
+                        <button type="button" class="editor-modo is-activo" role="tab" aria-selected="true" data-editor-modo="recorte">Recortar</button>
+                        <button type="button" class="editor-modo" role="tab" aria-selected="false" data-editor-modo="celular">Celular</button>
+                    </div>
+                    <div class="editor-foto" data-modo="recorte">
                         <canvas data-editor-vista></canvas>
-                        <!-- El recuadro es lo que se ve en celulares: se arrastra -->
+                        <!-- Recorte de la foto (computadora): se mueve y se cambia de tamaño desde las esquinas -->
+                        <div class="editor-recorte" data-editor-recorte>
+                            <i data-esquina="nw"></i><i data-esquina="ne"></i><i data-esquina="sw"></i><i data-esquina="se"></i>
+                        </div>
+                        <!-- Lo que se ve en celulares, dentro del recorte: se arrastra -->
                         <div class="editor-marco" data-editor-marco title="Arrastrá para elegir qué parte se ve en celulares"><span>Celular</span></div>
                     </div>
-                    <p class="form-ayuda">Arrastrá el recuadro para elegir qué parte de la foto se ve en celulares. En computadora se ve la foto entera.</p>
+                    <p class="form-ayuda" data-editor-ayuda></p>
                     <p class="editor-cargando" data-editor-estado>Cargando la foto…</p>
                 </div>
 
@@ -171,6 +179,17 @@ $pagina_activa = 'portada.php';
                         <canvas data-editor-celular width="150" height="242"></canvas>
                         <span>Así se ve en un celular</span>
                     </div>
+
+                    <label class="editor-control">
+                        <span>Proporción del recorte</span>
+                        <select class="form-control" data-editor-proporcion>
+                            <option value="0">Libre</option>
+                            <option value="1.7778">16:9 (pantalla ancha)</option>
+                            <option value="1.5">3:2 (como las fotos)</option>
+                            <option value="1.3333">4:3</option>
+                        </select>
+                    </label>
+                    <p class="form-ayuda editor-aviso" data-editor-resolucion hidden></p>
 
                     <label class="editor-control">
                         <span>Brillo <output data-editor-valor="brillo">0</output></span>
@@ -199,6 +218,6 @@ $pagina_activa = 'portada.php';
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="admin.js?v=21"></script>
-    <script src="portada-editor.js?v=1"></script>
+    <script src="portada-editor.js?v=2"></script>
 </body>
 </html>

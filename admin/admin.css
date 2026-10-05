@@ -838,7 +838,77 @@ select.form-control {
     cursor: grabbing;
 }
 
-.editor-marco[hidden] {
+/* Recorte de la foto (modo Recortar): se mueve y se achica desde las esquinas */
+.editor-recorte {
+    position: absolute;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 9999px rgba(30, 24, 18, 0.55);
+    cursor: move;
+}
+
+.editor-recorte i {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border: 2px solid var(--admin-accent-dark);
+    border-radius: 3px;
+}
+
+.editor-recorte i[data-esquina="nw"] { top: -2px; left: -2px; cursor: nwse-resize; }
+.editor-recorte i[data-esquina="ne"] { top: -2px; right: -2px; cursor: nesw-resize; }
+.editor-recorte i[data-esquina="sw"] { bottom: -2px; left: -2px; cursor: nesw-resize; }
+.editor-recorte i[data-esquina="se"] { bottom: -2px; right: -2px; cursor: nwse-resize; }
+
+/* Modo Recortar: no se muestra el recuadro del celular */
+.editor-foto[data-modo="recorte"] .editor-marco {
+    display: none;
+}
+
+/* Modo Celular: el recorte queda marcado pero quieto, y se mueve el recuadro del celular */
+.editor-foto[data-modo="celular"] .editor-recorte {
+    pointer-events: none;
+    border-style: dashed;
+    box-shadow: 0 0 0 9999px rgba(30, 24, 18, 0.35);
+}
+
+.editor-foto[data-modo="celular"] .editor-recorte i {
+    display: none;
+}
+
+.editor-foto.is-cargando .editor-recorte,
+.editor-foto.is-cargando .editor-marco {
+    display: none;
+}
+
+.editor-modos {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+}
+
+.editor-modo {
+    padding: 0.45rem 1rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 20px;
+    background: var(--admin-bg-card);
+    color: var(--admin-text-muted);
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.editor-modo.is-activo {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: #fff;
+}
+
+.editor-aviso {
+    color: var(--admin-warning);
+}
+
+.editor-aviso[hidden] {
     display: none;
 }
 
