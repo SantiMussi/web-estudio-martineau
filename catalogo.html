@@ -261,7 +261,7 @@
   </a>
 
   <!-- Store compartido (capa de datos / simulación) -->
-  <script src="store.js?v=8"></script>
+  <script src="store.js?v=9"></script>
 
   <script>
 
@@ -292,7 +292,7 @@
       }
 
       grid.innerHTML = productos.map(producto => `
-        <a href="producto?id=${producto.id}" class="product-card filter-item" data-category="${producto.categoria}">
+        <a href="${urlFicha('producto', producto)}" class="product-card filter-item" data-category="${producto.categoria}">
           <div class="product-image-wrapper">
             <img src="${escapeHtml(producto.imagen)}" alt="${escapeHtml(producto.titulo)}" loading="lazy" decoding="async">
           </div>
@@ -318,8 +318,8 @@
     }
   </script>
 
-  <script src="buscador.js?v=2"></script>
-  <script src="script.js?v=26"></script>
+  <script src="buscador.js?v=3"></script>
+  <script src="script.js?v=27"></script>
 </body>
 
 </html>

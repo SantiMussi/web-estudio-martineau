@@ -14,12 +14,13 @@ $paginas = [
 ];
 
 try {
-    if (!defined('IS_API_ENDPOINT')) define('IS_API_ENDPOINT', true);
-    require __DIR__ . '/admin/config.php';
+    $pdo = ficha_pdo();
+    if (!$pdo) throw new Exception('Sin conexión a la base');
+    $col_slug = slugs_disponibles($pdo) ? 'slug, ' : '';
 
     foreach (['producto' => 'productos', 'proyecto' => 'proyectos'] as $tipo => $tabla) {
         $filas = $pdo->query("
-            SELECT id, imagen, imagenes FROM $tabla
+            SELECT id, $col_slug imagen, imagenes FROM $tabla
             WHERE IFNULL(oculto, 0) = 0
             ORDER BY orden ASC, created_at DESC
         ")->fetchAll();
@@ -28,7 +29,7 @@ try {
             $galeria = json_decode((string)$fila['imagenes'], true);
             $imagenes = array_filter(array_merge([$fila['imagen']], is_array($galeria) ? $galeria : []));
             $paginas[] = [
-                'loc' => SEO_SITIO . '/' . $tipo . '?id=' . (int)$fila['id'],
+                'loc' => SEO_SITIO . '/' . ficha_ruta($tipo, $fila),
                 'prioridad' => $tipo === 'producto' ? '0.7' : '0.6',
                 'imagenes' => array_map('seo_url_absoluta', $imagenes),
             ];

@@ -9,6 +9,7 @@
  */
 
 require_once __DIR__ . '/ajustes.php';
+require_once __DIR__ . '/slugs.php';
 
 const SEO_SITIO = 'https://armartineau.com.ar';
 const SEO_EMPRESA_ID = SEO_SITIO . '/#empresa';
@@ -37,13 +38,15 @@ function ficha_contacto(): array
 }
 
 /**
- * Trae el ítem publicado (no oculto) de la base.
+ * Trae el ítem publicado (no oculto) de la base, por su slug (/producto/chimenea-luis-xv)
+ * o por id (links viejos /producto?id=12). Un slug viejo (de antes de renombrarlo) también
+ * lo encuentra; ficha_redirigir() después manda a la dirección actual.
  * Devuelve el array, null si no existe (→ 404) o false si la base no respondió
  * (→ la página se arma con JS como antes, sin marcarla como inexistente).
  */
-function ficha_cargar(string $tipo, int $id)
+function ficha_cargar(string $tipo, int $id, string $slug = '')
 {
-    if ($id <= 0) return null;
+    if ($id <= 0 && $slug === '') return null;
 
     $tabla = $tipo === 'proyecto' ? 'proyectos' : 'productos';
     $extra = $tipo === 'proyecto' ? 'p.ubicacion, p.anio,' : '';
@@ -52,15 +55,37 @@ function ficha_cargar(string $tipo, int $id)
         $pdo = ficha_pdo();
         if (!$pdo) return false;
 
-        $stmt = $pdo->prepare("
-            SELECT p.id, p.titulo, c.slug AS categoria, c.nombre AS categoria_nombre, $extra
+        $conSlug = slugs_disponibles($pdo);
+        $columnaSlug = $conSlug ? 'p.slug,' : '';
+        $sql = "
+            SELECT p.id, $columnaSlug p.titulo, c.slug AS categoria, c.nombre AS categoria_nombre, $extra
                    p.descripcion, p.imagen, p.imagenes, p.specs
             FROM $tabla p
             LEFT JOIN categorias c ON p.categoria_id = c.id
-            WHERE p.id = :id AND IFNULL(p.oculto, 0) = 0
-        ");
-        $stmt->execute(['id' => $id]);
-        $item = $stmt->fetch();
+            WHERE %s AND IFNULL(p.oculto, 0) = 0
+        ";
+        $item = false;
+
+        if ($slug !== '') {
+            if (!$conSlug) return null;
+            $stmt = $pdo->prepare(sprintf($sql, 'p.slug = :valor'));
+            $stmt->execute(['valor' => $slug]);
+            $item = $stmt->fetch();
+
+            if (!$item) {
+                // ¿Es la dirección vieja de una ficha a la que le cambiaron el nombre?
+                $stmt = $pdo->prepare('SELECT item_id FROM redirecciones_slug WHERE tipo = :tipo AND slug = :slug');
+                $stmt->execute(['tipo' => $tipo, 'slug' => $slug]);
+                $id = (int)$stmt->fetchColumn();
+                if ($id <= 0) return null;
+            }
+        }
+
+        if (!$item) {
+            $stmt = $pdo->prepare(sprintf($sql, 'p.id = :valor'));
+            $stmt->execute(['valor' => $id]);
+            $item = $stmt->fetch();
+        }
     } catch (Throwable $e) {
         error_log('[ficha.php] ' . $e->getMessage());
         return false;
@@ -115,13 +140,19 @@ function ficha_imagenes(array $item): array
  * Metadatos de la página según el resultado de ficha_cargar().
  * $tipo: 'producto' | 'proyecto'
  */
-function ficha_seo(string $tipo, $item, int $id): array
+function ficha_seo(string $tipo, $item, int $id, string $slug = ''): array
 {
     $esProyecto = $tipo === 'proyecto';
     $listado = $esProyecto
         ? ['nombre' => 'Obras realizadas', 'ruta' => '/portfolio']
         : ['nombre' => 'Catálogo', 'ruta' => '/catalogo'];
-    $url = SEO_SITIO . '/' . $tipo . ($id > 0 ? '?id=' . $id : '');
+    if (is_array($item)) {
+        $url = SEO_SITIO . '/' . ficha_ruta($tipo, $item);
+    } elseif ($slug !== '') {
+        $url = SEO_SITIO . '/' . $tipo . '/' . rawurlencode($slug);
+    } else {
+        $url = SEO_SITIO . '/' . $tipo . ($id > 0 ? '?id=' . $id : '');
+    }
 
     if ($item === null) {
         return [
@@ -201,6 +232,22 @@ function ficha_seo(string $tipo, $item, int $id): array
             ['@type' => 'BreadcrumbList', 'itemListElement' => $migas],
         ]]),
     ];
+}
+
+/**
+ * Si se llegó por un link viejo (?id=12) o por un slug que ya cambió, redirige (301)
+ * a la dirección actual de la ficha. Conserva ?categoria= (para el botón "Volver").
+ */
+function ficha_redirigir(string $tipo, $item, string $slugPedido): void
+{
+    if (!is_array($item) || empty($item['slug']) || $item['slug'] === $slugPedido) return;
+
+    $destino = '/' . ficha_ruta($tipo, $item);
+    if (isset($_GET['categoria']) && $_GET['categoria'] !== '') {
+        $destino .= '?categoria=' . rawurlencode((string)$_GET['categoria']);
+    }
+    header('Location: ' . $destino, true, 301);
+    exit();
 }
 
 /** El bloque de <head> común a las dos fichas */

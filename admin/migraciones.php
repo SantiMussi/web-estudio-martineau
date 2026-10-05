@@ -9,7 +9,7 @@
  * Al agregar un paso nuevo, subir ESQUEMA_VERSION para que se vuelva a revisar.
  */
 
-const ESQUEMA_VERSION = 2;
+const ESQUEMA_VERSION = 3;
 
 function migrar_base(PDO $pdo): void
 {
@@ -62,6 +62,47 @@ function migrar_base(PDO $pdo): void
             'texto' => 'Navegando por internet encontré esta empresa que me aconsejó en el tipo de producto. No tengo otra cosa que palabras de agradecimiento por el asesoramiento.',
             'orden' => 1,
         ]);
+    }
+
+    // URLs amigables (/producto/chimenea-luis-xv): el slug de cada ficha y las
+    // direcciones viejas que redirigen cuando se cambia (ver inc/slugs.php).
+    // Los slugs de lo que ya estaba cargado los completa slugs_completar() en auth.php.
+    foreach (['productos', 'proyectos'] as $tabla) {
+        if (!migracion_columna_existe($pdo, $tabla, 'slug')) {
+            $pdo->exec("ALTER TABLE $tabla ADD COLUMN slug VARCHAR(100) NULL DEFAULT NULL, ADD INDEX idx_{$tabla}_slug (slug)");
+        }
+    }
+    $pdo->exec('
+        CREATE TABLE IF NOT EXISTS redirecciones_slug (
+            tipo VARCHAR(10) NOT NULL,
+            slug VARCHAR(100) NOT NULL,
+            item_id INT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (tipo, slug)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ');
+
+    // Fotos de la portada (admin/portada.php). Al crearla se cargan las 4 que estaban
+    // fijas en el HTML, con sus versiones livianas para celular.
+    if (!migracion_tabla_existe($pdo, 'portada')) {
+        $pdo->exec('
+            CREATE TABLE portada (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                imagen VARCHAR(255) NOT NULL,
+                imagen_movil VARCHAR(255) NULL,
+                oculto TINYINT(1) NOT NULL DEFAULT 0,
+                orden INT NOT NULL DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+        ');
+        $stmt = $pdo->prepare('INSERT INTO portada (imagen, imagen_movil, orden) VALUES (:imagen, :movil, :orden)');
+        foreach ([1, 2, 4, 5] as $orden => $n) {
+            $stmt->execute([
+                'imagen' => "assets/ImgsPrincipales/portada/hero-portada-$n.webp",
+                'movil'  => "assets/ImgsPrincipales/portada/hero-portada-$n-movil.webp",
+                'orden'  => $orden,
+            ]);
+        }
     }
 
     $_SESSION['esquema_version'] = ESQUEMA_VERSION;

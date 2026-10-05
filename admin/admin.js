@@ -512,22 +512,26 @@ function initSeleccion() {
         const todos = document.querySelector(`[data-seleccion-todos="${tbody.id}"]`);
         const cuenta = barra.querySelector('[data-seleccion-cuenta]');
         const casillas = () => [...tbody.querySelectorAll(`input[type="checkbox"][form="${barra.id}"]`)];
+        // Con páginas: se pueden marcar filas de varias páginas, pero "todos" marca solo la actual
         const visible = casilla => casilla.closest('tr').style.display !== 'none';
+        const enPagina = casilla => visible(casilla) && !casilla.closest('tr').classList.contains('fuera-de-pagina');
 
         const actualizar = () => {
-            const visibles = casillas().filter(visible);
-            const marcadas = visibles.filter(c => c.checked).length;
+            const marcadas = casillas().filter(visible).filter(c => c.checked).length;
+            const pagina = casillas().filter(enPagina);
+            const marcadasPagina = pagina.filter(c => c.checked).length;
             barra.hidden = marcadas === 0;
             if (cuenta) cuenta.textContent = marcadas === 1 ? '1 seleccionado' : `${marcadas} seleccionados`;
             if (todos) {
-                todos.checked = marcadas > 0 && marcadas === visibles.length;
-                todos.indeterminate = marcadas > 0 && marcadas < visibles.length;
+                todos.checked = marcadasPagina > 0 && marcadasPagina === pagina.length;
+                todos.indeterminate = marcadasPagina > 0 && marcadasPagina < pagina.length;
             }
         };
+        tbody.addEventListener('paginacion', actualizar);
 
         if (todos) {
             todos.addEventListener('change', () => {
-                casillas().filter(visible).forEach(c => { c.checked = todos.checked; });
+                casillas().filter(enPagina).forEach(c => { c.checked = todos.checked; });
                 actualizar();
             });
         }
@@ -594,7 +598,8 @@ function escapeAttr(str) {
 document.addEventListener('DOMContentLoaded', () => {
     const initSortable = (id, tabla) => {
         const el = document.getElementById(id);
-        if (!el) return;
+        // Sortable viene de un CDN: si no cargó, que no frene lo demás (páginas, etc.)
+        if (!el || typeof Sortable === 'undefined') return;
 
         Sortable.create(el, {
             handle: '.drag-handle',
@@ -639,4 +644,136 @@ document.addEventListener('DOMContentLoaded', () => {
     initSortable('sortable-productos', 'productos');
     initSortable('sortable-proyectos', 'proyectos');
     initSortable('sortable-resenas', 'resenas');
+    initSortable('sortable-portada', 'portada');
+
+    initPaginacion('sortable-productos');
+    initPaginacion('sortable-proyectos');
+
+    initSlugFichas();
+    abrirFichaPedida();
 });
+
+// Páginas en las listas largas (productos). Se hace en el navegador sobre las filas
+// que ya están, así siguen andando el buscador y el filtro (las páginas se arman con
+// lo filtrado), el arrastrar para ordenar (se guarda el orden completo) y la selección.
+// Recuerda la página al volver de guardar, y si se llega con ?editar=ID abre la página
+// donde está esa ficha.
+function initPaginacion(tbodyId, porPagina = 30) {
+    const tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
+    const wrapper = tbody.closest('.admin-table-wrapper');
+    if (!wrapper) return;
+
+    const nav = document.createElement('nav');
+    nav.className = 'admin-paginacion';
+    nav.setAttribute('aria-label', 'Páginas');
+    wrapper.after(nav);
+
+    const clave = 'admin_pagina_' + tbodyId;
+    let pagina = 1;
+    try { pagina = parseInt(sessionStorage.getItem(clave), 10) || 1; } catch (e) { /* sin storage: arranca en la 1 */ }
+
+    const filtradas = () => [...tbody.querySelectorAll('tr[data-id]')].filter(tr => tr.style.display !== 'none');
+
+    const pedida = new URLSearchParams(window.location.search).get('editar');
+    if (pedida) {
+        const i = filtradas().findIndex(tr => tr.getAttribute('data-id') === pedida);
+        if (i >= 0) pagina = Math.floor(i / porPagina) + 1;
+    }
+
+    const boton = (texto, destino, opciones = {}) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'admin-pagina' + (opciones.actual ? ' is-actual' : '');
+        b.textContent = texto;
+        b.disabled = !!opciones.desactivado;
+        if (opciones.actual) b.setAttribute('aria-current', 'page');
+        if (opciones.etiqueta) b.setAttribute('aria-label', opciones.etiqueta);
+        b.addEventListener('click', () => {
+            pagina = destino;
+            render();
+            wrapper.scrollIntoView({ block: 'start' });
+        });
+        return b;
+    };
+
+    const render = () => {
+        const filas = filtradas();
+        const total = Math.max(1, Math.ceil(filas.length / porPagina));
+        pagina = Math.min(Math.max(1, pagina), total);
+        try { sessionStorage.setItem(clave, pagina); } catch (e) { /* no persiste, sigue andando */ }
+
+        tbody.querySelectorAll('tr[data-id]').forEach(tr => tr.classList.remove('fuera-de-pagina'));
+        filas.forEach((tr, i) => {
+            if (Math.floor(i / porPagina) + 1 !== pagina) tr.classList.add('fuera-de-pagina');
+        });
+
+        nav.replaceChildren();
+        nav.hidden = total === 1;
+        if (total > 1) {
+            const desde = (pagina - 1) * porPagina + 1;
+            const hasta = Math.min(pagina * porPagina, filas.length);
+            const info = document.createElement('span');
+            info.className = 'admin-paginacion-info';
+            info.textContent = `${desde}–${hasta} de ${filas.length}`;
+
+            const numeros = document.createElement('div');
+            numeros.className = 'admin-paginacion-numeros';
+            numeros.append(boton('‹', pagina - 1, { desactivado: pagina === 1, etiqueta: 'Página anterior' }));
+            for (let n = 1; n <= total; n++) {
+                // Con muchas páginas: primera, última y las vecinas de la actual
+                if (n === 1 || n === total || Math.abs(n - pagina) <= 1) {
+                    numeros.append(boton(String(n), n, { actual: n === pagina }));
+                } else if (Math.abs(n - pagina) === 2) {
+                    const puntos = document.createElement('span');
+                    puntos.className = 'admin-paginacion-puntos';
+                    puntos.textContent = '…';
+                    numeros.append(puntos);
+                }
+            }
+            numeros.append(boton('›', pagina + 1, { desactivado: pagina === total, etiqueta: 'Página siguiente' }));
+            nav.append(info, numeros);
+        }
+        tbody.dispatchEvent(new Event('paginacion'));
+    };
+
+    // El buscador y el filtro de categoría vuelven a la página 1
+    document.querySelectorAll(`[data-buscar-tabla="${tbodyId}"], [data-filtro-categoria="${tbodyId}"]`).forEach(el => {
+        el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', () => {
+            pagina = 1;
+            render();
+        });
+    });
+
+    render();
+}
+
+// "Dirección web" de productos y proyectos: mientras se crea uno nuevo se arma sola
+// con el título; si la tocan a mano o es una ficha que ya existe, no se pisa.
+function initSlugFichas() {
+    document.querySelectorAll('input[data-slug-desde]').forEach(slug => {
+        const form = slug.form;
+        const titulo = form && form.querySelector(`[name="${slug.dataset.slugDesde}"]`);
+        const id = form && form.querySelector('input[name="id"]');
+        if (!titulo) return;
+
+        titulo.addEventListener('input', () => {
+            const esNueva = !id || !id.value;
+            if (esNueva && (slug.value === '' || slug.value === slug.dataset.auto)) {
+                slug.value = slug.dataset.auto = generarSlug(titulo.value);
+            }
+        });
+        slug.addEventListener('blur', () => { slug.value = generarSlug(slug.value); });
+    });
+}
+
+// Desde "Revisar fichas" se llega con ?editar=ID: abre esa ficha directamente
+function abrirFichaPedida() {
+    const id = new URLSearchParams(window.location.search).get('editar');
+    if (!id || !/^\d+$/.test(id)) return;
+    const fila = document.querySelector(`tr[data-id="${id}"]`);
+    const editar = fila && fila.querySelector('[onclick^="editarItem"]');
+    if (!editar) return;
+    fila.scrollIntoView({ block: 'center' });
+    editar.click();
+}

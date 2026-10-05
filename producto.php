@@ -2,9 +2,11 @@
 require __DIR__ . '/inc/ficha.php';
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$item = ficha_cargar('producto', $id);   // array | null (no existe) | false (la base no respondió)
+$slug = isset($_GET['slug']) ? strtolower((string)$_GET['slug']) : '';   // /producto/nombre-de-la-pieza
+$item = ficha_cargar('producto', $id, $slug);   // array | null (no existe) | false (la base no respondió)
+ficha_redirigir('producto', $item, $slug);       // links viejos → dirección actual (301)
 if ($item === null) http_response_code(404);
-$seo = ficha_seo('producto', $item, $id);
+$seo = ficha_seo('producto', $item, $id, $slug);
 header('Content-Type: text/html; charset=utf-8');
 ?>
 <!DOCTYPE html>
@@ -12,6 +14,8 @@ header('Content-Type: text/html; charset=utf-8');
 
 <head>
   <meta charset="UTF-8">
+  <!-- Las fichas pueden estar en /producto/nombre: todas las rutas relativas parten de la raíz -->
+  <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <?php ficha_head($seo); ?>
 
@@ -101,7 +105,7 @@ header('Content-Type: text/html; charset=utf-8');
 <?php ficha_whatsapp_flotante(); ?>
 
   <!-- Store compartido -->
-  <script src="store.js?v=8"></script>
+  <script src="store.js?v=9"></script>
   <script>
 
     document.addEventListener('DOMContentLoaded', async () => {
@@ -192,8 +196,8 @@ header('Content-Type: text/html; charset=utf-8');
         '<a href="catalogo" class="btn" style="margin-top:2rem;display:inline-block">Ver catalogo</a></div>';
     }
   </script>
-  <script src="buscador.js?v=2"></script>
-  <script src="script.js?v=26"></script>
+  <script src="buscador.js?v=3"></script>
+  <script src="script.js?v=27"></script>
 </body>
 
 </html>

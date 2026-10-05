@@ -35,10 +35,18 @@ $_SESSION['ultima_actividad'] = time();
 
 require_once __DIR__ . '/migraciones.php';
 require_once __DIR__ . '/papelera_funciones.php';
+require_once __DIR__ . '/../inc/slugs.php';
 
 try {
     migrar_base($pdo);
 } catch (Exception $e) {
     // Se vuelve a intentar en el próximo pedido; mientras, lo nuevo del panel puede fallar
     error_log('[migraciones.php] ' . $e->getMessage());
+}
+
+// Slugs de las fichas nuevas, duplicadas o importadas (ver inc/slugs.php)
+try {
+    if (slugs_disponibles($pdo)) slugs_completar($pdo);
+} catch (Exception $e) {
+    error_log('[slugs.php] ' . $e->getMessage());
 }

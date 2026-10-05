@@ -2,6 +2,7 @@
 define('IS_API_ENDPOINT', true);
 require_once __DIR__ . '/../admin/config.php';
 require_once __DIR__ . '/../inc/ajustes.php';
+require_once __DIR__ . '/../inc/slugs.php';
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: *');
@@ -10,11 +11,14 @@ $tipo = $_GET['tipo'] ?? '';
 $id   = isset($_GET['id']) ? (int)$_GET['id'] : null;
 
 try {
+    // URL amigable de cada ficha (la columna aparece al entrar al panel después de actualizar)
+    $col_slug = slugs_disponibles($pdo) ? 'p.slug, ' : '';
+
     switch ($tipo) {
 
         case 'productos':
             $stmt = $pdo->query('
-                SELECT p.id, p.titulo, c.slug AS categoria, p.descripcion, 
+                SELECT p.id, ' . $col_slug . 'p.titulo, c.slug AS categoria, p.descripcion, 
                        p.imagen, p.imagenes, p.specs, p.destacar
                 FROM productos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
@@ -27,7 +31,7 @@ try {
 
         case 'proyectos':
             $stmt = $pdo->query('
-                SELECT p.id, p.titulo, c.slug AS categoria, p.ubicacion, p.anio,
+                SELECT p.id, ' . $col_slug . 'p.titulo, c.slug AS categoria, p.ubicacion, p.anio,
                        p.descripcion, p.imagen, p.imagenes, p.specs, p.destacar
                 FROM proyectos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
@@ -40,7 +44,7 @@ try {
 
         case 'productos_destacados':
             $stmt = $pdo->query('
-                SELECT p.id, p.titulo, c.slug AS categoria, p.descripcion, 
+                SELECT p.id, ' . $col_slug . 'p.titulo, c.slug AS categoria, p.descripcion, 
                        p.imagen, p.imagenes, p.specs, p.destacar
                 FROM productos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
@@ -53,7 +57,7 @@ try {
 
         case 'proyectos_destacados':
             $stmt = $pdo->query('
-                SELECT p.id, p.titulo, c.slug AS categoria, p.ubicacion, p.anio,
+                SELECT p.id, ' . $col_slug . 'p.titulo, c.slug AS categoria, p.ubicacion, p.anio,
                        p.descripcion, p.imagen, p.imagenes, p.specs, p.destacar
                 FROM proyectos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
@@ -71,7 +75,7 @@ try {
                 break;
             }
             $stmt = $pdo->prepare('
-                SELECT p.id, p.titulo, c.slug AS categoria, p.descripcion, 
+                SELECT p.id, ' . $col_slug . 'p.titulo, c.slug AS categoria, p.descripcion, 
                        p.imagen, p.imagenes, p.specs, p.destacar
                 FROM productos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id
@@ -95,7 +99,7 @@ try {
                 break;
             }
             $stmt = $pdo->prepare('
-                SELECT p.id, p.titulo, c.slug AS categoria, p.ubicacion, p.anio,
+                SELECT p.id, ' . $col_slug . 'p.titulo, c.slug AS categoria, p.ubicacion, p.anio,
                        p.descripcion, p.imagen, p.imagenes, p.specs, p.destacar
                 FROM proyectos p
                 LEFT JOIN categorias c ON p.categoria_id = c.id

@@ -24,7 +24,7 @@ $pagina_activa = 'resenas.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=8">
+    <link rel="stylesheet" href="admin.css?v=9">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -178,6 +178,6 @@ $pagina_activa = 'resenas.php';
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="admin.js?v=20"></script>
+    <script src="admin.js?v=21"></script>
 </body>
 </html>

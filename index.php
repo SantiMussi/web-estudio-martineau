@@ -1,3 +1,13 @@
+<?php
+// La portada se arma en el servidor solo para el slideshow (fotos cargadas desde el
+// panel, ver inc/portada.php); el resto de la página es el mismo HTML de siempre.
+require __DIR__ . '/inc/portada.php';
+$fotos_portada = portada_fotos();
+$e = fn($s) => htmlspecialchars((string)$s, ENT_QUOTES, 'UTF-8');
+// Si una foto no tiene versión para celular, se usa la de computadora
+$movil = fn($f) => $f['imagen_movil'] ?: $f['imagen'];
+header('Content-Type: text/html; charset=utf-8');
+?>
 <!DOCTYPE html>
 <html lang="es-AR">
 
@@ -92,9 +102,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- La primera foto del hero es lo más grande que se pinta (LCP): se pide de entrada -->
-  <link rel="preload" as="image" href="assets/ImgsPrincipales/portada/hero-portada-1-movil.webp"
+  <link rel="preload" as="image" href="<?= $e($movil($fotos_portada[0])) ?>"
     media="(max-width: 767px)" fetchpriority="high">
-  <link rel="preload" as="image" href="assets/ImgsPrincipales/portada/hero-portada-1.webp"
+  <link rel="preload" as="image" href="<?= $e($fotos_portada[0]['imagen']) ?>"
     media="(min-width: 768px)" fetchpriority="high">
 
   <!-- Fuente sin bloquear el primer pintado: se pide ya y se aplica apenas llega -->
@@ -350,33 +360,27 @@
   <!-- Sección Hero -->
   <section class="hero" id="inicio">
     <div class="hero-slides" aria-hidden="true">
-      <!-- En celulares va un recorte vertical liviano (-movil, 750×1210: el mismo encuadre
-           que se ve en pantalla). Solo la primera carga de entrada; el resto usa data-src
-           y lo carga initHeroSlideshow() cuando la página ya terminó (salen recién a los 7 s). -->
+      <!-- Las fotos se cargan desde el panel (Portada). En celulares va un recorte vertical
+           liviano (750×1210: el mismo encuadre que se ve en pantalla). Solo la primera carga
+           de entrada; el resto usa data-src y lo carga initHeroSlideshow() cuando la página
+           ya terminó (salen recién a los 7 s). -->
+<?php foreach ($fotos_portada as $i => $foto): ?>
+<?php if ($i === 0): ?>
       <div class="hero-slide is-active">
         <picture>
-          <source media="(max-width: 767px)" srcset="assets/ImgsPrincipales/portada/hero-portada-1-movil.webp">
-          <img src="assets/ImgsPrincipales/portada/hero-portada-1.webp" alt="" loading="eager" fetchpriority="high">
+          <source media="(max-width: 767px)" srcset="<?= $e($movil($foto)) ?>">
+          <img src="<?= $e($foto['imagen']) ?>" alt="" loading="eager" fetchpriority="high">
         </picture>
       </div>
+<?php else: ?>
       <div class="hero-slide">
         <picture>
-          <source media="(max-width: 767px)" data-srcset="assets/ImgsPrincipales/portada/hero-portada-2-movil.webp">
-          <img data-src="assets/ImgsPrincipales/portada/hero-portada-2.webp" alt="" decoding="async">
+          <source media="(max-width: 767px)" data-srcset="<?= $e($movil($foto)) ?>">
+          <img data-src="<?= $e($foto['imagen']) ?>" alt="" decoding="async">
         </picture>
       </div>
-      <div class="hero-slide">
-        <picture>
-          <source media="(max-width: 767px)" data-srcset="assets/ImgsPrincipales/portada/hero-portada-4-movil.webp">
-          <img data-src="assets/ImgsPrincipales/portada/hero-portada-4.webp" alt="" decoding="async">
-        </picture>
-      </div>
-      <div class="hero-slide">
-        <picture>
-          <source media="(max-width: 767px)" data-srcset="assets/ImgsPrincipales/portada/hero-portada-5-movil.webp">
-          <img data-src="assets/ImgsPrincipales/portada/hero-portada-5.webp" alt="" decoding="async">
-        </picture>
-      </div>
+<?php endif; ?>
+<?php endforeach; ?>
     </div>
     <div class="hero-overlay" aria-hidden="true"></div>
 
@@ -643,7 +647,7 @@
 
   <!-- Scripts -->
   <!-- Store compartido (capa de datos / simulación) -->
-  <script src="store.js?v=8"></script>
+  <script src="store.js?v=9"></script>
 
   <script>
 
@@ -668,7 +672,7 @@
         grid.innerHTML = '<p class="vitrina-vacia">No hay productos destacados.</p>';
       } else {
         grid.innerHTML = destacados.map((producto, i) => `
-          <a href="producto?id=${producto.id}" class="nicho" style="--i:${i % 4}">
+          <a href="${urlFicha('producto', producto)}" class="nicho" style="--i:${i % 4}">
             <div class="nicho-arco">
               <div class="nicho-foto">
                 <img src="${escapeHtml(producto.imagen)}" alt="${escapeHtml(producto.titulo)}" loading="lazy" decoding="async">
@@ -699,7 +703,7 @@
           <div class="obras-escena">
             <div class="obras-arco">
               ${proyectos.map((p, i) => `
-                <a href="proyecto?id=${p.id}" class="obras-foto${i === 0 ? ' is-active' : ''}" tabindex="-1" aria-hidden="${i === 0 ? 'false' : 'true'}">
+                <a href="${urlFicha('proyecto', p)}" class="obras-foto${i === 0 ? ' is-active' : ''}" tabindex="-1" aria-hidden="${i === 0 ? 'false' : 'true'}">
                   <img src="${escapeHtml(p.imagen)}" alt="${escapeHtml(p.titulo)}" ${i === 0 ? '' : 'loading="lazy"'} decoding="async">
                 </a>
               `).join('')}
@@ -712,7 +716,7 @@
           <ol class="obras-lista">
             ${proyectos.map((p, i) => `
               <li>
-                <a href="proyecto?id=${p.id}" class="obras-item${i === 0 ? ' is-active' : ''}" data-i="${i}" style="--i:${i}">
+                <a href="${urlFicha('proyecto', p)}" class="obras-item${i === 0 ? ' is-active' : ''}" data-i="${i}" style="--i:${i}">
                   <span class="obras-num">${dosDigitos(i + 1)}</span>
                   <span class="obras-texto">
                     <span class="obras-nombre">${escapeHtml(p.titulo)}</span>
@@ -737,8 +741,8 @@
     }
   </script>
 
-  <script src="buscador.js?v=2"></script>
-  <script src="script.js?v=26"></script>
+  <script src="buscador.js?v=3"></script>
+  <script src="script.js?v=27"></script>
   <!-- WhatsApp Floating Button -->
   <a href="https://wa.me/5491131917014" data-contacto="whatsapp" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
     aria-label="Contactar por WhatsApp">

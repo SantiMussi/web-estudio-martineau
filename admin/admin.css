@@ -748,6 +748,174 @@ select.form-control {
     color: var(--admin-text-light);
 }
 
+/* ─── DIRECCIÓN WEB (slug) DE LAS FICHAS ─── */
+.slug-campo {
+    display: flex;
+    align-items: stretch;
+}
+
+.slug-prefijo {
+    display: flex;
+    align-items: center;
+    padding: 0 0.6rem;
+    border: 1px solid var(--admin-border);
+    border-right: none;
+    border-radius: 6px 0 0 6px;
+    background: var(--admin-bg);
+    color: var(--admin-text-light);
+    font-size: 0.78rem;
+    white-space: nowrap;
+}
+
+.slug-campo .form-control {
+    border-radius: 0 6px 6px 0;
+    min-width: 0;
+}
+
+@media (max-width: 600px) {
+    .slug-prefijo { display: none; }
+    .slug-campo .form-control { border-radius: 6px; }
+}
+
+/* ─── PORTADA ─── */
+.portada-subir {
+    margin-bottom: 1.5rem;
+}
+
+.portada-subir .btn-admin {
+    margin-top: 1rem;
+}
+
+.portada-thumb {
+    display: block;
+    width: 180px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--admin-border);
+}
+
+.portada-thumb-movil {
+    width: 62px;
+}
+
+/* ─── REVISAR FICHAS ─── */
+.revision-resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.revision-tarjeta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.9rem 1rem;
+    background: var(--admin-bg-card);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    color: var(--admin-text);
+    text-decoration: none;
+    transition: border-color var(--admin-transition), transform var(--admin-transition);
+}
+
+.revision-tarjeta strong {
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.revision-tarjeta span {
+    font-size: 0.75rem;
+    color: var(--admin-text-muted);
+}
+
+.revision-tarjeta:hover {
+    border-color: var(--admin-accent);
+    transform: translateY(-1px);
+}
+
+.revision-tarjeta.is-activa {
+    border-color: var(--admin-accent);
+    box-shadow: inset 0 0 0 1px var(--admin-accent);
+}
+
+.revision-tarjeta.is-vacia {
+    opacity: 0.55;
+}
+
+.revision-faltas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.badge-falta {
+    background: rgba(138, 99, 20, 0.12);
+    color: var(--admin-warning);
+    border: 1px solid rgba(138, 99, 20, 0.3);
+}
+
+/* ─── PÁGINAS EN LAS LISTAS LARGAS ─── */
+.admin-table tr.fuera-de-pagina {
+    display: none;
+}
+
+.admin-paginacion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.admin-paginacion-info {
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+}
+
+.admin-paginacion-numeros {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.admin-pagina {
+    min-width: 2.2rem;
+    height: 2.2rem;
+    padding: 0 0.5rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 6px;
+    background: var(--admin-bg-card);
+    color: var(--admin-text);
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color var(--admin-transition), background var(--admin-transition);
+}
+
+.admin-pagina:hover:not(:disabled) {
+    border-color: var(--admin-accent);
+}
+
+.admin-pagina.is-actual {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: #fff;
+}
+
+.admin-pagina:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.admin-paginacion-puntos {
+    padding: 0 0.2rem;
+    color: var(--admin-text-light);
+}
+
 /* ─── EXPORTAR ─── */
 .exportar-botones {
     display: flex;
