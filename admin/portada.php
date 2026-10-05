@@ -30,7 +30,7 @@ $pagina_activa = 'portada.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=9">
+    <link rel="stylesheet" href="admin.css?v=10">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -123,11 +123,18 @@ $pagina_activa = 'portada.php';
                                         </form>
                                     </td>
                                     <td>
+                                        <div class="table-actions">
+                                        <button type="button" class="btn-admin btn-secondary btn-sm" data-editar-portada='<?= json_encode([
+                                            "id" => (int)$foto["id"],
+                                            "original" => "../" . (($foto["imagen_original"] ?? "") ?: $foto["imagen"]),
+                                            "ajustes" => json_decode((string)($foto["ajustes"] ?? ""), true) ?: new stdClass(),
+                                        ], JSON_HEX_APOS | JSON_HEX_QUOT | JSON_UNESCAPED_SLASHES) ?>'>Editar</button>
                                         <form method="POST" action="actions/eliminar_portada.php" style="display:inline">
                                             <?= csrf_field() ?>
                                             <input type="hidden" name="id" value="<?= (int)$foto['id'] ?>">
                                             <button type="submit" class="btn-admin btn-danger btn-sm" data-confirmar="¿Eliminar esta foto de la portada? No se puede deshacer. Si solo querés sacarla un tiempo, ocultala.">Eliminar</button>
                                         </form>
+                                        </div>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -138,7 +145,60 @@ $pagina_activa = 'portada.php';
         </main>
     </div>
 
+    <!-- MODAL: Editor de foto (admin/portada-editor.js) -->
+    <div class="modal-overlay" id="modal-editor-portada">
+        <div class="modal editor-modal">
+            <div class="modal-header">
+                <h2>Editar foto</h2>
+                <button class="modal-close" data-modal-close>
+                    <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+            </div>
+
+            <div class="modal-body editor-cuerpo">
+                <div class="editor-lienzo">
+                    <div class="editor-foto">
+                        <canvas data-editor-vista></canvas>
+                        <!-- El recuadro es lo que se ve en celulares: se arrastra -->
+                        <div class="editor-marco" data-editor-marco title="Arrastrá para elegir qué parte se ve en celulares"><span>Celular</span></div>
+                    </div>
+                    <p class="form-ayuda">Arrastrá el recuadro para elegir qué parte de la foto se ve en celulares. En computadora se ve la foto entera.</p>
+                    <p class="editor-cargando" data-editor-estado>Cargando la foto…</p>
+                </div>
+
+                <div class="editor-controles">
+                    <div class="editor-celular">
+                        <canvas data-editor-celular width="150" height="242"></canvas>
+                        <span>Así se ve en un celular</span>
+                    </div>
+
+                    <label class="editor-control">
+                        <span>Brillo <output data-editor-valor="brillo">0</output></span>
+                        <input type="range" min="-50" max="50" step="1" value="0" data-editor-ajuste="brillo">
+                    </label>
+                    <label class="editor-control">
+                        <span>Contraste <output data-editor-valor="contraste">0</output></span>
+                        <input type="range" min="-50" max="50" step="1" value="0" data-editor-ajuste="contraste">
+                    </label>
+                    <label class="editor-control">
+                        <span>Saturación <output data-editor-valor="saturacion">0</output></span>
+                        <input type="range" min="-100" max="50" step="1" value="0" data-editor-ajuste="saturacion">
+                    </label>
+
+                    <button type="button" class="btn-admin btn-secondary btn-sm" data-editor-restablecer>Restablecer</button>
+                    <p class="form-ayuda">Los cambios se aplican siempre sobre la foto original, así que podés volver a editarla o restablecerla cuando quieras.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-admin btn-secondary" data-modal-close>Cancelar</button>
+                <button type="button" class="btn-admin btn-primary" data-editor-guardar>Guardar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="admin.js?v=21"></script>
+    <script src="portada-editor.js?v=1"></script>
 </body>
 </html>

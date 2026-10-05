@@ -799,6 +799,123 @@ select.form-control {
     width: 62px;
 }
 
+/* ─── EDITOR DE FOTOS DE LA PORTADA ─── */
+.modal.editor-modal {
+    max-width: 1080px;
+    width: 100%;
+}
+
+.editor-cuerpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 230px;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.editor-foto {
+    position: relative;
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--admin-bg-alt);
+    touch-action: none;
+}
+
+.editor-foto canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* El recuadro de lo que se ve en celulares; lo de afuera queda oscurecido */
+.editor-marco {
+    position: absolute;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 9999px rgba(30, 24, 18, 0.5);
+    cursor: grab;
+}
+
+.editor-marco:active {
+    cursor: grabbing;
+}
+
+.editor-marco[hidden] {
+    display: none;
+}
+
+.editor-marco span {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    background: rgba(30, 24, 18, 0.7);
+    color: #fff;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.editor-cargando {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+}
+
+.editor-controles {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.editor-celular {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--admin-text-light);
+}
+
+.editor-celular canvas {
+    width: 120px;
+    height: auto;
+    aspect-ratio: 750 / 1210;
+    border: 4px solid var(--admin-text);
+    border-radius: 14px;
+    background: var(--admin-bg-alt);
+}
+
+.editor-control {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+}
+
+.editor-control span {
+    display: flex;
+    justify-content: space-between;
+}
+
+.editor-control output {
+    font-variant-numeric: tabular-nums;
+    color: var(--admin-text);
+}
+
+.editor-control input[type="range"] {
+    width: 100%;
+    accent-color: var(--admin-accent);
+}
+
+@media (max-width: 760px) {
+    .editor-cuerpo {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* ─── REVISAR FICHAS ─── */
 .revision-resumen {
     display: grid;

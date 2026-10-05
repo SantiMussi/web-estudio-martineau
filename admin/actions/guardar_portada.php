@@ -23,7 +23,8 @@ $subidas = 0;
 $errores = [];
 // Las nuevas van al final del slideshow
 $orden = (int)$pdo->query('SELECT IFNULL(MAX(orden), -1) + 1 FROM portada')->fetchColumn();
-$stmt = $pdo->prepare('INSERT INTO portada (imagen, imagen_movil, orden) VALUES (:imagen, :movil, :orden)');
+// La versión grande queda también como original: el editor siempre parte de ella
+$stmt = $pdo->prepare('INSERT INTO portada (imagen, imagen_movil, imagen_original, orden) VALUES (:imagen, :movil, :original, :orden)');
 
 for ($i = 0; $i < $total; $i++) {
     $archivo = [
@@ -34,7 +35,7 @@ for ($i = 0; $i < $total; $i++) {
     ];
     try {
         $rutas = portada_procesar($archivo);
-        $stmt->execute(['imagen' => $rutas['imagen'], 'movil' => $rutas['imagen_movil'], 'orden' => $orden++]);
+        $stmt->execute(['imagen' => $rutas['imagen'], 'movil' => $rutas['imagen_movil'], 'original' => $rutas['imagen'], 'orden' => $orden++]);
         $subidas++;
     } catch (Exception $e) {
         $errores[] = $e->getMessage();

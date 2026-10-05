@@ -9,7 +9,7 @@
  * Al agregar un paso nuevo, subir ESQUEMA_VERSION para que se vuelva a revisar.
  */
 
-const ESQUEMA_VERSION = 3;
+const ESQUEMA_VERSION = 4;
 
 function migrar_base(PDO $pdo): void
 {
@@ -103,6 +103,16 @@ function migrar_base(PDO $pdo): void
                 'orden'  => $orden,
             ]);
         }
+    }
+
+    // Editor de fotos de la portada: se guarda la original (las ediciones siempre
+    // parten de ella, así no se pierde calidad) y los ajustes aplicados, para poder
+    // volver a abrirlos donde se dejaron.
+    if (!migracion_columna_existe($pdo, 'portada', 'imagen_original')) {
+        $pdo->exec('ALTER TABLE portada ADD COLUMN imagen_original VARCHAR(255) NULL DEFAULT NULL');
+    }
+    if (!migracion_columna_existe($pdo, 'portada', 'ajustes')) {
+        $pdo->exec('ALTER TABLE portada ADD COLUMN ajustes TEXT NULL');
     }
 
     $_SESSION['esquema_version'] = ESQUEMA_VERSION;

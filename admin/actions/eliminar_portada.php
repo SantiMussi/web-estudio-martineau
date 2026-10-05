@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 verificar_csrf();
 
 $id = (int)($_POST['id'] ?? 0);
-$stmt = $pdo->prepare('SELECT imagen, imagen_movil FROM portada WHERE id = :id');
+$stmt = $pdo->prepare('SELECT * FROM portada WHERE id = :id');
 $stmt->execute(['id' => $id]);
 $foto = $stmt->fetch();
 

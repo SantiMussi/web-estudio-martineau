@@ -88,11 +88,75 @@ function portada_recortar($origen, int $x, int $y, int $w, int $h, int $destW, i
     return $destino;
 }
 
-/** Borra los archivos de una foto, solo si los subieron desde el panel (las originales de assets/ quedan) */
-function portada_borrar_archivos(array $foto): void
+/**
+ * Guarda una versión que llega ya editada desde el editor del panel (el navegador
+ * aplica los ajustes y el recorte y la manda como JPEG). Se valida que sea una
+ * imagen, se lleva al tamaño final ($ancho × $alto; con $alto null mantiene la
+ * proporción y $ancho es el máximo) y se guarda como WebP. Devuelve la ruta relativa.
+ */
+function portada_guardar_editada(array $archivo, int $ancho, ?int $alto, int $calidad, string $sufijo): string
 {
-    foreach (['imagen', 'imagen_movil'] as $campo) {
-        $ruta = (string)($foto[$campo] ?? '');
+    if (!function_exists('imagewebp')) {
+        throw new Exception('El servidor no tiene habilitado el procesamiento de imágenes (GD con WebP).');
+    }
+    if (($archivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || !is_uploaded_file($archivo['tmp_name'])) {
+        throw new Exception('No llegó la foto editada. Probá de nuevo.');
+    }
+    if ($archivo['size'] > PORTADA_TAMANO_MAX) {
+        throw new Exception('La foto editada pesa demasiado.');
+    }
+
+    $mime = (new finfo(FILEINFO_MIME_TYPE))->file($archivo['tmp_name']);
+    @ini_set('memory_limit', '256M');
+    if ($mime === 'image/jpeg') {
+        $origen = @imagecreatefromjpeg($archivo['tmp_name']);
+    } elseif ($mime === 'image/png') {
+        $origen = @imagecreatefrompng($archivo['tmp_name']);
+    } elseif ($mime === 'image/webp' && function_exists('imagecreatefromwebp')) {
+        $origen = @imagecreatefromwebp($archivo['tmp_name']);
+    } else {
+        throw new Exception('La foto editada no es una imagen válida.');
+    }
+    if (!$origen) {
+        throw new Exception('No se pudo leer la foto editada.');
+    }
+
+    $w = imagesx($origen);
+    $h = imagesy($origen);
+    if ($alto === null) {
+        $escala = min(1, $ancho / $w);
+        $destW = (int)round($w * $escala);
+        $destH = (int)round($h * $escala);
+    } else {
+        $destW = $ancho;
+        $destH = $alto;
+    }
+    $final = portada_recortar($origen, 0, 0, $w, $h, $destW, $destH);
+    imagedestroy($origen);
+
+    $carpeta = dirname(__DIR__) . '/admin/uploads';
+    if (!is_dir($carpeta)) mkdir($carpeta, 0755, true);
+    $nombre = 'portada-' . bin2hex(random_bytes(8)) . $sufijo . '.webp';
+    $ok = imagewebp($final, "$carpeta/$nombre", $calidad);
+    imagedestroy($final);
+    if (!$ok) {
+        throw new Exception('No se pudo guardar la foto editada.');
+    }
+    return "admin/uploads/$nombre";
+}
+
+/**
+ * Borra archivos de una foto, solo los subidos desde el panel (las 4 originales de
+ * assets/ quedan siempre). $conservar: rutas que no hay que borrar (la original).
+ */
+function portada_borrar_archivos(array $foto, array $conservar = []): void
+{
+    $rutas = array_unique(array_filter([
+        (string)($foto['imagen'] ?? ''),
+        (string)($foto['imagen_movil'] ?? ''),
+        (string)($foto['imagen_original'] ?? ''),
+    ]));
+    foreach (array_diff($rutas, $conservar) as $ruta) {
         if (strpos($ruta, 'admin/uploads/portada-') === 0) {
             @unlink(dirname(__DIR__) . '/' . $ruta);
         }
