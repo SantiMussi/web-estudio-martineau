@@ -143,8 +143,11 @@ function initModals() {
                     if (currentMainImgDiv) currentMainImgDiv.style.display = 'none';
                     
                     const currentGalleryDiv = form.querySelector('#current-gallery');
-                    if (currentGalleryDiv) currentGalleryDiv.style.display = 'none';
-                    
+                    if (currentGalleryDiv) {
+                        currentGalleryDiv.style.display = 'none';
+                        currentGalleryDiv.innerHTML = '';   // sin fotos ni reemplazos de la ficha anterior
+                    }
+
                     const imagePreviews = form.querySelectorAll('.image-preview');
                     imagePreviews.forEach(p => p.innerHTML = '');
 
@@ -249,12 +252,33 @@ function editarItem(data, modalId) {
     const title = overlay.querySelector('.modal-header h2');
     if (title) title.textContent = data._modal_title || 'Editar';
 
+    // Sin archivos elegidos (o editados) para la ficha que se abrió antes
+    form.querySelectorAll('input[type="file"]').forEach(input => { input.value = ''; });
+    form.querySelectorAll('.image-preview').forEach(p => { p.innerHTML = ''; });
+
     const currentMainImgDiv = form.querySelector('#current-main-image');
     if (currentMainImgDiv) {
         if (data.imagen) {
             currentMainImgDiv.style.display = 'block';
+            currentMainImgDiv.dataset.ruta = data.imagen;
             const previewThumb = currentMainImgDiv.querySelector('.preview-thumb');
-            if (previewThumb) previewThumb.style.display = 'inline-block';
+            if (previewThumb) {
+                previewThumb.style.display = 'inline-block';
+                previewThumb.classList.remove('is-reemplazada');
+                // Editar la foto principal: la editada entra como foto nueva y reemplaza a esta al guardar
+                if (!previewThumb.querySelector('.editar-preview')) {
+                    const editar = botonEditarFoto(async () => {
+                        const editada = await EditorImagen.abrir('../' + currentMainImgDiv.dataset.ruta);
+                        if (!editada) return;
+                        const input = form.querySelector('input[name="imagen"]');
+                        const dt = new DataTransfer();
+                        dt.items.add(editada);
+                        input.files = dt.files;
+                        input.dispatchEvent(new Event('change'));
+                    });
+                    if (editar) previewThumb.appendChild(editar);
+                }
+            }
             currentMainImgDiv.querySelector('img').src = '../' + escapeAttr(data.imagen);
             const checkbox = currentMainImgDiv.querySelector('input[type="checkbox"]');
             if (checkbox) checkbox.checked = false;
@@ -266,6 +290,7 @@ function editarItem(data, modalId) {
     const currentGalleryDiv = form.querySelector('#current-gallery');
     if (currentGalleryDiv) {
         currentGalleryDiv.innerHTML = '';
+        currentGalleryDiv._reemplazos = new Map();
         if (data.imagenes && data.imagenes.length > 0) {
             currentGalleryDiv.style.display = 'flex';
             data.imagenes.forEach(img => {
@@ -283,6 +308,18 @@ function editarItem(data, modalId) {
                     hidden.value = img;
                     div.appendChild(hidden);
                 });
+                // Editar una foto de la galería: al guardar reemplaza a la original en el mismo lugar
+                const editar = botonEditarFoto(async () => {
+                    const previa = currentGalleryDiv._reemplazos.get(img);
+                    const editada = await EditorImagen.abrir(previa || '../' + img, { nombre: img.split('/').pop() });
+                    if (!editada) return;
+                    reemplazarFotoGaleria(currentGalleryDiv, img, editada);
+                    const miniatura = div.querySelector('img');
+                    if (miniatura.src.startsWith('blob:')) URL.revokeObjectURL(miniatura.src);
+                    miniatura.src = URL.createObjectURL(editada);
+                    div.classList.add('is-editada');
+                });
+                if (editar) div.appendChild(editar);
                 currentGalleryDiv.appendChild(div);
             });
         } else {
@@ -426,9 +463,58 @@ function precargarTituloDesdeImagen(input) {
     if (titulo) tituloInput.value = capitalizarPrimeraLetra(titulo);
 }
 
+// Botón de lápiz para abrir una foto en el editor (editor-imagen.js), si la página lo carga
+function botonEditarFoto(alEditar) {
+    if (!window.EditorImagen) return null;
+    const boton = document.createElement('button');
+    boton.type = 'button';
+    boton.className = 'editar-preview';
+    boton.title = 'Editar foto';
+    boton.setAttribute('aria-label', 'Editar foto');
+    boton.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+    boton.addEventListener('click', alEditar);
+    return boton;
+}
+
+// Las fotos de la galería ya subidas que se editaron viajan en galeria_reemplazo[] (los archivos)
+// y galeria_reemplazo_de[] (la ruta de la foto que reemplaza cada uno, en el mismo orden).
+function reemplazarFotoGaleria(contenedor, ruta, archivo) {
+    contenedor._reemplazos.set(ruta, archivo);
+
+    const anterior = contenedor.querySelector('.galeria-reemplazos');
+    if (anterior) anterior.remove();
+
+    const campos = document.createElement('div');
+    campos.className = 'galeria-reemplazos';
+    campos.hidden = true;
+    const archivos = document.createElement('input');
+    archivos.type = 'file';
+    archivos.name = 'galeria_reemplazo[]';
+    archivos.multiple = true;
+    const dt = new DataTransfer();
+    contenedor._reemplazos.forEach((foto, de) => {
+        dt.items.add(foto);
+        const campo = document.createElement('input');
+        campo.type = 'hidden';
+        campo.name = 'galeria_reemplazo_de[]';
+        campo.value = de;
+        campos.appendChild(campo);
+    });
+    archivos.files = dt.files;
+    campos.appendChild(archivos);
+    contenedor.appendChild(campos);
+}
+
 function previewFiles(input, previewContainer, multiple) {
     if (!previewContainer) return;
     previewContainer.innerHTML = ''; // Limpiar siempre porque el input file nativo reemplaza la selección
+
+    // Con una foto principal nueva (o editada), la que ya estaba se reemplaza al guardar
+    if (!multiple) {
+        const form = input.closest('form');
+        const actual = form && form.querySelector('#current-main-image .preview-thumb');
+        if (actual) actual.classList.toggle('is-reemplazada', input.files.length > 0);
+    }
 
     const files = input.files;
     for (let i = 0; i < files.length; i++) {
@@ -452,6 +538,19 @@ function previewFiles(input, previewContainer, multiple) {
                 input.files = dt.files;
                 previewFiles(input, previewContainer, multiple); // Volver a renderizar
             });
+
+            // La editada reemplaza a la elegida en el mismo lugar
+            const editar = botonEditarFoto(async () => {
+                const editada = await EditorImagen.abrir(file);
+                if (!editada) return;
+                const dt = new DataTransfer();
+                for (let j = 0; j < input.files.length; j++) {
+                    dt.items.add(j === i ? editada : input.files[j]);
+                }
+                input.files = dt.files;
+                previewFiles(input, previewContainer, multiple);
+            });
+            if (editar) thumb.appendChild(editar);
 
             previewContainer.appendChild(thumb);
         };

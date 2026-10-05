@@ -68,7 +68,7 @@ $pagina_activa = 'revision.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=12">
+    <link rel="stylesheet" href="admin.css?v=13">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -154,6 +154,6 @@ $pagina_activa = 'revision.php';
         </main>
     </div>
 
-    <script src="admin.js?v=22"></script>
+    <script src="admin.js?v=23"></script>
 </body>
 </html>

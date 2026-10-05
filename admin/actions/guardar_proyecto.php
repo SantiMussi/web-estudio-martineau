@@ -2,6 +2,7 @@
 
 
 require_once __DIR__ . '/../auth.php';
+require_once __DIR__ . '/../galeria_reemplazos.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../proyectos.php');
@@ -74,9 +75,30 @@ try {
             }
         }
 
-        $imagenes_json = !empty($imagenes_nuevas) 
-            ? json_encode($imagenes_nuevas) 
-            : $actual['imagenes'];
+        // Galería: igual que en productos, las fotos nuevas se suman, las marcadas con la
+        // cruz se borran y las editadas en el panel reemplazan a la original en su lugar
+        $galeria_actual = $actual['imagenes'] ? json_decode($actual['imagenes'], true) : [];
+        if (!is_array($galeria_actual)) $galeria_actual = [];
+
+        $imagenes_a_eliminar = $_POST['eliminar_galeria'] ?? [];
+        if (!is_array($imagenes_a_eliminar)) $imagenes_a_eliminar = [];
+
+        $reemplazos = fgal_reemplazos();
+
+        $galeria_final = [];
+        foreach ($galeria_actual as $img) {
+            if (in_array($img, $imagenes_a_eliminar)) {
+                eliminar_imagen($img);
+            } elseif (isset($reemplazos[$img]) && ($editada = subir_imagen($reemplazos[$img])) !== false) {
+                eliminar_imagen($img);
+                $galeria_final[] = $editada;
+            } else {
+                $galeria_final[] = $img;
+            }
+        }
+
+        $galeria_final = array_merge($galeria_final, $imagenes_nuevas);
+        $imagenes_json = !empty($galeria_final) ? json_encode($galeria_final) : null;
 
         $stmt = $pdo->prepare('
             UPDATE proyectos SET 
