@@ -1170,6 +1170,24 @@ select.form-control {
     margin-right: 0.5rem;
 }
 
+.barra-seleccion-todas {
+    padding: 0;
+    margin-right: 0.5rem;
+    border: 0;
+    background: none;
+    color: var(--admin-accent);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+}
+
+.barra-seleccion-todas[hidden] {
+    display: none;
+}
+
 /* ─── PAPELERA ─── */
 .sidebar-contador {
     margin-left: auto;

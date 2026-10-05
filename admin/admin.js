@@ -516,8 +516,16 @@ function initSeleccion() {
         const visible = casilla => casilla.closest('tr').style.display !== 'none';
         const enPagina = casilla => visible(casilla) && !casilla.closest('tr').classList.contains('fuera-de-pagina');
 
+        // Para marcar las de todas las páginas (las que deja ver el filtro), como en Gmail
+        const botonTodas = document.createElement('button');
+        botonTodas.type = 'button';
+        botonTodas.className = 'barra-seleccion-todas';
+        if (cuenta) cuenta.after(botonTodas);
+        else barra.prepend(botonTodas);
+
         const actualizar = () => {
-            const marcadas = casillas().filter(visible).filter(c => c.checked).length;
+            const visibles = casillas().filter(visible);
+            const marcadas = visibles.filter(c => c.checked).length;
             const pagina = casillas().filter(enPagina);
             const marcadasPagina = pagina.filter(c => c.checked).length;
             barra.hidden = marcadas === 0;
@@ -526,7 +534,24 @@ function initSeleccion() {
                 todos.checked = marcadasPagina > 0 && marcadasPagina === pagina.length;
                 todos.indeterminate = marcadasPagina > 0 && marcadasPagina < pagina.length;
             }
+            // Solo tiene sentido si hay filas fuera de la página actual
+            botonTodas.hidden = visibles.length <= pagina.length;
+            // Con filtro, "todos" son los que pasan el filtro (las casillas ocultas no cuentan)
+            const filtroCat = document.querySelector(`[data-filtro-categoria="${tbody.id}"]`);
+            const buscador = document.querySelector(`[data-buscar-tabla="${tbody.id}"]`);
+            const deQue = filtroCat && filtroCat.value !== '' ? ' de la categoría'
+                : buscador && buscador.value.trim() !== '' ? ' de la búsqueda' : '';
+            botonTodas.textContent = marcadas < visibles.length
+                ? `Seleccionar los ${visibles.length}${deQue}`
+                : 'Deseleccionar todos';
         };
+
+        botonTodas.addEventListener('click', () => {
+            const visibles = casillas().filter(visible);
+            const marcar = visibles.some(c => !c.checked);
+            visibles.forEach(c => { c.checked = marcar; });
+            actualizar();
+        });
         tbody.addEventListener('paginacion', actualizar);
 
         if (todos) {
