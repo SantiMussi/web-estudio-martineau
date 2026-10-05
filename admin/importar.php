@@ -22,7 +22,7 @@ $pagina_activa = 'importar.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=13">
+    <link rel="stylesheet" href="admin.css?v=14">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -187,6 +187,6 @@ Pieza Monolith,Esculturas,Pieza escultórica monolítica,,</div>
         </main>
     </div>
 
-    <script src="admin.js?v=23"></script>
+    <script src="admin.js?v=24"></script>
 </body>
 </html>

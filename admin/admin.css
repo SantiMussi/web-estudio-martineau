@@ -1044,6 +1044,501 @@ select.form-control {
     stroke-linejoin: round;
 }
 
+.editor-cuerpo.editor-completo {
+    grid-template-columns: minmax(0, 1fr) 290px;
+}
+
+@media (max-width: 760px) {
+    .editor-cuerpo.editor-completo {
+        grid-template-columns: 1fr;
+    }
+}
+
+.editor-separador {
+    width: 1px;
+    align-self: stretch;
+    margin: 0.2rem 0.15rem;
+    background: var(--admin-border);
+}
+
+.editor-herramienta.solo-icono {
+    padding: 0.45rem 0.6rem;
+}
+
+.editor-herramienta.is-activo {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: #fff;
+}
+
+.editor-herramienta:disabled {
+    opacity: 0.4;
+    cursor: default;
+    border-color: var(--admin-border);
+    color: var(--admin-text-muted);
+}
+
+.editor-herramienta[data-comparar] {
+    user-select: none;
+    touch-action: none;
+}
+
+.editor-etiqueta {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    background: rgba(30, 24, 18, 0.75);
+    color: #fff;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    pointer-events: none;
+}
+
+.editor-etiqueta[hidden] {
+    display: none;
+}
+
+.editor-histograma {
+    display: block;
+    width: 100%;
+    height: 64px;
+    border: 1px solid var(--admin-border);
+    border-radius: 6px;
+    background: var(--admin-bg-card);
+}
+
+.editor-pestanas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.editor-pestanas button {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 20px;
+    background: var(--admin-bg-card);
+    color: var(--admin-text-muted);
+    font-family: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.editor-pestanas button.is-activa {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: #fff;
+}
+
+.editor-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.editor-panel[hidden] {
+    display: none;
+}
+
+.editor-control output {
+    cursor: pointer;
+    user-select: none;
+}
+
+.editor-filtros {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+.editor-filtro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.3rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: none;
+    color: var(--admin-text-muted);
+    font-family: inherit;
+    font-size: 0.68rem;
+    cursor: pointer;
+}
+
+.editor-filtro canvas {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    background: var(--admin-bg-alt);
+}
+
+.editor-filtro:hover {
+    border-color: var(--admin-border);
+}
+
+.editor-filtro.is-activo {
+    border-color: var(--admin-accent);
+    color: var(--admin-text);
+    background: var(--admin-bg-card);
+}
+
+.editor-check {
+    font-size: 0.85rem;
+}
+
+.editor-final {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--admin-border);
+}
+
+.editor-histograma-caja {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    cursor: help;
+}
+
+.editor-histograma-caja > span {
+    font-size: 0.72rem;
+    color: var(--admin-text-muted);
+}
+
+.editor-histograma-caja small {
+    margin-left: 0.3rem;
+    color: var(--admin-text-light);
+}
+
+/* Etapas del editor: Foto (ajustes) y Capas (texto, formas…) */
+.editor-modal .modal-header {
+    gap: 1rem;
+}
+
+.editor-etapas {
+    display: flex;
+    margin-left: auto;
+    padding: 3px;
+    border: 1px solid var(--admin-border);
+    border-radius: 22px;
+    background: var(--admin-bg-card);
+}
+
+.editor-etapas button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.9rem;
+    border: 0;
+    border-radius: 18px;
+    background: none;
+    color: var(--admin-text-muted);
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.editor-etapas button.is-activa {
+    background: var(--admin-accent);
+    color: #fff;
+}
+
+.editor-etapas svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.editor-cuerpo[hidden] {
+    display: none;
+}
+
+/* ─── CAPAS (editor-capas.js) ─── */
+.capas-escenario {
+    display: flex;
+    justify-content: center;
+    min-height: 200px;
+}
+
+.capas-escenario .canvas-container {
+    border-radius: 4px;
+    box-shadow: 0 2px 14px rgba(30, 24, 18, 0.18);
+}
+
+.capas-panel svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+}
+
+.capas-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.capas-historial {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.capas-titulo {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--admin-text-muted);
+}
+
+.capas-botones {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.4rem;
+}
+
+.capas-botones button,
+.capas-acciones button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.55rem 0.3rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    background: var(--admin-bg-card);
+    color: var(--admin-text);
+    font-family: inherit;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: border-color var(--admin-transition), color var(--admin-transition);
+}
+
+.capas-botones button:hover,
+.capas-acciones button:hover,
+.capas-formas button:hover {
+    border-color: var(--admin-accent);
+    color: var(--admin-accent);
+}
+
+.capas-botones button.is-activo {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: #fff;
+}
+
+.capas-formas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.capas-formas button {
+    flex: 1 0 34px;
+    display: flex;
+    justify-content: center;
+    padding: 0.45rem 0;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    background: var(--admin-bg-card);
+    color: var(--admin-text);
+    cursor: pointer;
+}
+
+.capas-pincel,
+.capas-props {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 0.9rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 10px;
+    background: var(--admin-bg-card);
+}
+
+.capas-pincel[hidden],
+.capas-props[hidden],
+.capas-panel [hidden] {
+    display: none;
+}
+
+.capas-fila {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.capas-alternar {
+    min-width: 32px;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 6px;
+    background: var(--admin-bg);
+    color: var(--admin-text);
+    font-family: Georgia, serif;
+    font-size: 0.85rem;
+    line-height: 1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.capas-alternar.is-activo {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: #fff;
+}
+
+.capas-color {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+}
+
+.capas-color .form-check {
+    font-size: 0.78rem;
+}
+
+.capas-panel input[type="color"] {
+    width: 38px;
+    height: 28px;
+    padding: 2px;
+    border: 1px solid var(--admin-border);
+    border-radius: 6px;
+    background: var(--admin-bg);
+    cursor: pointer;
+}
+
+.capas-acciones {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+}
+
+.capas-acciones .capas-eliminar {
+    color: var(--admin-danger);
+}
+
+.capas-lista-caja {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.capas-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--admin-border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--admin-bg-card);
+}
+
+.capa {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid var(--admin-border);
+    font-size: 0.78rem;
+    cursor: pointer;
+}
+
+.capa:last-child {
+    border-bottom: 0;
+}
+
+.capa:hover {
+    background: var(--admin-bg);
+}
+
+.capa.is-activa {
+    background: var(--admin-bg-alt);
+    box-shadow: inset 3px 0 0 var(--admin-accent);
+}
+
+.capa.is-oculta .capa-nombre,
+.capa.is-oculta .capa-icono {
+    opacity: 0.4;
+}
+
+.capa-icono {
+    display: flex;
+    color: var(--admin-text-muted);
+}
+
+.capa-nombre {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.capa button {
+    display: flex;
+    padding: 0.2rem;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: var(--admin-text-light);
+    cursor: pointer;
+}
+
+.capa button:hover {
+    color: var(--admin-text);
+    background: var(--admin-bg-alt);
+}
+
+.capa button svg {
+    width: 14px;
+    height: 14px;
+}
+
+.capa.is-bloqueada [data-capa="bloquear"] {
+    color: var(--admin-accent);
+}
+
+.capa-fondo {
+    cursor: default;
+    color: var(--admin-text-muted);
+    font-style: italic;
+}
+
+.capa-fondo:hover {
+    background: none;
+}
+
+@media (max-width: 760px) {
+    .editor-modal .modal-header {
+        flex-wrap: wrap;
+    }
+
+    .editor-etapas {
+        order: 3;
+        margin-left: 0;
+    }
+}
+
 /* Botón de editar en las miniaturas de los formularios */
 .preview-thumb .editar-preview {
     position: absolute;

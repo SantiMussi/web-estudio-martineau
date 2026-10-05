@@ -50,8 +50,11 @@ Options -Indexes
     Header always set Strict-Transport-Security "max-age=31536000"
     Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
 
+    # Solo para las páginas públicas: el panel (admin/index.php también se llama index.php)
+    # usa librerías de CDN y fotos en memoria (blob:) que esta política bloquearía.
+    SetEnvIf Request_URI "^/admin/" ZONA_ADMIN
     <FilesMatch "(\.html|^index\.php|^producto\.php|^proyecto\.php)$">
-        Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com; frame-src https://www.google.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none';"
+        Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://images.unsplash.com; frame-src https://www.google.com; object-src 'none'; base-uri 'self'; frame-ancestors 'none';" env=!ZONA_ADMIN
     </FilesMatch>
 </IfModule>
 

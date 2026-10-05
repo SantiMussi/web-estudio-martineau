@@ -314,9 +314,10 @@ function editarItem(data, modalId) {
                     const editada = await EditorImagen.abrir(previa || '../' + img, { nombre: img.split('/').pop() });
                     if (!editada) return;
                     reemplazarFotoGaleria(currentGalleryDiv, img, editada);
-                    const miniatura = div.querySelector('img');
-                    if (miniatura.src.startsWith('blob:')) URL.revokeObjectURL(miniatura.src);
-                    miniatura.src = URL.createObjectURL(editada);
+                    // Como data: (no blob:, que la política de seguridad de esta página puede bloquear)
+                    const lector = new FileReader();
+                    lector.onload = () => { div.querySelector('img').src = lector.result; };
+                    lector.readAsDataURL(editada);
                     div.classList.add('is-editada');
                 });
                 if (editar) div.appendChild(editar);
