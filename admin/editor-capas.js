@@ -10,6 +10,7 @@
  *   componer()          un canvas en tamaño final con la foto y todas las capas
  *   teclado(e)          atajos de esta etapa; devuelve true si usó la tecla
  *   limpiar()           borra todo (al abrir otra foto)
+ *   exportarDiseno()    las capas para guardar en un diseño; cargarDiseno(d) las vuelve a poner
  *   ajustar()           vuelve a medir el espacio disponible (al cambiar el tamaño de la ventana)
  * opciones.assets: URL de la carpeta assets (para el logo)
  */
@@ -819,6 +820,32 @@ window.EditorCapas = (() => {
 
         const hayCapas = () => canvas.getObjects().some(o => o.visible !== false);
 
+        // Para guardar el diseño: las capas y el tamaño en el que estaban (al volver a
+        // abrirlo se acomodan al tamaño que tenga la foto entonces)
+        const exportarDiseno = () => ({ objetos: instantanea(), ancho: W(), alto: H() });
+
+        const cargarDiseno = async diseno => {
+            const objetos = (diseno && diseno.objetos) || [];
+            // Las fuentes tienen que estar cargadas antes de medir los textos
+            const familias = [...new Set(objetos.filter(o => o.fontFamily).map(o => o.fontFamily))];
+            await Promise.all(familias.map(cargarFuente));
+            await new Promise(listo => {
+                restaurando = true;
+                if (canvas.isDrawingMode) dibujar(false);
+                canvas.discardActiveObject();
+                canvas.remove(...canvas.getObjects());
+                fabric.util.enlivenObjects(objetos, vivos => {
+                    vivos.forEach(o => canvas.add(o));
+                    if (diseno.ancho && diseno.alto) reubicar({ w: diseno.ancho, h: diseno.alto });
+                    restaurando = false;
+                    listo();
+                });
+            });
+            registrar();
+            canvas.requestRenderAll();
+            refrescar();
+        };
+
         const limpiar = () => {
             if (canvas.isDrawingMode) dibujar(false);
             restaurando = true;
@@ -868,7 +895,7 @@ window.EditorCapas = (() => {
         actualizarHistorial();
         refrescar();
 
-        return { ponerFondo, hayCapas, componer, teclado, limpiar, ajustar };
+        return { ponerFondo, hayCapas, componer, teclado, limpiar, ajustar, exportarDiseno, cargarDiseno };
     };
 
     return { crear };

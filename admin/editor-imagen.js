@@ -14,6 +14,9 @@
  * - Ajuste automático (niveles por canal), filtros listos y logo como marca de agua.
  * - Deshacer / rehacer (Ctrl+Z / Ctrl+Y) y comparar con la original manteniendo apretado.
  * - La foto final sale con el lado más largo hasta el tamaño elegido.
+ * - Etapa Capas (editor-capas.js): texto, formas, imágenes, logo, al estilo Canva.
+ * - Diseños guardados en el servidor (actions/disenos.php) para retomarlos después.
+ *   EditorImagen.abrirDiseno(id, opciones) abre uno, igual que abrir().
  */
 window.EditorImagen = (() => {
     const VISTA_MAX = 900;          // la vista previa se procesa achicada, para que sea fluida
@@ -24,7 +27,8 @@ window.EditorImagen = (() => {
     const ASSETS = new URL('../assets/', document.baseURI).href;
     const FABRIC = 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js';
     const SCRIPT = document.currentScript && document.currentScript.src;   // para cargar editor-capas.js de la misma carpeta
-
+    const API_DISENOS = new URL('actions/disenos.php', SCRIPT || document.baseURI).href;
+    const SITIO = new URL('../', SCRIPT || document.baseURI).href;          // las rutas guardadas son relativas al sitio
     const PROPORCIONES = [
         ['0', 'Libre'],
         ['0.8', '4:5 (como en el catálogo)'],
@@ -142,6 +146,8 @@ window.EditorImagen = (() => {
     let pendiente = 0;      // requestAnimationFrame de la vista previa
     let terminar = null;    // resuelve la promesa de abrir()
     let opciones = {};
+    let fuenteActual = null;    // File o URL de la foto abierta (para guardarla como original de un diseño)
+    let disenoActual = null;    // {id, nombre} si se abrió o guardó como diseño
 
     const limitar = (v, min, max) => Math.min(max, Math.max(min, v));
 
@@ -693,7 +699,20 @@ window.EditorImagen = (() => {
                     </div>
                     <div class="editor-controles capas-panel" data-capas-panel></div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer editor-pie">
+                    <div class="editor-pie-disenos">
+                        <button type="button" class="btn-admin btn-secondary" data-guardar-diseno title="Guarda la foto con todos los ajustes y las capas, para seguir editándola otro día">
+                            ${icono('<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8M7 3v5h8"/>')}<span>Guardar diseño</span>
+                        </button>
+                        <button type="button" class="btn-admin btn-secondary" data-ver-disenos aria-expanded="false">
+                            ${icono('<rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>')}<span>Diseños</span>
+                        </button>
+                        <div class="editor-disenos" data-disenos hidden>
+                            <p class="capas-titulo">Diseños guardados</p>
+                            <ul class="editor-disenos-lista" data-disenos-lista></ul>
+                        </div>
+                    </div>
+                    <span class="editor-aviso-guardado" data-guardado hidden></span>
                     <button type="button" class="btn-admin btn-secondary" data-cancelar>Cancelar</button>
                     <button type="button" class="btn-admin btn-primary" data-aplicar>Aplicar</button>
                 </div>
@@ -722,6 +741,12 @@ window.EditorImagen = (() => {
             capasEscenario: q('[data-capas-escenario]'),
             capasPanel: q('[data-capas-panel]'),
             capasEstado: q('[data-capas-estado]'),
+            lado: q('[data-lado]'),
+            guardarDiseno: q('[data-guardar-diseno]'),
+            verDisenos: q('[data-ver-disenos]'),
+            disenos: q('[data-disenos]'),
+            disenosLista: q('[data-disenos-lista]'),
+            guardado: q('[data-guardado]'),
             deslizadores: {},
             valores: {},
             marca: {
@@ -880,6 +905,13 @@ window.EditorImagen = (() => {
         el.aplicar.addEventListener('click', confirmar);
         el.etapas.forEach(b => b.addEventListener('click', () => cambiarEtapa(b.dataset.etapa)));
 
+        // Diseños guardados
+        el.guardarDiseno.addEventListener('click', guardarDiseno);
+        el.verDisenos.addEventListener('click', () => mostrarDisenos(el.disenos.hidden));
+        overlay.addEventListener('pointerdown', e => {
+            if (!el.disenos.hidden && !e.target.closest('.editor-pie-disenos')) mostrarDisenos(false);
+        });
+
         // Escape cierra solo el editor, no el formulario del producto que quedó abajo.
         // Ctrl+Z deshace y Ctrl+Y (o Ctrl+Shift+Z) rehace. En Capas, los atajos son los de esa etapa.
         window.addEventListener('keydown', e => {
@@ -996,7 +1028,7 @@ window.EditorImagen = (() => {
         if (!cargandoCapas) {
             cargandoCapas = (async () => {
                 if (!window.fabric) await cargarScript(FABRIC);
-                if (!window.EditorCapas) await cargarScript(new URL('editor-capas.js?v=1', SCRIPT || document.baseURI).href);
+                if (!window.EditorCapas) await cargarScript(new URL('editor-capas.js?v=3', SCRIPT || document.baseURI).href);
                 capas = window.EditorCapas.crear(el.capasEscenario, el.capasPanel, { assets: ASSETS });
                 return capas;
             })();
@@ -1068,17 +1100,17 @@ window.EditorImagen = (() => {
         return lienzo;
     };
 
-    const exportar = async () => {
-        let lienzo = await lienzoFinal();
-        if (capas && capas.hayCapas()) {
-            capas.ponerFondo(lienzo);   // por si se cambió algo en la etapa Foto después
-            lienzo = capas.componer();
-        }
-        return new Promise((listo, fallo) => lienzo.toBlob(
-            blob => blob ? listo(blob) : fallo(new Error('No se pudo armar la foto.')),
-            'image/jpeg', CALIDAD
-        ));
+    // La foto final con las capas encima, si hay
+    const lienzoCompleto = async () => {
+        const lienzo = await lienzoFinal();
+        if (!capas || !capas.hayCapas()) return lienzo;
+        capas.ponerFondo(lienzo);   // por si se cambió algo en la etapa Foto después
+        return capas.componer();
     };
+
+    const aBlob = (lienzo, tipo, calidad) => new Promise((listo, fallo) => lienzo.toBlob(
+        blob => blob ? listo(blob) : fallo(new Error('No se pudo armar la foto.')), tipo, calidad
+    ));
 
     const confirmar = async () => {
         if (!imagen) return;
@@ -1088,7 +1120,7 @@ window.EditorImagen = (() => {
         const texto = el.aplicar.textContent;
         el.aplicar.textContent = 'Procesando…';
         try {
-            const blob = await exportar();
+            const blob = await aBlob(await lienzoCompleto(), 'image/jpeg', CALIDAD);
             const nombre = (opciones.nombre || 'foto').replace(/\.[^.]+$/, '') + '.jpg';
             cerrar(new File([blob], nombre, { type: 'image/jpeg', lastModified: Date.now() }));
         } catch (err) {
@@ -1107,11 +1139,87 @@ window.EditorImagen = (() => {
         if (pendiente) { cancelAnimationFrame(pendiente); pendiente = 0; }
         imagen = null;
         base = null;
+        carga++;
         comparando = false;
         el.etiquetaOriginal.hidden = true;
+        mostrarDisenos(false);
         const listo = terminar;
         terminar = null;
         if (listo) listo(resultado);
+    };
+
+    // Deja el editor listo para una foto (o un diseño guardado) y la carga.
+    // "carga" invalida lo que estuviera cargando antes, si se abre otra en el medio.
+    let carga = 0;
+    const prepararFoto = (fuente, diseno = null) => {
+        const mia = ++carga;
+        fuenteActual = fuente;
+        disenoActual = diseno ? { id: diseno.id, nombre: diseno.nombre } : null;
+        ajustes = iniciales();
+        if (!diseno) marca = leer('editor_imagen_marca', MARCA_INICIAL);
+        historial = [];
+        indice = -1;
+        imagen = null;
+        base = null;
+        if (capas) capas.limpiar();
+        mostrarEtapa('foto');
+        sincronizarControles();
+        sincronizarMarca();
+        actualizarHistorial();
+        el.cambiarPestana('recorte');
+        el.guardado.hidden = true;
+        el.histograma.getContext('2d').clearRect(0, 0, el.histograma.width, el.histograma.height);
+        el.aplicar.disabled = true;
+        el.zona.classList.add('is-cargando');
+        el.estado.hidden = false;
+        el.estado.textContent = 'Cargando la foto…';
+        el.tamano.textContent = '';
+        el.aviso.hidden = true;
+        el.vista.width = 1;
+        el.vista.height = 1;
+
+        const img = new Image();
+        img.onload = async () => {
+            if (mia !== carga) return;   // se cerró o se abrió otra mientras cargaba
+            try {
+                imagen = img;
+                const datos = (diseno && diseno.datos) || {};
+                if (diseno) {
+                    const a = datos.ajustes || {};
+                    ajustes = { ...iniciales(), ...a, recorte: { ...iniciales().recorte, ...(a.recorte || {}) } };
+                    if (datos.marca) marca = { ...MARCA_INICIAL, ...datos.marca };
+                    if (datos.lado) preferencias.lado = String(datos.lado);
+                }
+                if (marca.activa) await cargarLogo(marca.estilo);
+                if (mia !== carga) return;
+                el.estado.hidden = true;
+                el.zona.classList.remove('is-cargando');
+                el.aplicar.disabled = false;
+                sincronizarControles();
+                sincronizarMarca();
+                el.lado.value = preferencias.lado;
+                rehacerBase();
+                registrar();
+                // El tamaño en pantalla del lienzo se conoce recién después de pintarlo
+                requestAnimationFrame(dibujarRecorte);
+                // Si el diseño tenía capas, se abre directo en esa etapa
+                if (datos.capas && datos.capas.objetos && datos.capas.objetos.length) {
+                    await cambiarEtapa('capas');
+                    if (mia === carga && capas) await capas.cargarDiseno(datos.capas);
+                }
+            } catch (err) {
+                if (mia === carga) el.estado.textContent = err.message;
+            }
+        };
+        img.onerror = () => {
+            if (mia === carga) el.estado.textContent = 'No se pudo abrir la foto.';
+        };
+        if (fuente instanceof Blob) {
+            // Como data: y no blob:, que la política de seguridad de algunas páginas bloquea
+            leerComoUrl(fuente).then(url => { if (mia === carga) img.src = url; }, img.onerror);
+        } else {
+            img.src = fuente;
+        }
     };
 
     const abrir = (fuente, opc = {}) => {
@@ -1124,56 +1232,163 @@ window.EditorImagen = (() => {
                 ? fuente.name
                 : decodeURIComponent(String(fuente).split('?')[0].split('/').pop());
         }
-        ajustes = iniciales();
-        historial = [];
-        indice = -1;
-        if (capas) capas.limpiar();
-        mostrarEtapa('foto');
-        sincronizarControles();
-        sincronizarMarca();
-        actualizarHistorial();
-        el.cambiarPestana('recorte');
-        el.histograma.getContext('2d').clearRect(0, 0, el.histograma.width, el.histograma.height);
         el.aplicar.textContent = opciones.boton || 'Aplicar';
-        el.aplicar.disabled = true;
-        el.zona.classList.add('is-cargando');
-        el.estado.hidden = false;
-        el.estado.textContent = 'Cargando la foto…';
-        el.tamano.textContent = '';
-        el.aviso.hidden = true;
-        el.vista.width = 1;
-        el.vista.height = 1;
         el.overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
 
         const promesa = new Promise(listo => { terminar = listo; });
-
-        const img = new Image();
-        const esta = terminar;
-        img.onload = async () => {
-            if (terminar !== esta) return;   // se cerró o se abrió otra mientras cargaba
-            if (marca.activa) await cargarLogo(marca.estilo);
-            if (terminar !== esta) return;
-            imagen = img;
-            el.estado.hidden = true;
-            el.zona.classList.remove('is-cargando');
-            el.aplicar.disabled = false;
-            rehacerBase();
-            registrar();
-            // El tamaño en pantalla del lienzo se conoce recién después de pintarlo
-            requestAnimationFrame(dibujarRecorte);
-        };
-        img.onerror = () => {
-            if (terminar === esta) el.estado.textContent = 'No se pudo abrir la foto.';
-        };
-        if (fuente instanceof Blob) {
-            // Como data: y no blob:, que la política de seguridad de algunas páginas bloquea
-            leerComoUrl(fuente).then(url => { if (terminar === esta) img.src = url; }, img.onerror);
-        } else {
-            img.src = fuente;
-        }
+        prepararFoto(fuente, opc.diseno || null);
         return promesa;
     };
 
-    return { abrir };
+    // ─── Diseños guardados (admin/actions/disenos.php) ───
+
+    const pedirDisenos = async (consulta, cuerpo) => {
+        const res = await fetch(API_DISENOS + consulta, cuerpo ? { method: 'POST', body: cuerpo } : { cache: 'no-store' });
+        const json = await res.json().catch(() => null);
+        if (!json || !json.ok) throw new Error((json && json.error) || 'El servidor no respondió bien. ¿Se cerró la sesión?');
+        return json;
+    };
+
+    const verDiseno = async id => (await pedirDisenos('?accion=ver&id=' + encodeURIComponent(id))).diseno;
+
+    // Abre un diseño guardado; lo que se aplique vuelve a quien abrió el editor
+    const abrirDiseno = async (id, opc = {}) => {
+        const diseno = await verDiseno(id);
+        return abrir(SITIO + diseno.original, { ...opc, nombre: diseno.nombre, diseno });
+    };
+
+    const blobOriginal = async () => {
+        if (fuenteActual instanceof Blob) return fuenteActual;
+        const res = await fetch(fuenteActual);
+        if (!res.ok) throw new Error('No se pudo leer la foto original.');
+        return res.blob();
+    };
+
+    const miniaturaDiseno = async () => {
+        const lienzo = await lienzoCompleto();
+        const k = Math.min(1, 480 / Math.max(lienzo.width, lienzo.height));
+        const c = document.createElement('canvas');
+        c.width = Math.max(1, Math.round(lienzo.width * k));
+        c.height = Math.max(1, Math.round(lienzo.height * k));
+        const ctx = c.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, c.width, c.height);
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(lienzo, 0, 0, c.width, c.height);
+        return aBlob(c, 'image/jpeg', 0.8);
+    };
+
+    let ocultarAviso = 0;
+    const avisoGuardado = texto => {
+        clearTimeout(ocultarAviso);
+        el.guardado.textContent = texto;
+        el.guardado.hidden = !texto;
+        if (texto && !texto.endsWith('…')) ocultarAviso = setTimeout(() => { el.guardado.hidden = true; }, 4000);
+    };
+
+    const guardarDiseno = async () => {
+        if (!imagen) return;
+        const sugerido = disenoActual ? disenoActual.nombre : (opciones.nombre || 'Diseño').replace(/\.[^.]+$/, '');
+        const nombre = prompt(disenoActual ? 'Nombre del diseño (se actualiza el que abriste):' : 'Nombre del diseño:', sugerido);
+        if (nombre === null) return;
+        const token = document.querySelector('input[name="csrf_token"]');
+
+        el.guardarDiseno.disabled = true;
+        avisoGuardado('Guardando…');
+        try {
+            const datos = new FormData();
+            datos.append('accion', 'guardar');
+            datos.append('csrf_token', token ? token.value : '');
+            if (disenoActual) datos.append('id', disenoActual.id);
+            datos.append('nombre', nombre.trim() || sugerido);
+            datos.append('datos', JSON.stringify({
+                version: 1,
+                ajustes,
+                marca,
+                lado: preferencias.lado,
+                capas: capas ? capas.exportarDiseno() : null,
+            }));
+            if (!disenoActual) datos.append('original', await blobOriginal(), 'original');
+            datos.append('miniatura', await miniaturaDiseno(), 'miniatura.jpg');
+            const json = await pedirDisenos('', datos);
+            disenoActual = { id: json.id, nombre: json.nombre };
+            avisoGuardado('Diseño guardado');
+            window.dispatchEvent(new CustomEvent('editor-imagen:diseno-guardado', { detail: disenoActual }));
+        } catch (err) {
+            avisoGuardado('');
+            alert('No se pudo guardar el diseño: ' + err.message);
+        } finally {
+            el.guardarDiseno.disabled = false;
+        }
+    };
+
+    const formatoFecha = texto => {
+        const f = new Date(String(texto).replace(' ', 'T'));
+        return isNaN(f) ? '' : f.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' });
+    };
+
+    // La lista de diseños guardados, desde el pie del editor
+    const mostrarDisenos = async mostrar => {
+        if (!el) return;
+        el.disenos.hidden = !mostrar;
+        el.verDisenos.setAttribute('aria-expanded', mostrar ? 'true' : 'false');
+        if (!mostrar) return;
+        const lista = el.disenosLista;
+        lista.innerHTML = '<li class="editor-disenos-vacio">Cargando…</li>';
+        try {
+            const { disenos } = await pedirDisenos('?accion=listar');
+            lista.innerHTML = '';
+            if (!disenos.length) {
+                lista.innerHTML = '<li class="editor-disenos-vacio">Todavía no hay diseños guardados. Usá "Guardar diseño" para guardar el que estás haciendo.</li>';
+                return;
+            }
+            disenos.forEach(d => {
+                const item = document.createElement('li');
+                item.innerHTML = `
+                    <img alt="" loading="lazy">
+                    <span class="editor-disenos-texto"><strong></strong><small></small></span>
+                    <span class="editor-disenos-botones">
+                        <button type="button" class="btn-admin btn-secondary btn-sm" data-abrir title="Reemplaza la foto que estás editando por este diseño">Abrir</button>
+                        <button type="button" class="btn-admin btn-secondary btn-sm" data-usar-capas title="Pone el texto, las formas y el logo de este diseño sobre la foto que estás editando">Usar sus capas</button>
+                    </span>`;
+                if (d.miniatura) item.querySelector('img').src = SITIO + d.miniatura;
+                item.querySelector('strong').textContent = d.nombre;
+                item.querySelector('small').textContent = formatoFecha(d.actualizado);
+                item.querySelector('[data-abrir]').addEventListener('click', async () => {
+                    if (!sinCambios() && !confirm('Se reemplaza la foto que estás editando por este diseño. ¿Seguir?')) return;
+                    mostrarDisenos(false);
+                    try {
+                        const diseno = await verDiseno(d.id);
+                        opciones.nombre = diseno.nombre;
+                        prepararFoto(SITIO + diseno.original, diseno);
+                    } catch (err) {
+                        alert(err.message);
+                    }
+                });
+                item.querySelector('[data-usar-capas]').addEventListener('click', async () => {
+                    mostrarDisenos(false);
+                    try {
+                        const diseno = await verDiseno(d.id);
+                        const guardadas = diseno.datos && diseno.datos.capas;
+                        if (!guardadas || !guardadas.objetos || !guardadas.objetos.length) {
+                            alert('Ese diseño no tiene capas (texto, formas, logo…).');
+                            return;
+                        }
+                        if (capas && capas.hayCapas() && !confirm('Se reemplazan las capas que ya agregaste. ¿Seguir?')) return;
+                        await cambiarEtapa('capas');
+                        if (capas) await capas.cargarDiseno(guardadas);
+                    } catch (err) {
+                        alert(err.message);
+                    }
+                });
+                lista.appendChild(item);
+            });
+        } catch (err) {
+            lista.innerHTML = '<li class="editor-disenos-vacio"></li>';
+            lista.firstChild.textContent = err.message;
+        }
+    };
+
+    return { abrir, abrirDiseno };
 })();

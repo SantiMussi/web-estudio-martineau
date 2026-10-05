@@ -9,7 +9,7 @@
  * Al agregar un paso nuevo, subir ESQUEMA_VERSION para que se vuelva a revisar.
  */
 
-const ESQUEMA_VERSION = 4;
+const ESQUEMA_VERSION = 5;
 
 function migrar_base(PDO $pdo): void
 {
@@ -114,6 +114,20 @@ function migrar_base(PDO $pdo): void
     if (!migracion_columna_existe($pdo, 'portada', 'ajustes')) {
         $pdo->exec('ALTER TABLE portada ADD COLUMN ajustes TEXT NULL');
     }
+
+    // Diseños guardados del editor de fotos (admin/actions/disenos.php): la foto original,
+    // los ajustes y las capas, para retomarlos después
+    $pdo->exec('
+        CREATE TABLE IF NOT EXISTS disenos (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            nombre VARCHAR(120) NOT NULL,
+            original VARCHAR(255) NOT NULL,
+            miniatura VARCHAR(255) NULL,
+            datos LONGTEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+    ');
 
     $_SESSION['esquema_version'] = ESQUEMA_VERSION;
 }

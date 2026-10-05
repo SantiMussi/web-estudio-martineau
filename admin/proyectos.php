@@ -35,7 +35,7 @@ $pagina_activa = 'proyectos.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=14">
+    <link rel="stylesheet" href="admin.css?v=16">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -312,6 +312,6 @@ $pagina_activa = 'proyectos.php';
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
     <script src="admin.js?v=24"></script>
-    <script src="editor-imagen.js?v=2"></script>
+    <script src="editor-imagen.js?v=4"></script>
 </body>
 </html>

@@ -4,10 +4,18 @@ require_once __DIR__ . '/auth.php';
 
 /*
  * Editor de fotos suelto: se elige una foto de la compu o el celular, se edita
- * (admin/editor-imagen.js) y se descarga. Todo pasa en el navegador: no se sube nada.
+ * (admin/editor-imagen.js) y se descarga. La edición pasa en el navegador; al servidor
+ * solo va lo que se guarda como diseño (admin/actions/disenos.php), que se lista acá.
  * Las fotos de los productos y proyectos también se pueden editar directo desde su
  * ficha, con el lápiz de cada miniatura.
  */
+try {
+    $disenos = $pdo->query('SELECT id, nombre, miniatura, updated_at FROM disenos ORDER BY updated_at DESC, id DESC')->fetchAll();
+} catch (Exception $e) {
+    // La tabla la crea migraciones.php; si falló, se reintenta en el próximo pedido
+    $disenos = [];
+}
+
 $pagina_activa = 'editor.php';
 ?>
 <!DOCTYPE html>
@@ -25,7 +33,7 @@ $pagina_activa = 'editor.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=14">
+    <link rel="stylesheet" href="admin.css?v=16">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -42,8 +50,10 @@ $pagina_activa = 'editor.php';
                 <h1>Editor de fotos</h1>
             </div>
 
+            <?= csrf_field() ?>
+
             <p class="ajustes-intro">
-                Para dejar lista una foto antes de subirla: recortar, girar, enderezar y corregir brillo, contraste, color y calidez. Al terminar se descarga editada a la compu o al celular, y de ahí se sube a donde haga falta. Las fotos no se suben a ningún lado mientras las editás. Las de un producto o proyecto también se pueden editar directo desde su ficha, con el lápiz que aparece sobre cada foto.
+                Para dejar lista una foto sin pasar por Photoshop: recortar, girar, corregir la luz y el color, y agregarle texto, formas o el logo en la etapa Capas. Al terminar se descarga a la compu o al celular. Con "Guardar diseño" queda guardado acá abajo para seguir otro día, o para usar sus capas en otras fotos. Las fotos de un producto o proyecto también se pueden editar directo desde su ficha, con el lápiz que aparece sobre cada foto.
             </p>
 
             <div class="import-card">
@@ -55,15 +65,45 @@ $pagina_activa = 'editor.php';
                     <input type="file" accept="image/jpeg,image/png,image/webp" multiple>
                 </div>
             </div>
+
+            <div class="import-card">
+                <h2>Diseños guardados</h2>
+                <?php if (empty($disenos)): ?>
+                    <p>Todavía no hay ninguno. En el editor, "Guardar diseño" guarda la foto con todos sus ajustes y capas para retomarla después.</p>
+                <?php else: ?>
+                    <p>Abrí uno para seguir editándolo. Desde el editor de un producto también se pueden abrir con el botón "Diseños".</p>
+                    <div class="disenos-grilla">
+                        <?php foreach ($disenos as $d): ?>
+                            <div class="diseno-tarjeta" data-diseno="<?= (int)$d['id'] ?>">
+                                <?php if ($d['miniatura']): ?>
+                                    <img src="../<?= e($d['miniatura']) ?>" alt="" loading="lazy" decoding="async">
+                                <?php endif; ?>
+                                <div class="diseno-tarjeta-cuerpo">
+                                    <strong title="<?= e($d['nombre']) ?>"><?= e($d['nombre']) ?></strong>
+                                    <small>Guardado el <?= e(date('d/m/Y H:i', strtotime($d['updated_at']))) ?></small>
+                                    <div class="diseno-tarjeta-botones">
+                                        <button type="button" class="btn-admin btn-primary btn-sm" data-abrir-diseno>Abrir</button>
+                                        <button type="button" class="btn-admin btn-danger btn-sm" data-eliminar-diseno>Eliminar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+            </div>
         </main>
     </div>
 
     <script src="admin.js?v=24"></script>
-    <script src="editor-imagen.js?v=2"></script>
+    <script src="editor-imagen.js?v=4"></script>
     <script>
         (() => {
             const area = document.querySelector('[data-editor-suelto]');
             const input = area.querySelector('input[type="file"]');
+            const OPCIONES = { boton: 'Descargar', siempre: true };
+            let guardoAlgo = false;
+
+            window.addEventListener('editor-imagen:diseno-guardado', () => { guardoAlgo = true; });
 
             const descargar = archivo => {
                 const url = URL.createObjectURL(archivo);
@@ -76,18 +116,48 @@ $pagina_activa = 'editor.php';
                 setTimeout(() => URL.revokeObjectURL(url), 10000);
             };
 
+            // Al cerrar el editor, si se guardó un diseño, se recarga para verlo en la lista
+            const alTerminar = () => {
+                if (guardoAlgo) setTimeout(() => window.location.reload(), 600);
+            };
+
             // De a una: la siguiente se abre al descargar o cancelar la anterior
             const editar = async archivos => {
                 for (const archivo of archivos) {
                     if (!archivo.type.startsWith('image/')) continue;
-                    const editada = await EditorImagen.abrir(archivo, { boton: 'Descargar', siempre: true });
+                    const editada = await EditorImagen.abrir(archivo, OPCIONES);
                     if (editada) descargar(editada);
                 }
                 input.value = '';
+                alTerminar();
             };
 
             // También al arrastrarlas: admin.js las pasa al input y dispara este change
             input.addEventListener('change', () => editar([...input.files]));
+
+            document.querySelectorAll('[data-diseno]').forEach(tarjeta => {
+                const id = tarjeta.dataset.diseno;
+                tarjeta.querySelector('[data-abrir-diseno]').addEventListener('click', async () => {
+                    try {
+                        const editada = await EditorImagen.abrirDiseno(id, OPCIONES);
+                        if (editada) descargar(editada);
+                        alTerminar();
+                    } catch (err) {
+                        alert(err.message);
+                    }
+                });
+                tarjeta.querySelector('[data-eliminar-diseno]').addEventListener('click', async () => {
+                    if (!confirm('¿Eliminar este diseño? Se borra para siempre, con su foto original.')) return;
+                    const datos = new FormData();
+                    datos.append('accion', 'eliminar');
+                    datos.append('id', id);
+                    datos.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
+                    const res = await fetch('actions/disenos.php', { method: 'POST', body: datos });
+                    const json = await res.json().catch(() => null);
+                    if (json && json.ok) tarjeta.remove();
+                    else alert((json && json.error) || 'No se pudo eliminar.');
+                });
+            });
         })();
     </script>
 </body>
