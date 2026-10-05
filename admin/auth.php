@@ -46,7 +46,7 @@ try {
 
 // Slugs de las fichas nuevas, duplicadas o importadas (ver inc/slugs.php)
 try {
-    if (slugs_disponibles($pdo)) slugs_completar($pdo);
+    if (fslug_disponibles($pdo)) fslug_completar($pdo);
 } catch (Exception $e) {
     error_log('[slugs.php] ' . $e->getMessage());
 }

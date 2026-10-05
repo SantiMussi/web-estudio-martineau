@@ -66,7 +66,7 @@ function migrar_base(PDO $pdo): void
 
     // URLs amigables (/producto/chimenea-luis-xv): el slug de cada ficha y las
     // direcciones viejas que redirigen cuando se cambia (ver inc/slugs.php).
-    // Los slugs de lo que ya estaba cargado los completa slugs_completar() en auth.php.
+    // Los slugs de lo que ya estaba cargado los completa fslug_completar() en auth.php.
     foreach (['productos', 'proyectos'] as $tabla) {
         if (!migracion_columna_existe($pdo, $tabla, 'slug')) {
             $pdo->exec("ALTER TABLE $tabla ADD COLUMN slug VARCHAR(100) NULL DEFAULT NULL, ADD INDEX idx_{$tabla}_slug (slug)");

@@ -16,7 +16,7 @@ $paginas = [
 try {
     $pdo = ficha_pdo();
     if (!$pdo) throw new Exception('Sin conexión a la base');
-    $col_slug = slugs_disponibles($pdo) ? 'slug, ' : '';
+    $col_slug = fslug_disponibles($pdo) ? 'slug, ' : '';
 
     foreach (['producto' => 'productos', 'proyecto' => 'proyectos'] as $tipo => $tabla) {
         $filas = $pdo->query("

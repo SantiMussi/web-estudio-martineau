@@ -12,7 +12,7 @@ $id   = isset($_GET['id']) ? (int)$_GET['id'] : null;
 
 try {
     // URL amigable de cada ficha (la columna aparece al entrar al panel después de actualizar)
-    $col_slug = slugs_disponibles($pdo) ? 'p.slug, ' : '';
+    $col_slug = fslug_disponibles($pdo) ? 'p.slug, ' : '';
 
     switch ($tipo) {
 

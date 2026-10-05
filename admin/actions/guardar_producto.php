@@ -148,8 +148,8 @@ try {
 
     // URL amigable de la ficha (/producto/nombre-de-la-pieza, ver inc/slugs.php)
     $id_guardado = $id ?: (int)$pdo->lastInsertId();
-    if ($id_guardado > 0 && slugs_disponibles($pdo)) {
-        slug_asignar($pdo, 'producto', $id_guardado, trim((string)($_POST['slug'] ?? '')), $titulo);
+    if ($id_guardado > 0 && fslug_disponibles($pdo)) {
+        fslug_asignar($pdo, 'producto', $id_guardado, trim((string)($_POST['slug'] ?? '')), $titulo);
     }
 
 } catch (Exception $e) {

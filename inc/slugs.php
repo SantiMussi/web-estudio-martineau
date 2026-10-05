@@ -11,10 +11,10 @@
  *   se crean las columnas, ver admin/migraciones.php), todo sigue andando con ?id=.
  */
 
-const SLUG_TABLAS = ['producto' => 'productos', 'proyecto' => 'proyectos'];
+const FSLUG_TABLAS = ['producto' => 'productos', 'proyecto' => 'proyectos'];
 
 /** "Chimenea Luis XV (copia)" → "chimenea-luis-xv-copia" */
-function slug_generar(string $texto): string
+function fslug_generar(string $texto): string
 {
     $t = mb_strtolower(trim($texto), 'UTF-8');
     $t = strtr($t, [
@@ -31,22 +31,22 @@ function slug_generar(string $texto): string
 }
 
 /** ¿Ya se corrió la migración que agrega la columna? (se consulta una vez por pedido) */
-function slugs_disponibles(?PDO $pdo): bool
+function fslug_disponibles(?PDO $pdo): bool
 {
     static $hay = null;
     if ($hay !== null) return $hay;
     if (!$pdo) return $hay = false;
     try {
-        $pdo->query('SELECT slug FROM productos LIMIT 0');
-        $pdo->query('SELECT slug FROM proyectos LIMIT 0');
-        return $hay = true;
+        // Según cómo esté configurado PDO, una consulta fallida tira excepción o devuelve false
+        return $hay = $pdo->query('SELECT slug FROM productos LIMIT 0') !== false
+            && $pdo->query('SELECT slug FROM proyectos LIMIT 0') !== false;
     } catch (Throwable $e) {
         return $hay = false;
     }
 }
 
 /** El slug pedido, o con -2, -3… si ya lo usa otro ítem de la misma tabla */
-function slug_unico(PDO $pdo, string $tabla, string $base, int $excluir_id = 0): string
+function fslug_unico(PDO $pdo, string $tabla, string $base, int $excluir_id = 0): string
 {
     $base = $base !== '' ? $base : 'pieza';
     $stmt = $pdo->prepare("SELECT COUNT(*) FROM $tabla WHERE slug = :slug AND id <> :id");
@@ -63,16 +63,16 @@ function slug_unico(PDO $pdo, string $tabla, string $base, int $excluir_id = 0):
  * $pedido: lo que escribieron en el campo (vacío = generarlo desde el título, o
  * dejar el que ya tenía). Devuelve el slug final.
  */
-function slug_asignar(PDO $pdo, string $tipo, int $id, string $pedido, string $titulo): string
+function fslug_asignar(PDO $pdo, string $tipo, int $id, string $pedido, string $titulo): string
 {
-    $tabla = SLUG_TABLAS[$tipo];
+    $tabla = FSLUG_TABLAS[$tipo];
 
     $stmt = $pdo->prepare("SELECT slug FROM $tabla WHERE id = :id");
     $stmt->execute(['id' => $id]);
     $actual = (string)$stmt->fetchColumn();
 
-    $base = slug_generar($pedido !== '' ? $pedido : ($actual !== '' ? $actual : $titulo));
-    $nuevo = slug_unico($pdo, $tabla, $base, $id);
+    $base = fslug_generar($pedido !== '' ? $pedido : ($actual !== '' ? $actual : $titulo));
+    $nuevo = fslug_unico($pdo, $tabla, $base, $id);
 
     if ($actual !== '' && $actual !== $nuevo) {
         // El link viejo sigue funcionando: redirige al nuevo
@@ -93,9 +93,9 @@ function slug_asignar(PDO $pdo, string $tipo, int $id, string $pedido, string $t
  * Completa los slugs que falten o estén repetidos (ítems nuevos, duplicados o
  * importados). Lo llama auth.php en cada pedido del panel: son dos consultas livianas.
  */
-function slugs_completar(PDO $pdo): void
+function fslug_completar(PDO $pdo): void
 {
-    foreach (SLUG_TABLAS as $tabla) {
+    foreach (FSLUG_TABLAS as $tabla) {
         $vacios = $pdo->query("SELECT id, titulo FROM $tabla WHERE slug IS NULL OR slug = '' ORDER BY id")->fetchAll();
         // De cada slug repetido se queda con él el ítem más viejo; al resto se le arma otro
         $repetidos = $pdo->query("
@@ -108,7 +108,7 @@ function slugs_completar(PDO $pdo): void
         $upd = $pdo->prepare("UPDATE $tabla SET slug = :slug WHERE id = :id");
         foreach (array_merge($vacios, $repetidos) as $fila) {
             $upd->execute([
-                'slug' => slug_unico($pdo, $tabla, slug_generar((string)$fila['titulo']), (int)$fila['id']),
+                'slug' => fslug_unico($pdo, $tabla, fslug_generar((string)$fila['titulo']), (int)$fila['id']),
                 'id'   => (int)$fila['id'],
             ]);
         }

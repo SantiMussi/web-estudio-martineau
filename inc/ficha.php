@@ -55,7 +55,7 @@ function ficha_cargar(string $tipo, int $id, string $slug = '')
         $pdo = ficha_pdo();
         if (!$pdo) return false;
 
-        $conSlug = slugs_disponibles($pdo);
+        $conSlug = fslug_disponibles($pdo);
         $columnaSlug = $conSlug ? 'p.slug,' : '';
         $sql = "
             SELECT p.id, $columnaSlug p.titulo, c.slug AS categoria, c.nombre AS categoria_nombre, $extra
