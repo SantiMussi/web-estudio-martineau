@@ -35,7 +35,7 @@ $pagina_activa = 'index.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=16">
+    <link rel="stylesheet" href="admin.css?v=17">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -88,12 +88,30 @@ $pagina_activa = 'index.php';
                         <option value="0">Sin categoría</option>
                     </select>
                     <span class="admin-filter-count" data-filtro-count="sortable-productos"></span>
+
+                    <!-- Órdenes predefinidos: con una categoría filtrada ordenan solo esa categoría.
+                         Después se puede seguir ajustando a mano arrastrando las filas. -->
+                    <span class="admin-filter-orden">
+                        <label for="orden-productos">Ordenar</label>
+                        <select id="orden-productos" class="form-control" data-ordenar-tabla="sortable-productos" data-ordenar-guardar="productos">
+                            <option value="">Elegí un orden…</option>
+                            <option value="nombre">Nombre A → Z (números en orden)</option>
+                            <option value="nombre-desc">Nombre Z → A</option>
+                            <option value="categoria">Categoría y nombre</option>
+                            <option value="nuevos">Más nuevos primero</option>
+                            <option value="viejos">Más viejos primero</option>
+                            <option value="destacados">Destacados primero</option>
+                        </select>
+                        <button type="button" class="btn-admin btn-secondary btn-sm" data-ordenar-aplicar="sortable-productos" disabled>Ordenar todo</button>
+                    </span>
                 </div>
                 <!-- Acciones sobre los seleccionados (las casillas de la tabla apuntan a este form) -->
                 <form method="POST" action="actions/acciones_masivas.php" id="form-seleccion" class="barra-seleccion" data-seleccion="sortable-productos" hidden>
                     <?= csrf_field() ?>
                     <input type="hidden" name="tipo" value="producto">
                     <span class="barra-seleccion-cuenta" data-seleccion-cuenta></span>
+                    <button type="button" class="btn-admin btn-secondary btn-sm" data-mover-seleccion="principio" data-mover-tabla="sortable-productos" data-mover-guardar="productos" title="Con una categoría filtrada, al principio de esa categoría">↑ Al principio</button>
+                    <button type="button" class="btn-admin btn-secondary btn-sm" data-mover-seleccion="final" data-mover-tabla="sortable-productos" data-mover-guardar="productos" title="Con una categoría filtrada, al final de esa categoría">↓ Al final</button>
                     <button type="submit" name="accion" value="mostrar" class="btn-admin btn-secondary btn-sm">Mostrar</button>
                     <button type="submit" name="accion" value="ocultar" class="btn-admin btn-secondary btn-sm">Ocultar</button>
                     <button type="submit" name="accion" value="destacar" class="btn-admin btn-secondary btn-sm">Destacar</button>
@@ -124,7 +142,10 @@ $pagina_activa = 'index.php';
                         </thead>
                         <tbody id="sortable-productos">
                             <?php foreach ($productos as $prod): ?>
-                                <tr data-id="<?= $prod['id'] ?>" data-categoria-id="<?= (int)($prod['categoria_id'] ?? 0) ?>">
+                                <tr data-id="<?= $prod['id'] ?>" data-categoria-id="<?= (int)($prod['categoria_id'] ?? 0) ?>"
+                                    data-categoria-nombre="<?= e($prod['categoria_nombre'] ?? '') ?>"
+                                    data-creado="<?= e($prod['created_at'] ?? '') ?>"
+                                    data-destacado="<?= $prod['destacar'] ? 1 : 0 ?>">
                                     <td class="col-check"><input type="checkbox" name="items[]" value="<?= (int)$prod['id'] ?>" form="form-seleccion" aria-label="Seleccionar <?= e($prod['titulo']) ?>"></td>
                                     <td class="drag-handle" title="Arrastrar para reordenar">☰</td>
                                     <td>
@@ -330,7 +351,7 @@ $pagina_activa = 'index.php';
 
     <!-- Copia local: la política de seguridad del panel solo deja cargar scripts del propio sitio -->
     <script src="vendor/Sortable.min.js?v=1.15.7"></script>
-    <script src="admin.js?v=24"></script>
+    <script src="admin.js?v=25"></script>
     <script src="editor-imagen.js?v=4"></script>
 </body>
 </html>

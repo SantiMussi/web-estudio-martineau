@@ -726,42 +726,45 @@ document.addEventListener('DOMContentLoaded', () => {
         // Sortable (admin/vendor): si no cargó, que no frene lo demás (páginas, etc.)
         if (!el || typeof Sortable === 'undefined') return;
 
+        // Mover en conjunto: las filas con la casilla marcada se arrastran juntas.
+        // La selección de Sortable se sincroniza con las casillas justo antes de arrastrar
+        // (multiDragKey CTRL: un clic común en la fila no la selecciona, así no interfiere
+        // con los botones de Editar, Duplicar, etc.).
+        const conCasillas = !!el.querySelector('input[name="items[]"]');
+        const multiDrag = conCasillas && Sortable.utils && typeof Sortable.utils.select === 'function';
+        if (multiDrag) {
+            const sincronizar = (e) => {
+                if (!e.target.closest('.drag-handle')) return;
+                el.querySelectorAll('tr[data-id]').forEach(tr => {
+                    const casilla = tr.querySelector('input[name="items[]"]');
+                    if (casilla && casilla.checked) Sortable.utils.select(tr);
+                    else Sortable.utils.deselect(tr);
+                });
+            };
+            // Al tildar/destildar, la fila se marca (o no) como parte del grupo
+            el.addEventListener('change', (e) => {
+                if (e.target.name !== 'items[]') return;
+                const tr = e.target.closest('tr');
+                if (tr) Sortable.utils[e.target.checked ? 'select' : 'deselect'](tr);
+            });
+            el.addEventListener('pointerdown', sincronizar, true);
+            el.addEventListener('mousedown', sincronizar, true);
+            el.addEventListener('touchstart', sincronizar, { capture: true, passive: true });
+        }
+
         Sortable.create(el, {
             handle: '.drag-handle',
             animation: 150,
             ghostClass: 'sortable-ghost',
             dragClass: 'sortable-drag',
+            multiDrag: multiDrag,
+            multiDragKey: 'CTRL',
+            selectedClass: 'fila-en-grupo',
+            avoidImplicitDeselect: true,
             onEnd: function (evt) {
-                if (evt.oldIndex === evt.newIndex) return;
-
-                const orden = [];
-                el.querySelectorAll('tr[data-id]').forEach(tr => {
-                    orden.push(tr.getAttribute('data-id'));
-                });
-
-                const csrfInput = document.querySelector('input[name="csrf_token"]');
-
-                fetch('actions/guardar_orden.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        tabla: tabla,
-                        orden: orden,
-                        csrf_token: csrfInput ? csrfInput.value : ''
-                    })
-                })
-                .then(res => res.json())
-                .then(data => {
-                    if (!data.success) {
-                        alert('Error al guardar el nuevo orden: ' + (data.error || 'Desconocido'));
-                    }
-                })
-                .catch(err => {
-                    console.error('Error saving order:', err);
-                    alert('Error de conexión al guardar el orden.');
-                });
+                const enGrupo = evt.items && evt.items.length > 1;
+                if (!enGrupo && evt.oldIndex === evt.newIndex) return;
+                guardarOrden(tabla, [...el.querySelectorAll('tr[data-id]')].map(tr => tr.getAttribute('data-id')));
             }
         });
     };
@@ -773,10 +776,164 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initPaginacion('sortable-productos');
     initPaginacion('sortable-proyectos');
+    initOrdenAutomatico();
+    initMoverSeleccion();
 
     initSlugFichas();
     abrirFichaPedida();
 });
+
+// Guarda el orden completo de una tabla (lista de ids). Devuelve true si se guardó.
+function guardarOrden(tabla, orden) {
+    const csrfInput = document.querySelector('input[name="csrf_token"]');
+    return fetch('actions/guardar_orden.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            tabla: tabla,
+            orden: orden,
+            csrf_token: csrfInput ? csrfInput.value : ''
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (!data.success) {
+            alert('Error al guardar el nuevo orden: ' + (data.error || 'Desconocido'));
+            return false;
+        }
+        return true;
+    })
+    .catch(err => {
+        console.error('Error saving order:', err);
+        alert('Error de conexión al guardar el orden.');
+        return false;
+    });
+}
+
+// Órdenes predefinidos (nombre, categoría, fecha, destacados). Sin filtro ordenan toda
+// la tabla; con una categoría filtrada, solo los de esa categoría, que se reparten en
+// los mismos lugares que ya ocupaban (el resto no se mueve). Se guarda como el orden
+// manual, así que después se puede seguir ajustando arrastrando.
+function initOrdenAutomatico() {
+    document.querySelectorAll('[data-ordenar-aplicar]').forEach(boton => {
+        const tbodyId = boton.getAttribute('data-ordenar-aplicar');
+        const tbody = document.getElementById(tbodyId);
+        const select = document.querySelector(`[data-ordenar-tabla="${tbodyId}"]`);
+        const filtroCat = document.querySelector(`[data-filtro-categoria="${tbodyId}"]`);
+        if (!tbody || !select) return;
+        const tabla = select.getAttribute('data-ordenar-guardar');
+
+        // numeric: "Nº 2" va antes que "Nº 10"; sensitivity base: ignora tildes y mayúsculas
+        const colator = new Intl.Collator('es', { numeric: true, sensitivity: 'base' });
+        const titulo = tr => {
+            const el = tr.querySelector('.table-title');
+            return el ? el.textContent.trim() : '';
+        };
+        const porNombre = (a, b) => colator.compare(titulo(a), titulo(b));
+        const comparadores = {
+            'nombre': porNombre,
+            'nombre-desc': (a, b) => porNombre(b, a),
+            // Sin categoría al final
+            'categoria': (a, b) => colator.compare(a.dataset.categoriaNombre || '￿', b.dataset.categoriaNombre || '￿') || porNombre(a, b),
+            'nuevos': (a, b) => (b.dataset.creado || '').localeCompare(a.dataset.creado || ''),
+            'viejos': (a, b) => (a.dataset.creado || '').localeCompare(b.dataset.creado || ''),
+            // sort es estable: entre destacados (y entre normales) queda el orden que tenían
+            'destacados': (a, b) => Number(b.dataset.destacado || 0) - Number(a.dataset.destacado || 0),
+        };
+
+        const categoriaActual = () => (filtroCat && filtroCat.value !== '' ? filtroCat.value : null);
+        const nombreCategoria = () => (filtroCat && filtroCat.selectedOptions[0] ? filtroCat.selectedOptions[0].textContent.trim() : '');
+        const textoBoton = () => (categoriaActual() !== null ? `Ordenar solo «${nombreCategoria()}»` : 'Ordenar todo');
+
+        const actualizar = () => {
+            const enCategoria = categoriaActual() !== null;
+            // "Categoría y nombre" no tiene sentido dentro de una sola categoría
+            const opcionCategoria = select.querySelector('option[value="categoria"]');
+            if (opcionCategoria) {
+                opcionCategoria.disabled = enCategoria;
+                if (enCategoria && select.value === 'categoria') select.value = 'nombre';
+            }
+            boton.textContent = textoBoton();
+            boton.disabled = !select.value;
+        };
+        select.addEventListener('change', actualizar);
+        if (filtroCat) filtroCat.addEventListener('change', actualizar);
+        actualizar();
+
+        boton.addEventListener('click', () => {
+            const comparar = comparadores[select.value];
+            if (!comparar) return;
+
+            const cat = categoriaActual();
+            const filas = [...tbody.querySelectorAll('tr[data-id]')];
+            const alcance = cat === null ? filas : filas.filter(tr => tr.getAttribute('data-categoria-id') === cat);
+            if (alcance.length < 2) return;
+
+            const criterio = select.selectedOptions[0].textContent.trim();
+            const pregunta = cat === null
+                ? `¿Ordenar los ${filas.length} productos por "${criterio}"?\n\nReemplaza el orden actual. Después podés seguir ajustándolo arrastrando.`
+                : `¿Ordenar los ${alcance.length} productos de "${nombreCategoria()}" por "${criterio}"?\n\nLas demás categorías no se mueven. Después podés seguir ajustándolo arrastrando.`;
+            if (!confirm(pregunta)) return;
+
+            const ordenadas = [...alcance].sort(comparar);
+            let k = 0;
+            const nuevas = cat === null
+                ? ordenadas
+                : filas.map(tr => (tr.getAttribute('data-categoria-id') === cat ? ordenadas[k++] : tr));
+
+            nuevas.forEach(tr => tbody.appendChild(tr));
+            tbody.dispatchEvent(new Event('reordenado'));
+
+            boton.disabled = true;
+            boton.textContent = 'Guardando…';
+            guardarOrden(tabla, nuevas.map(tr => tr.getAttribute('data-id'))).then(ok => {
+                boton.textContent = ok ? '✓ Orden guardado' : textoBoton();
+                setTimeout(actualizar, ok ? 1800 : 0);
+            });
+        });
+    });
+}
+
+// "Al principio" / "Al final" en la barra de selección: mueve juntos los marcados
+// (aunque estén en otras páginas de la lista). Con una categoría filtrada se mueven
+// dentro de esa categoría, en los lugares que ocupan; el resto no se toca.
+function initMoverSeleccion() {
+    document.querySelectorAll('[data-mover-seleccion]').forEach(boton => {
+        const tbody = document.getElementById(boton.getAttribute('data-mover-tabla'));
+        if (!tbody) return;
+        const tabla = boton.getAttribute('data-mover-guardar');
+        const destino = boton.getAttribute('data-mover-seleccion'); // 'principio' | 'final'
+        const filtroCat = document.querySelector(`[data-filtro-categoria="${tbody.id}"]`);
+
+        boton.addEventListener('click', () => {
+            const cat = filtroCat && filtroCat.value !== '' ? filtroCat.value : null;
+            const filas = [...tbody.querySelectorAll('tr[data-id]')];
+            const enAlcance = tr => cat === null || tr.getAttribute('data-categoria-id') === cat;
+            const marcada = tr => {
+                const casilla = tr.querySelector('input[name="items[]"]');
+                return !!(casilla && casilla.checked && tr.style.display !== 'none');
+            };
+
+            const alcance = filas.filter(enAlcance);
+            const grupo = alcance.filter(marcada);
+            if (!grupo.length) return;
+            const resto = alcance.filter(tr => !marcada(tr));
+            const ordenadas = destino === 'principio' ? [...grupo, ...resto] : [...resto, ...grupo];
+
+            let k = 0;
+            const nuevas = filas.map(tr => (enAlcance(tr) ? ordenadas[k++] : tr));
+            nuevas.forEach(tr => tbody.appendChild(tr));
+            tbody.dispatchEvent(new Event('reordenado'));
+
+            const texto = boton.textContent;
+            boton.disabled = true;
+            guardarOrden(tabla, nuevas.map(tr => tr.getAttribute('data-id'))).then(ok => {
+                boton.textContent = ok ? '✓ Movidos' : texto;
+                setTimeout(() => { boton.textContent = texto; boton.disabled = false; }, ok ? 1500 : 0);
+            });
+        });
+    });
+}
 
 // Páginas en las listas largas (productos). Se hace en el navegador sobre las filas
 // que ya están, así siguen andando el buscador y el filtro (las páginas se arman con
@@ -862,12 +1019,16 @@ function initPaginacion(tbodyId, porPagina = 30) {
         tbody.dispatchEvent(new Event('paginacion'));
     };
 
-    // El buscador y el filtro de categoría vuelven a la página 1
+    // El buscador, el filtro de categoría y los órdenes predefinidos vuelven a la página 1
     document.querySelectorAll(`[data-buscar-tabla="${tbodyId}"], [data-filtro-categoria="${tbodyId}"]`).forEach(el => {
         el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', () => {
             pagina = 1;
             render();
         });
+    });
+    tbody.addEventListener('reordenado', () => {
+        pagina = 1;
+        render();
     });
 
     render();

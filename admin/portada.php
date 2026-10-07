@@ -30,7 +30,7 @@ $pagina_activa = 'portada.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=16">
+    <link rel="stylesheet" href="admin.css?v=17">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -218,7 +218,7 @@ $pagina_activa = 'portada.php';
 
     <!-- Copia local: la política de seguridad del panel solo deja cargar scripts del propio sitio -->
     <script src="vendor/Sortable.min.js?v=1.15.7"></script>
-    <script src="admin.js?v=24"></script>
+    <script src="admin.js?v=25"></script>
     <script src="portada-editor.js?v=2"></script>
 </body>
 </html>
