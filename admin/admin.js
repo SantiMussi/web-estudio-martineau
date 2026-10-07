@@ -723,7 +723,7 @@ function escapeAttr(str) {
 document.addEventListener('DOMContentLoaded', () => {
     const initSortable = (id, tabla) => {
         const el = document.getElementById(id);
-        // Sortable viene de un CDN: si no cargó, que no frene lo demás (páginas, etc.)
+        // Sortable (admin/vendor): si no cargó, que no frene lo demás (páginas, etc.)
         if (!el || typeof Sortable === 'undefined') return;
 
         Sortable.create(el, {

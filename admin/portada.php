@@ -216,7 +216,8 @@ $pagina_activa = 'portada.php';
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <!-- Copia local: la política de seguridad del panel solo deja cargar scripts del propio sitio -->
+    <script src="vendor/Sortable.min.js?v=1.15.7"></script>
     <script src="admin.js?v=24"></script>
     <script src="portada-editor.js?v=2"></script>
 </body>
