@@ -30,7 +30,7 @@ $pagina_activa = 'categorias.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=8">
+    <link rel="stylesheet" href="admin.css?v=16">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -262,7 +262,7 @@ $pagina_activa = 'categorias.php';
         </div>
     </div>
 
-    <script src="admin.js?v=20"></script>
+    <script src="admin.js?v=24"></script>
     <script>
         const TODAS_CATEGORIAS = <?= json_encode(array_map(function ($c) {
             return ['id' => (int)$c['id'], 'nombre' => $c['nombre'], 'tipo' => $c['tipo']];

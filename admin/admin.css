@@ -748,6 +748,1128 @@ select.form-control {
     color: var(--admin-text-light);
 }
 
+/* ─── DIRECCIÓN WEB (slug) DE LAS FICHAS ─── */
+.slug-campo {
+    display: flex;
+    align-items: stretch;
+}
+
+.slug-prefijo {
+    display: flex;
+    align-items: center;
+    padding: 0 0.6rem;
+    border: 1px solid var(--admin-border);
+    border-right: none;
+    border-radius: 6px 0 0 6px;
+    background: var(--admin-bg);
+    color: var(--admin-text-light);
+    font-size: 0.78rem;
+    white-space: nowrap;
+}
+
+.slug-campo .form-control {
+    border-radius: 0 6px 6px 0;
+    min-width: 0;
+}
+
+@media (max-width: 600px) {
+    .slug-prefijo { display: none; }
+    .slug-campo .form-control { border-radius: 6px; }
+}
+
+/* ─── PORTADA ─── */
+.portada-subir {
+    margin-bottom: 1.5rem;
+}
+
+.portada-subir .btn-admin {
+    margin-top: 1rem;
+}
+
+.portada-thumb {
+    display: block;
+    width: 180px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--admin-border);
+}
+
+.portada-thumb-movil {
+    width: 62px;
+}
+
+/* ─── EDITOR DE FOTOS DE LA PORTADA ─── */
+.modal.editor-modal {
+    max-width: 1080px;
+    width: 100%;
+}
+
+.editor-cuerpo {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 230px;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.editor-foto {
+    position: relative;
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--admin-bg-alt);
+    touch-action: none;
+}
+
+.editor-foto canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* El recuadro de lo que se ve en celulares; lo de afuera queda oscurecido */
+.editor-marco {
+    position: absolute;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 9999px rgba(30, 24, 18, 0.5);
+    cursor: grab;
+}
+
+.editor-marco:active {
+    cursor: grabbing;
+}
+
+/* Recorte de la foto (modo Recortar): se mueve y se achica desde las esquinas */
+.editor-recorte {
+    position: absolute;
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 9999px rgba(30, 24, 18, 0.55);
+    cursor: move;
+}
+
+.editor-recorte i {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: #fff;
+    border: 2px solid var(--admin-accent-dark);
+    border-radius: 3px;
+}
+
+.editor-recorte i[data-esquina="nw"] { top: -2px; left: -2px; cursor: nwse-resize; }
+.editor-recorte i[data-esquina="ne"] { top: -2px; right: -2px; cursor: nesw-resize; }
+.editor-recorte i[data-esquina="sw"] { bottom: -2px; left: -2px; cursor: nesw-resize; }
+.editor-recorte i[data-esquina="se"] { bottom: -2px; right: -2px; cursor: nwse-resize; }
+
+/* Modo Recortar: no se muestra el recuadro del celular */
+.editor-foto[data-modo="recorte"] .editor-marco {
+    display: none;
+}
+
+/* Modo Celular: el recorte queda marcado pero quieto, y se mueve el recuadro del celular */
+.editor-foto[data-modo="celular"] .editor-recorte {
+    pointer-events: none;
+    border-style: dashed;
+    box-shadow: 0 0 0 9999px rgba(30, 24, 18, 0.35);
+}
+
+.editor-foto[data-modo="celular"] .editor-recorte i {
+    display: none;
+}
+
+.editor-foto.is-cargando .editor-recorte,
+.editor-foto.is-cargando .editor-marco {
+    display: none;
+}
+
+.editor-modos {
+    display: flex;
+    gap: 0.4rem;
+    margin-bottom: 0.75rem;
+}
+
+.editor-modo {
+    padding: 0.45rem 1rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 20px;
+    background: var(--admin-bg-card);
+    color: var(--admin-text-muted);
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.editor-modo.is-activo {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: #fff;
+}
+
+.editor-aviso {
+    color: var(--admin-warning);
+}
+
+.editor-aviso[hidden] {
+    display: none;
+}
+
+.editor-marco span {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    background: rgba(30, 24, 18, 0.7);
+    color: #fff;
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.editor-cargando {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+}
+
+.editor-controles {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.editor-celular {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.72rem;
+    color: var(--admin-text-light);
+}
+
+.editor-celular canvas {
+    width: 120px;
+    height: auto;
+    aspect-ratio: 750 / 1210;
+    border: 4px solid var(--admin-text);
+    border-radius: 14px;
+    background: var(--admin-bg-alt);
+}
+
+.editor-control {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+}
+
+.editor-control span {
+    display: flex;
+    justify-content: space-between;
+}
+
+.editor-control output {
+    font-variant-numeric: tabular-nums;
+    color: var(--admin-text);
+}
+
+.editor-control input[type="range"] {
+    width: 100%;
+    accent-color: var(--admin-accent);
+}
+
+@media (max-width: 760px) {
+    .editor-cuerpo {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ─── EDITOR DE FOTOS DE PRODUCTOS Y PROYECTOS (editor-imagen.js) ─── */
+/* La foto entera a la vista, sea vertical u horizontal */
+.editor-foto-libre {
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.editor-foto-libre canvas {
+    width: auto;
+    max-width: 100%;
+    max-height: 62vh;
+}
+
+/* Tercios dentro del recorte, de guía para enderezar */
+.editor-foto-libre .editor-recorte {
+    background-image:
+        linear-gradient(to right, transparent calc(33.33% - 0.5px), rgba(255, 255, 255, 0.45) calc(33.33% - 0.5px), rgba(255, 255, 255, 0.45) calc(33.33% + 0.5px), transparent calc(33.33% + 0.5px), transparent calc(66.66% - 0.5px), rgba(255, 255, 255, 0.45) calc(66.66% - 0.5px), rgba(255, 255, 255, 0.45) calc(66.66% + 0.5px), transparent calc(66.66% + 0.5px)),
+        linear-gradient(to bottom, transparent calc(33.33% - 0.5px), rgba(255, 255, 255, 0.45) calc(33.33% - 0.5px), rgba(255, 255, 255, 0.45) calc(33.33% + 0.5px), transparent calc(33.33% + 0.5px), transparent calc(66.66% - 0.5px), rgba(255, 255, 255, 0.45) calc(66.66% - 0.5px), rgba(255, 255, 255, 0.45) calc(66.66% + 0.5px), transparent calc(66.66% + 0.5px));
+}
+
+.editor-herramientas {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+}
+
+.editor-herramienta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.45rem 0.9rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 20px;
+    background: var(--admin-bg-card);
+    color: var(--admin-text-muted);
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: border-color var(--admin-transition), color var(--admin-transition);
+}
+
+.editor-herramienta:hover {
+    border-color: var(--admin-accent);
+    color: var(--admin-text);
+}
+
+.editor-herramienta svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.editor-cuerpo.editor-completo {
+    grid-template-columns: minmax(0, 1fr) 290px;
+}
+
+@media (max-width: 760px) {
+    .editor-cuerpo.editor-completo {
+        grid-template-columns: 1fr;
+    }
+}
+
+.editor-separador {
+    width: 1px;
+    align-self: stretch;
+    margin: 0.2rem 0.15rem;
+    background: var(--admin-border);
+}
+
+.editor-herramienta.solo-icono {
+    padding: 0.45rem 0.6rem;
+}
+
+.editor-herramienta.is-activo {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: #fff;
+}
+
+.editor-herramienta:disabled {
+    opacity: 0.4;
+    cursor: default;
+    border-color: var(--admin-border);
+    color: var(--admin-text-muted);
+}
+
+.editor-herramienta[data-comparar] {
+    user-select: none;
+    touch-action: none;
+}
+
+.editor-etiqueta {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    background: rgba(30, 24, 18, 0.75);
+    color: #fff;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    pointer-events: none;
+}
+
+.editor-etiqueta[hidden] {
+    display: none;
+}
+
+.editor-histograma {
+    display: block;
+    width: 100%;
+    height: 64px;
+    border: 1px solid var(--admin-border);
+    border-radius: 6px;
+    background: var(--admin-bg-card);
+}
+
+.editor-pestanas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.editor-pestanas button {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 20px;
+    background: var(--admin-bg-card);
+    color: var(--admin-text-muted);
+    font-family: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+}
+
+.editor-pestanas button.is-activa {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: #fff;
+}
+
+.editor-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.editor-panel[hidden] {
+    display: none;
+}
+
+.editor-control output {
+    cursor: pointer;
+    user-select: none;
+}
+
+.editor-filtros {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.5rem;
+}
+
+.editor-filtro {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.3rem;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: none;
+    color: var(--admin-text-muted);
+    font-family: inherit;
+    font-size: 0.68rem;
+    cursor: pointer;
+}
+
+.editor-filtro canvas {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1;
+    border-radius: 6px;
+    background: var(--admin-bg-alt);
+}
+
+.editor-filtro:hover {
+    border-color: var(--admin-border);
+}
+
+.editor-filtro.is-activo {
+    border-color: var(--admin-accent);
+    color: var(--admin-text);
+    background: var(--admin-bg-card);
+}
+
+.editor-check {
+    font-size: 0.85rem;
+}
+
+.editor-final {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--admin-border);
+}
+
+.editor-histograma-caja {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    cursor: help;
+}
+
+.editor-histograma-caja > span {
+    font-size: 0.72rem;
+    color: var(--admin-text-muted);
+}
+
+.editor-histograma-caja small {
+    margin-left: 0.3rem;
+    color: var(--admin-text-light);
+}
+
+/* Etapas del editor: Foto (ajustes) y Capas (texto, formas…) */
+.editor-modal .modal-header {
+    gap: 1rem;
+}
+
+.editor-etapas {
+    display: flex;
+    margin-left: auto;
+    padding: 3px;
+    border: 1px solid var(--admin-border);
+    border-radius: 22px;
+    background: var(--admin-bg-card);
+}
+
+.editor-etapas button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.35rem 0.9rem;
+    border: 0;
+    border-radius: 18px;
+    background: none;
+    color: var(--admin-text-muted);
+    font-family: inherit;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.editor-etapas button.is-activa {
+    background: var(--admin-accent);
+    color: #fff;
+}
+
+.editor-etapas svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.editor-cuerpo[hidden] {
+    display: none;
+}
+
+/* Pie del editor: diseños a la izquierda, Cancelar / Aplicar a la derecha */
+.editor-pie {
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.editor-pie-disenos {
+    position: relative;
+    display: flex;
+    gap: 0.5rem;
+    margin-right: auto;
+}
+
+.editor-pie-disenos .btn-admin {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.editor-pie-disenos svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.editor-aviso-guardado {
+    font-size: 0.8rem;
+    color: var(--admin-success, #4a7c59);
+}
+
+.editor-aviso-guardado[hidden] {
+    display: none;
+}
+
+.editor-disenos {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 0;
+    z-index: 5;
+    width: min(420px, 85vw);
+    max-height: 55vh;
+    overflow-y: auto;
+    padding: 0.9rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 12px;
+    background: var(--admin-bg-alt);
+    box-shadow: 0 8px 28px rgba(30, 24, 18, 0.22);
+}
+
+.editor-disenos[hidden] {
+    display: none;
+}
+
+.editor-disenos-lista {
+    list-style: none;
+    margin: 0.6rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.editor-disenos-lista li {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.4rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    background: var(--admin-bg-card);
+}
+
+.editor-disenos-lista img {
+    width: 52px;
+    height: 52px;
+    object-fit: cover;
+    border-radius: 6px;
+    background: var(--admin-bg);
+    flex-shrink: 0;
+}
+
+.editor-disenos-texto {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    font-size: 0.8rem;
+}
+
+.editor-disenos-texto strong {
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.editor-disenos-texto small {
+    color: var(--admin-text-light);
+}
+
+.editor-disenos-botones {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+.editor-disenos-lista li.editor-disenos-vacio {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+}
+
+/* Página "Editor de fotos": los diseños guardados */
+.disenos-grilla {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 1rem;
+}
+
+.diseno-tarjeta {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--admin-border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--admin-bg-card);
+}
+
+.diseno-tarjeta img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    background: var(--admin-bg-alt);
+}
+
+.diseno-tarjeta-cuerpo {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+}
+
+.diseno-tarjeta-cuerpo strong {
+    font-size: 0.9rem;
+    font-weight: 600;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.diseno-tarjeta-cuerpo small {
+    color: var(--admin-text-light);
+    font-size: 0.75rem;
+}
+
+.diseno-tarjeta-botones {
+    display: flex;
+    gap: 0.4rem;
+}
+
+@media (max-width: 760px) {
+    .editor-pie-disenos {
+        width: 100%;
+    }
+}
+
+/* ─── CAPAS (editor-capas.js) ─── */
+.capas-escenario {
+    display: flex;
+    justify-content: center;
+    min-height: 200px;
+}
+
+.capas-escenario .canvas-container {
+    border-radius: 4px;
+    box-shadow: 0 2px 14px rgba(30, 24, 18, 0.18);
+}
+
+.capas-panel svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+}
+
+.capas-cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.capas-historial {
+    display: flex;
+    gap: 0.3rem;
+}
+
+.capas-titulo {
+    margin: 0;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--admin-text-muted);
+}
+
+.capas-botones {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.4rem;
+}
+
+.capas-botones button,
+.capas-acciones button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.55rem 0.3rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    background: var(--admin-bg-card);
+    color: var(--admin-text);
+    font-family: inherit;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: border-color var(--admin-transition), color var(--admin-transition);
+}
+
+.capas-botones button:hover,
+.capas-acciones button:hover,
+.capas-formas button:hover {
+    border-color: var(--admin-accent);
+    color: var(--admin-accent);
+}
+
+.capas-botones button.is-activo {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: #fff;
+}
+
+.capas-formas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.capas-formas button {
+    flex: 1 0 34px;
+    display: flex;
+    justify-content: center;
+    padding: 0.45rem 0;
+    border: 1px solid var(--admin-border);
+    border-radius: 8px;
+    background: var(--admin-bg-card);
+    color: var(--admin-text);
+    cursor: pointer;
+}
+
+.capas-pincel,
+.capas-props {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    padding: 0.9rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 10px;
+    background: var(--admin-bg-card);
+}
+
+.capas-pincel[hidden],
+.capas-props[hidden],
+.capas-panel [hidden] {
+    display: none;
+}
+
+.capas-fila {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+}
+
+.capas-alternar {
+    min-width: 32px;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 6px;
+    background: var(--admin-bg);
+    color: var(--admin-text);
+    font-family: Georgia, serif;
+    font-size: 0.85rem;
+    line-height: 1;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.capas-alternar.is-activo {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: #fff;
+}
+
+.capas-color {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+}
+
+.capas-color .form-check {
+    font-size: 0.78rem;
+}
+
+.capas-panel input[type="color"] {
+    width: 38px;
+    height: 28px;
+    padding: 2px;
+    border: 1px solid var(--admin-border);
+    border-radius: 6px;
+    background: var(--admin-bg);
+    cursor: pointer;
+}
+
+.capas-acciones {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.35rem;
+}
+
+.capas-acciones .capas-eliminar {
+    color: var(--admin-danger);
+}
+
+.capas-lista-caja {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.capas-lista {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--admin-border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--admin-bg-card);
+}
+
+.capa {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.4rem 0.5rem;
+    border-bottom: 1px solid var(--admin-border);
+    font-size: 0.78rem;
+    cursor: pointer;
+}
+
+.capa:last-child {
+    border-bottom: 0;
+}
+
+.capa:hover {
+    background: var(--admin-bg);
+}
+
+.capa.is-activa {
+    background: var(--admin-bg-alt);
+    box-shadow: inset 3px 0 0 var(--admin-accent);
+}
+
+.capa.is-oculta .capa-nombre,
+.capa.is-oculta .capa-icono {
+    opacity: 0.4;
+}
+
+.capa-icono {
+    display: flex;
+    color: var(--admin-text-muted);
+}
+
+.capa-nombre {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.capa button {
+    display: flex;
+    padding: 0.2rem;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: var(--admin-text-light);
+    cursor: pointer;
+}
+
+.capa button:hover {
+    color: var(--admin-text);
+    background: var(--admin-bg-alt);
+}
+
+.capa button svg {
+    width: 14px;
+    height: 14px;
+}
+
+.capa.is-bloqueada [data-capa="bloquear"] {
+    color: var(--admin-accent);
+}
+
+.capa-fondo {
+    cursor: default;
+    color: var(--admin-text-muted);
+    font-style: italic;
+}
+
+.capa-fondo:hover {
+    background: none;
+}
+
+@media (max-width: 760px) {
+    .editor-modal .modal-header {
+        flex-wrap: wrap;
+    }
+
+    .editor-etapas {
+        order: 3;
+        margin-left: 0;
+    }
+}
+
+/* Botón de editar en las miniaturas de los formularios */
+.preview-thumb .editar-preview {
+    position: absolute;
+    bottom: -6px;
+    right: -6px;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid var(--admin-border);
+    border-radius: 50%;
+    background: var(--admin-bg-card);
+    color: var(--admin-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.preview-thumb .editar-preview:hover {
+    border-color: var(--admin-accent);
+    color: var(--admin-accent);
+}
+
+.preview-thumb .editar-preview svg {
+    width: 13px;
+    height: 13px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Una foto ya subida que se va a reemplazar por la editada al guardar */
+.preview-thumb.is-reemplazada {
+    display: none !important;
+}
+
+.preview-thumb.is-editada img {
+    outline: 2px solid var(--admin-accent);
+    outline-offset: 1px;
+}
+
+/* ─── REVISAR FICHAS ─── */
+.revision-resumen {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.revision-tarjeta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.9rem 1rem;
+    background: var(--admin-bg-card);
+    border: 1px solid var(--admin-border);
+    border-radius: var(--admin-radius);
+    color: var(--admin-text);
+    text-decoration: none;
+    transition: border-color var(--admin-transition), transform var(--admin-transition);
+}
+
+.revision-tarjeta strong {
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 1;
+}
+
+.revision-tarjeta span {
+    font-size: 0.75rem;
+    color: var(--admin-text-muted);
+}
+
+.revision-tarjeta:hover {
+    border-color: var(--admin-accent);
+    transform: translateY(-1px);
+}
+
+.revision-tarjeta.is-activa {
+    border-color: var(--admin-accent);
+    box-shadow: inset 0 0 0 1px var(--admin-accent);
+}
+
+.revision-tarjeta.is-vacia {
+    opacity: 0.55;
+}
+
+.revision-faltas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+}
+
+.badge-falta {
+    background: rgba(138, 99, 20, 0.12);
+    color: var(--admin-warning);
+    border: 1px solid rgba(138, 99, 20, 0.3);
+}
+
+/* ─── PÁGINAS EN LAS LISTAS LARGAS ─── */
+.admin-table tr.fuera-de-pagina {
+    display: none;
+}
+
+.admin-paginacion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.admin-paginacion-info {
+    font-size: 0.8rem;
+    color: var(--admin-text-muted);
+}
+
+.admin-paginacion-numeros {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.admin-pagina {
+    min-width: 2.2rem;
+    height: 2.2rem;
+    padding: 0 0.5rem;
+    border: 1px solid var(--admin-border);
+    border-radius: 6px;
+    background: var(--admin-bg-card);
+    color: var(--admin-text);
+    font-family: inherit;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: border-color var(--admin-transition), background var(--admin-transition);
+}
+
+.admin-pagina:hover:not(:disabled) {
+    border-color: var(--admin-accent);
+}
+
+.admin-pagina.is-actual {
+    background: var(--admin-accent);
+    border-color: var(--admin-accent);
+    color: #fff;
+}
+
+.admin-pagina:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.admin-paginacion-puntos {
+    padding: 0 0.2rem;
+    color: var(--admin-text-light);
+}
+
 /* ─── EXPORTAR ─── */
 .exportar-botones {
     display: flex;
@@ -813,6 +1935,24 @@ select.form-control {
     font-size: 0.8rem;
     font-weight: 500;
     margin-right: 0.5rem;
+}
+
+.barra-seleccion-todas {
+    padding: 0;
+    margin-right: 0.5rem;
+    border: 0;
+    background: none;
+    color: var(--admin-accent);
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+}
+
+.barra-seleccion-todas[hidden] {
+    display: none;
 }
 
 /* ─── PAPELERA ─── */

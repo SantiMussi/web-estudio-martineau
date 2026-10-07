@@ -11,7 +11,7 @@ verificar_csrf();
 $tipo = $_POST['tipo'] ?? '';
 $id   = (int)($_POST['id'] ?? 0);
 
-$tablas_permitidas = ['producto' => 'productos', 'proyecto' => 'proyectos', 'resena' => 'resenas'];
+$tablas_permitidas = ['producto' => 'productos', 'proyecto' => 'proyectos', 'resena' => 'resenas', 'portada' => 'portada'];
 
 if (!isset($tablas_permitidas[$tipo]) || $id <= 0) {
     $_SESSION['flash_msg'] = ['type' => 'error', 'text' => 'Parámetros inválidos.'];
@@ -31,6 +31,6 @@ try {
     $_SESSION['flash_msg'] = ['type' => 'error', 'text' => 'Error al actualizar la visibilidad. Asegurate de haber agregado la columna "oculto" a la tabla.'];
 }
 
-$redirect = ['producto' => '../index.php', 'proyecto' => '../proyectos.php', 'resena' => '../resenas.php'][$tipo];
+$redirect = ['producto' => '../index.php', 'proyecto' => '../proyectos.php', 'resena' => '../resenas.php', 'portada' => '../portada.php'][$tipo];
 header('Location: ' . $redirect);
 exit();

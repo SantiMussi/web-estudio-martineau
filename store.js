@@ -39,7 +39,8 @@ const Store = {
   },
 
   async _fetch(tipo, params = {}) {
-    const url = new URL('api/datos.php', window.location.origin + window.location.pathname.replace(/[^/]*$/, ''));
+    // document.baseURI: en las fichas (/producto/nombre) hay <base href="/">
+    const url = new URL('api/datos.php', document.baseURI);
     url.searchParams.set('tipo', tipo);
     for (const [key, val] of Object.entries(params)) {
       url.searchParams.set(key, val);
@@ -119,6 +120,14 @@ const Store = {
   },
 
 };
+
+// Link a la ficha de un producto o proyecto: /producto/chimenea-luis-xv si ya tiene
+// URL amigable (ver inc/slugs.php), si no el link viejo con ?id=. Ruta relativa a la raíz.
+function urlFicha(tipo, item) {
+  return item.slug
+    ? tipo + '/' + encodeURIComponent(item.slug)
+    : tipo + '?id=' + encodeURIComponent(item.id);
+}
 
 // Escapa texto antes de insertarlo en HTML (evita XSS con datos cargados desde el panel admin).
 function escapeHtml(str) {

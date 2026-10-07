@@ -2,6 +2,7 @@
 
 
 require_once __DIR__ . '/../auth.php';
+require_once __DIR__ . '/../galeria_reemplazos.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header('Location: ../index.php');
@@ -83,11 +84,17 @@ try {
         
         $imagenes_a_eliminar = $_POST['eliminar_galeria'] ?? [];
         if (!is_array($imagenes_a_eliminar)) $imagenes_a_eliminar = [];
-        
+
+        $reemplazos = fgal_reemplazos();
+
         $galeria_final = [];
         foreach ($galeria_actual as $img) {
             if (in_array($img, $imagenes_a_eliminar)) {
                 eliminar_imagen($img);
+            } elseif (isset($reemplazos[$img]) && ($editada = subir_imagen($reemplazos[$img])) !== false) {
+                // Editada en el panel: la nueva queda en el mismo lugar de la galería
+                eliminar_imagen($img);
+                $galeria_final[] = $editada;
             } else {
                 $galeria_final[] = $img;
             }
@@ -144,6 +151,12 @@ try {
         ]);
 
         $_SESSION['flash_msg'] = ['type' => 'success', 'text' => 'Producto creado correctamente.'];
+    }
+
+    // URL amigable de la ficha (/producto/nombre-de-la-pieza, ver inc/slugs.php)
+    $id_guardado = $id ?: (int)$pdo->lastInsertId();
+    if ($id_guardado > 0 && fslug_disponibles($pdo)) {
+        fslug_asignar($pdo, 'producto', $id_guardado, trim((string)($_POST['slug'] ?? '')), $titulo);
     }
 
 } catch (Exception $e) {

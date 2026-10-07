@@ -143,8 +143,11 @@ function initModals() {
                     if (currentMainImgDiv) currentMainImgDiv.style.display = 'none';
                     
                     const currentGalleryDiv = form.querySelector('#current-gallery');
-                    if (currentGalleryDiv) currentGalleryDiv.style.display = 'none';
-                    
+                    if (currentGalleryDiv) {
+                        currentGalleryDiv.style.display = 'none';
+                        currentGalleryDiv.innerHTML = '';   // sin fotos ni reemplazos de la ficha anterior
+                    }
+
                     const imagePreviews = form.querySelectorAll('.image-preview');
                     imagePreviews.forEach(p => p.innerHTML = '');
 
@@ -249,12 +252,33 @@ function editarItem(data, modalId) {
     const title = overlay.querySelector('.modal-header h2');
     if (title) title.textContent = data._modal_title || 'Editar';
 
+    // Sin archivos elegidos (o editados) para la ficha que se abrió antes
+    form.querySelectorAll('input[type="file"]').forEach(input => { input.value = ''; });
+    form.querySelectorAll('.image-preview').forEach(p => { p.innerHTML = ''; });
+
     const currentMainImgDiv = form.querySelector('#current-main-image');
     if (currentMainImgDiv) {
         if (data.imagen) {
             currentMainImgDiv.style.display = 'block';
+            currentMainImgDiv.dataset.ruta = data.imagen;
             const previewThumb = currentMainImgDiv.querySelector('.preview-thumb');
-            if (previewThumb) previewThumb.style.display = 'inline-block';
+            if (previewThumb) {
+                previewThumb.style.display = 'inline-block';
+                previewThumb.classList.remove('is-reemplazada');
+                // Editar la foto principal: la editada entra como foto nueva y reemplaza a esta al guardar
+                if (!previewThumb.querySelector('.editar-preview')) {
+                    const editar = botonEditarFoto(async () => {
+                        const editada = await EditorImagen.abrir('../' + currentMainImgDiv.dataset.ruta);
+                        if (!editada) return;
+                        const input = form.querySelector('input[name="imagen"]');
+                        const dt = new DataTransfer();
+                        dt.items.add(editada);
+                        input.files = dt.files;
+                        input.dispatchEvent(new Event('change'));
+                    });
+                    if (editar) previewThumb.appendChild(editar);
+                }
+            }
             currentMainImgDiv.querySelector('img').src = '../' + escapeAttr(data.imagen);
             const checkbox = currentMainImgDiv.querySelector('input[type="checkbox"]');
             if (checkbox) checkbox.checked = false;
@@ -266,6 +290,7 @@ function editarItem(data, modalId) {
     const currentGalleryDiv = form.querySelector('#current-gallery');
     if (currentGalleryDiv) {
         currentGalleryDiv.innerHTML = '';
+        currentGalleryDiv._reemplazos = new Map();
         if (data.imagenes && data.imagenes.length > 0) {
             currentGalleryDiv.style.display = 'flex';
             data.imagenes.forEach(img => {
@@ -283,6 +308,19 @@ function editarItem(data, modalId) {
                     hidden.value = img;
                     div.appendChild(hidden);
                 });
+                // Editar una foto de la galería: al guardar reemplaza a la original en el mismo lugar
+                const editar = botonEditarFoto(async () => {
+                    const previa = currentGalleryDiv._reemplazos.get(img);
+                    const editada = await EditorImagen.abrir(previa || '../' + img, { nombre: img.split('/').pop() });
+                    if (!editada) return;
+                    reemplazarFotoGaleria(currentGalleryDiv, img, editada);
+                    // Como data: (no blob:, que la política de seguridad de esta página puede bloquear)
+                    const lector = new FileReader();
+                    lector.onload = () => { div.querySelector('img').src = lector.result; };
+                    lector.readAsDataURL(editada);
+                    div.classList.add('is-editada');
+                });
+                if (editar) div.appendChild(editar);
                 currentGalleryDiv.appendChild(div);
             });
         } else {
@@ -426,9 +464,58 @@ function precargarTituloDesdeImagen(input) {
     if (titulo) tituloInput.value = capitalizarPrimeraLetra(titulo);
 }
 
+// Botón de lápiz para abrir una foto en el editor (editor-imagen.js), si la página lo carga
+function botonEditarFoto(alEditar) {
+    if (!window.EditorImagen) return null;
+    const boton = document.createElement('button');
+    boton.type = 'button';
+    boton.className = 'editar-preview';
+    boton.title = 'Editar foto';
+    boton.setAttribute('aria-label', 'Editar foto');
+    boton.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+    boton.addEventListener('click', alEditar);
+    return boton;
+}
+
+// Las fotos de la galería ya subidas que se editaron viajan en galeria_reemplazo[] (los archivos)
+// y galeria_reemplazo_de[] (la ruta de la foto que reemplaza cada uno, en el mismo orden).
+function reemplazarFotoGaleria(contenedor, ruta, archivo) {
+    contenedor._reemplazos.set(ruta, archivo);
+
+    const anterior = contenedor.querySelector('.galeria-reemplazos');
+    if (anterior) anterior.remove();
+
+    const campos = document.createElement('div');
+    campos.className = 'galeria-reemplazos';
+    campos.hidden = true;
+    const archivos = document.createElement('input');
+    archivos.type = 'file';
+    archivos.name = 'galeria_reemplazo[]';
+    archivos.multiple = true;
+    const dt = new DataTransfer();
+    contenedor._reemplazos.forEach((foto, de) => {
+        dt.items.add(foto);
+        const campo = document.createElement('input');
+        campo.type = 'hidden';
+        campo.name = 'galeria_reemplazo_de[]';
+        campo.value = de;
+        campos.appendChild(campo);
+    });
+    archivos.files = dt.files;
+    campos.appendChild(archivos);
+    contenedor.appendChild(campos);
+}
+
 function previewFiles(input, previewContainer, multiple) {
     if (!previewContainer) return;
     previewContainer.innerHTML = ''; // Limpiar siempre porque el input file nativo reemplaza la selección
+
+    // Con una foto principal nueva (o editada), la que ya estaba se reemplaza al guardar
+    if (!multiple) {
+        const form = input.closest('form');
+        const actual = form && form.querySelector('#current-main-image .preview-thumb');
+        if (actual) actual.classList.toggle('is-reemplazada', input.files.length > 0);
+    }
 
     const files = input.files;
     for (let i = 0; i < files.length; i++) {
@@ -452,6 +539,19 @@ function previewFiles(input, previewContainer, multiple) {
                 input.files = dt.files;
                 previewFiles(input, previewContainer, multiple); // Volver a renderizar
             });
+
+            // La editada reemplaza a la elegida en el mismo lugar
+            const editar = botonEditarFoto(async () => {
+                const editada = await EditorImagen.abrir(file);
+                if (!editada) return;
+                const dt = new DataTransfer();
+                for (let j = 0; j < input.files.length; j++) {
+                    dt.items.add(j === i ? editada : input.files[j]);
+                }
+                input.files = dt.files;
+                previewFiles(input, previewContainer, multiple);
+            });
+            if (editar) thumb.appendChild(editar);
 
             previewContainer.appendChild(thumb);
         };
@@ -512,22 +612,51 @@ function initSeleccion() {
         const todos = document.querySelector(`[data-seleccion-todos="${tbody.id}"]`);
         const cuenta = barra.querySelector('[data-seleccion-cuenta]');
         const casillas = () => [...tbody.querySelectorAll(`input[type="checkbox"][form="${barra.id}"]`)];
+        // Con páginas: se pueden marcar filas de varias páginas, pero "todos" marca solo la actual
         const visible = casilla => casilla.closest('tr').style.display !== 'none';
+        const enPagina = casilla => visible(casilla) && !casilla.closest('tr').classList.contains('fuera-de-pagina');
+
+        // Para marcar las de todas las páginas (las que deja ver el filtro), como en Gmail
+        const botonTodas = document.createElement('button');
+        botonTodas.type = 'button';
+        botonTodas.className = 'barra-seleccion-todas';
+        if (cuenta) cuenta.after(botonTodas);
+        else barra.prepend(botonTodas);
 
         const actualizar = () => {
             const visibles = casillas().filter(visible);
             const marcadas = visibles.filter(c => c.checked).length;
+            const pagina = casillas().filter(enPagina);
+            const marcadasPagina = pagina.filter(c => c.checked).length;
             barra.hidden = marcadas === 0;
             if (cuenta) cuenta.textContent = marcadas === 1 ? '1 seleccionado' : `${marcadas} seleccionados`;
             if (todos) {
-                todos.checked = marcadas > 0 && marcadas === visibles.length;
-                todos.indeterminate = marcadas > 0 && marcadas < visibles.length;
+                todos.checked = marcadasPagina > 0 && marcadasPagina === pagina.length;
+                todos.indeterminate = marcadasPagina > 0 && marcadasPagina < pagina.length;
             }
+            // Solo tiene sentido si hay filas fuera de la página actual
+            botonTodas.hidden = visibles.length <= pagina.length;
+            // Con filtro, "todos" son los que pasan el filtro (las casillas ocultas no cuentan)
+            const filtroCat = document.querySelector(`[data-filtro-categoria="${tbody.id}"]`);
+            const buscador = document.querySelector(`[data-buscar-tabla="${tbody.id}"]`);
+            const deQue = filtroCat && filtroCat.value !== '' ? ' de la categoría'
+                : buscador && buscador.value.trim() !== '' ? ' de la búsqueda' : '';
+            botonTodas.textContent = marcadas < visibles.length
+                ? `Seleccionar los ${visibles.length}${deQue}`
+                : 'Deseleccionar todos';
         };
+
+        botonTodas.addEventListener('click', () => {
+            const visibles = casillas().filter(visible);
+            const marcar = visibles.some(c => !c.checked);
+            visibles.forEach(c => { c.checked = marcar; });
+            actualizar();
+        });
+        tbody.addEventListener('paginacion', actualizar);
 
         if (todos) {
             todos.addEventListener('change', () => {
-                casillas().filter(visible).forEach(c => { c.checked = todos.checked; });
+                casillas().filter(enPagina).forEach(c => { c.checked = todos.checked; });
                 actualizar();
             });
         }
@@ -594,7 +723,8 @@ function escapeAttr(str) {
 document.addEventListener('DOMContentLoaded', () => {
     const initSortable = (id, tabla) => {
         const el = document.getElementById(id);
-        if (!el) return;
+        // Sortable viene de un CDN: si no cargó, que no frene lo demás (páginas, etc.)
+        if (!el || typeof Sortable === 'undefined') return;
 
         Sortable.create(el, {
             handle: '.drag-handle',
@@ -639,4 +769,136 @@ document.addEventListener('DOMContentLoaded', () => {
     initSortable('sortable-productos', 'productos');
     initSortable('sortable-proyectos', 'proyectos');
     initSortable('sortable-resenas', 'resenas');
+    initSortable('sortable-portada', 'portada');
+
+    initPaginacion('sortable-productos');
+    initPaginacion('sortable-proyectos');
+
+    initSlugFichas();
+    abrirFichaPedida();
 });
+
+// Páginas en las listas largas (productos). Se hace en el navegador sobre las filas
+// que ya están, así siguen andando el buscador y el filtro (las páginas se arman con
+// lo filtrado), el arrastrar para ordenar (se guarda el orden completo) y la selección.
+// Recuerda la página al volver de guardar, y si se llega con ?editar=ID abre la página
+// donde está esa ficha.
+function initPaginacion(tbodyId, porPagina = 30) {
+    const tbody = document.getElementById(tbodyId);
+    if (!tbody) return;
+    const wrapper = tbody.closest('.admin-table-wrapper');
+    if (!wrapper) return;
+
+    const nav = document.createElement('nav');
+    nav.className = 'admin-paginacion';
+    nav.setAttribute('aria-label', 'Páginas');
+    wrapper.after(nav);
+
+    const clave = 'admin_pagina_' + tbodyId;
+    let pagina = 1;
+    try { pagina = parseInt(sessionStorage.getItem(clave), 10) || 1; } catch (e) { /* sin storage: arranca en la 1 */ }
+
+    const filtradas = () => [...tbody.querySelectorAll('tr[data-id]')].filter(tr => tr.style.display !== 'none');
+
+    const pedida = new URLSearchParams(window.location.search).get('editar');
+    if (pedida) {
+        const i = filtradas().findIndex(tr => tr.getAttribute('data-id') === pedida);
+        if (i >= 0) pagina = Math.floor(i / porPagina) + 1;
+    }
+
+    const boton = (texto, destino, opciones = {}) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'admin-pagina' + (opciones.actual ? ' is-actual' : '');
+        b.textContent = texto;
+        b.disabled = !!opciones.desactivado;
+        if (opciones.actual) b.setAttribute('aria-current', 'page');
+        if (opciones.etiqueta) b.setAttribute('aria-label', opciones.etiqueta);
+        b.addEventListener('click', () => {
+            pagina = destino;
+            render();
+            wrapper.scrollIntoView({ block: 'start' });
+        });
+        return b;
+    };
+
+    const render = () => {
+        const filas = filtradas();
+        const total = Math.max(1, Math.ceil(filas.length / porPagina));
+        pagina = Math.min(Math.max(1, pagina), total);
+        try { sessionStorage.setItem(clave, pagina); } catch (e) { /* no persiste, sigue andando */ }
+
+        tbody.querySelectorAll('tr[data-id]').forEach(tr => tr.classList.remove('fuera-de-pagina'));
+        filas.forEach((tr, i) => {
+            if (Math.floor(i / porPagina) + 1 !== pagina) tr.classList.add('fuera-de-pagina');
+        });
+
+        nav.replaceChildren();
+        nav.hidden = total === 1;
+        if (total > 1) {
+            const desde = (pagina - 1) * porPagina + 1;
+            const hasta = Math.min(pagina * porPagina, filas.length);
+            const info = document.createElement('span');
+            info.className = 'admin-paginacion-info';
+            info.textContent = `${desde}–${hasta} de ${filas.length}`;
+
+            const numeros = document.createElement('div');
+            numeros.className = 'admin-paginacion-numeros';
+            numeros.append(boton('‹', pagina - 1, { desactivado: pagina === 1, etiqueta: 'Página anterior' }));
+            for (let n = 1; n <= total; n++) {
+                // Con muchas páginas: primera, última y las vecinas de la actual
+                if (n === 1 || n === total || Math.abs(n - pagina) <= 1) {
+                    numeros.append(boton(String(n), n, { actual: n === pagina }));
+                } else if (Math.abs(n - pagina) === 2) {
+                    const puntos = document.createElement('span');
+                    puntos.className = 'admin-paginacion-puntos';
+                    puntos.textContent = '…';
+                    numeros.append(puntos);
+                }
+            }
+            numeros.append(boton('›', pagina + 1, { desactivado: pagina === total, etiqueta: 'Página siguiente' }));
+            nav.append(info, numeros);
+        }
+        tbody.dispatchEvent(new Event('paginacion'));
+    };
+
+    // El buscador y el filtro de categoría vuelven a la página 1
+    document.querySelectorAll(`[data-buscar-tabla="${tbodyId}"], [data-filtro-categoria="${tbodyId}"]`).forEach(el => {
+        el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', () => {
+            pagina = 1;
+            render();
+        });
+    });
+
+    render();
+}
+
+// "Dirección web" de productos y proyectos: mientras se crea uno nuevo se arma sola
+// con el título; si la tocan a mano o es una ficha que ya existe, no se pisa.
+function initSlugFichas() {
+    document.querySelectorAll('input[data-slug-desde]').forEach(slug => {
+        const form = slug.form;
+        const titulo = form && form.querySelector(`[name="${slug.dataset.slugDesde}"]`);
+        const id = form && form.querySelector('input[name="id"]');
+        if (!titulo) return;
+
+        titulo.addEventListener('input', () => {
+            const esNueva = !id || !id.value;
+            if (esNueva && (slug.value === '' || slug.value === slug.dataset.auto)) {
+                slug.value = slug.dataset.auto = generarSlug(titulo.value);
+            }
+        });
+        slug.addEventListener('blur', () => { slug.value = generarSlug(slug.value); });
+    });
+}
+
+// Desde "Revisar fichas" se llega con ?editar=ID: abre esa ficha directamente
+function abrirFichaPedida() {
+    const id = new URLSearchParams(window.location.search).get('editar');
+    if (!id || !/^\d+$/.test(id)) return;
+    const fila = document.querySelector(`tr[data-id="${id}"]`);
+    const editar = fila && fila.querySelector('[onclick^="editarItem"]');
+    if (!editar) return;
+    fila.scrollIntoView({ block: 'center' });
+    editar.click();
+}

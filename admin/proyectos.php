@@ -35,7 +35,7 @@ $pagina_activa = 'proyectos.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="admin.css?v=8">
+    <link rel="stylesheet" href="admin.css?v=16">
 </head>
 <body>
     <!-- Sidebar Toggle Móvil -->
@@ -153,12 +153,15 @@ $pagina_activa = 'proyectos.php';
                                             <button type="button" class="btn-admin btn-secondary btn-sm" onclick='editarItem(<?= json_encode([
                                                 "id" => $proy["id"],
                                                 "titulo" => $proy["titulo"],
+                                                "slug" => $proy["slug"] ?? "",
                                                 "categoria_id" => $proy["categoria_id"],
                                                 "ubicacion" => $proy["ubicacion"],
                                                 "anio" => $proy["anio"],
                                                 "descripcion" => $proy["descripcion"],
                                                 "destacar" => $proy["destacar"],
                                                 "specs" => $proy["specs"],
+                                                "imagen" => $proy["imagen"],
+                                                "imagenes" => $proy["imagenes"] ? json_decode($proy["imagenes"], true) : [],
                                                 "_modal_title" => "Editar Proyecto"
                                             ], JSON_HEX_APOS | JSON_HEX_QUOT) ?>, "modal-proyecto")'>
                                                 Editar
@@ -205,6 +208,16 @@ $pagina_activa = 'proyectos.php';
                     <div class="form-group">
                         <label for="titulo">Título</label>
                         <input type="text" id="titulo" name="titulo" class="form-control" placeholder="Ej: Residencia Montaña" required>
+                    </div>
+
+                    <!-- Dirección web (URL amigable, ver inc/slugs.php) -->
+                    <div class="form-group">
+                        <label for="slug">Dirección web</label>
+                        <div class="slug-campo">
+                            <span class="slug-prefijo">armartineau.com.ar/proyecto/</span>
+                            <input type="text" id="slug" name="slug" class="form-control" data-slug-desde="titulo" placeholder="se arma sola con el título" maxlength="80" pattern="[a-z0-9-]*" title="Solo minúsculas, números y guiones">
+                        </div>
+                        <span class="form-ayuda">Se completa sola con el título. Si la cambiás, la dirección anterior sigue funcionando y lleva a la nueva.</span>
                     </div>
 
                     <div class="form-row">
@@ -298,6 +311,7 @@ $pagina_activa = 'proyectos.php';
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
-    <script src="admin.js?v=20"></script>
+    <script src="admin.js?v=24"></script>
+    <script src="editor-imagen.js?v=4"></script>
 </body>
 </html>

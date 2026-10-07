@@ -362,7 +362,7 @@
 
       const a = document.createElement('a');
       a.className = 'bq-item';
-      a.href = 'producto?id=' + encodeURIComponent(p.id);
+      a.href = urlFicha('producto', p);
 
       const foto = document.createElement('span');
       foto.className = 'bq-item-foto';

@@ -374,7 +374,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 const targetUrl = new URL(this.href, window.location.origin);
                 const currentUrl = new URL(window.location.href);
 
-                const isSamePage = targetUrl.pathname === currentUrl.pathname ||
+                // "#contacto" siempre es esta página (en las fichas hay <base href="/">,
+                // y sin esto this.href apuntaría a la home)
+                const isSamePage = this.getAttribute('href').startsWith('#') ||
+                    targetUrl.pathname === currentUrl.pathname ||
                     (targetUrl.pathname === '/' && currentUrl.pathname === '/index.html') ||
                     (targetUrl.pathname === '/index.html' && currentUrl.pathname === '/');
 
@@ -795,10 +798,37 @@ document.addEventListener('DOMContentLoaded', () => {
             detalle: (card.querySelector('.testimonio-autor span') || {}).textContent || ''
         }));
 
+        // Las reseñas también van como datos estructurados de la empresa (schema.org), para
+        // que Google las asocie a Martineau. Ojo: Google no muestra estrellas por reseñas
+        // publicadas en el sitio de la propia empresa; esas salen del Perfil de Google.
+        const publicarDatosEstructurados = lista => {
+            let ld = document.getElementById('ld-resenas');
+            if (!lista.length) { if (ld) ld.remove(); return; }
+            if (!ld) {
+                ld = document.createElement('script');
+                ld.type = 'application/ld+json';
+                ld.id = 'ld-resenas';
+                document.head.append(ld);
+            }
+            ld.textContent = JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'HomeAndConstructionBusiness',
+                '@id': 'https://armartineau.com.ar/#empresa',
+                name: 'Martineau',
+                review: lista.map(r => ({
+                    '@type': 'Review',
+                    author: { '@type': 'Person', name: r.nombre },
+                    reviewBody: r.texto
+                }))
+            });
+        };
+        publicarDatosEstructurados(actuales);
+
         fetch(new URL('api/datos.php?tipo=resenas', document.baseURI))
             .then(res => res.ok ? res.json() : Promise.reject(res.status))
             .then(resenas => {
                 if (!Array.isArray(resenas)) return;
+                publicarDatosEstructurados(resenas);
 
                 const seccion = grilla.closest('section');
                 if (resenas.length === 0) {

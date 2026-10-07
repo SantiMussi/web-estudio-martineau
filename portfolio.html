@@ -264,7 +264,7 @@
   </a>
 
   <!-- Store compartido (capa de datos / simulación) -->
-  <script src="store.js?v=8"></script>
+  <script src="store.js?v=9"></script>
 
   <script>
 
@@ -299,7 +299,7 @@
         const esTall = index % 3 === 0; // cada 3 items uno es "tall"
         const tallClass = esTall ? 'portfolio-item--tall' : '';
         return `
-          <a href="proyecto?id=${proyecto.id}" class="portfolio-item ${tallClass} filter-item" data-category="${proyecto.categoria}">
+          <a href="${urlFicha('proyecto', proyecto)}" class="portfolio-item ${tallClass} filter-item" data-category="${proyecto.categoria}">
             <img src="${escapeHtml(proyecto.imagen)}" alt="${escapeHtml(proyecto.titulo)}" loading="lazy" decoding="async">
             <figcaption class="portfolio-overlay">
               <h3 class="portfolio-title">${escapeHtml(proyecto.titulo)}</h3>
@@ -321,8 +321,8 @@
     }
   </script>
 
-  <script src="buscador.js?v=2"></script>
-  <script src="script.js?v=26"></script>
+  <script src="buscador.js?v=3"></script>
+  <script src="script.js?v=27"></script>
 </body>
 
 </html>
