@@ -22,9 +22,9 @@ try {
     // No incluyen lo que está en la papelera.
     $planillas = [
         'productos' => [
-            'columnas' => ['titulo', 'categoria', 'descripcion', 'destacar', 'oculto'],
+            'columnas' => ['titulo', 'categoria', 'descripcion', 'destacar', 'oculto', 'specs'],
             'sql' => "
-                SELECT p.titulo, c.nombre AS categoria, p.descripcion, p.destacar, IFNULL(p.oculto, 0) AS oculto
+                SELECT p.titulo, c.nombre AS categoria, p.descripcion, p.destacar, IFNULL(p.oculto, 0) AS oculto, p.specs
                 FROM productos p LEFT JOIN categorias c ON p.categoria_id = c.id
                 WHERE p.eliminado_at IS NULL
                 ORDER BY p.orden ASC, p.created_at DESC
@@ -58,6 +58,15 @@ try {
             $valor = (string)($fila[$columna] ?? '');
             if ($columna === 'destacar' || $columna === 'oculto') {
                 $valor = $valor ? 'si' : 'no';
+            }
+            // Especificaciones en el mismo formato que lee Importar: "Etiqueta: valor | Etiqueta: valor"
+            if ($columna === 'specs') {
+                $lista = json_decode($valor, true);
+                $valor = is_array($lista) ? implode(' | ', array_map(function ($s) {
+                    return trim($s['label'] ?? '') . ': ' . trim($s['value'] ?? '');
+                }, array_filter($lista, function ($s) {
+                    return is_array($s) && trim($s['label'] ?? '') !== '' && trim($s['value'] ?? '') !== '';
+                }))) : '';
             }
             // Importar lee una fila por renglón: los saltos de línea de la descripción se pasan a espacios
             $valores[] = trim(preg_replace('/\s*[\r\n]+\s*/', ' ', $valor));

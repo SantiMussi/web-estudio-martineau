@@ -157,6 +157,11 @@ Loft Palermo,Interiores,Buenos Aires,2022,Reforma integral de loft,</div>
             <div class="import-card">
                 <h2>Productos (catálogo)</h2>
                 <p>La columna <code>categoria</code> es el nombre de la categoría (tipo producto); si no existe, se crea sola. <code>destacar</code> y <code>oculto</code> aceptan 1/0 o si/no.</p>
+                <p>
+                    <strong>Especificaciones:</strong> escribí <code>base</code> en la columna <code>specs</code> para agregar las de siempre (Material, Refuerzo y Terminación: <em>Mate</em>, o <em>Impermeabilizada con cerecita</em> en macetas).
+                    La columna <code>terminacion</code> reemplaza esa terminación. Las medidas van en sus columnas (<code>alto</code>, <code>ancho</code>, <code>espesor</code>, <code>profundidad</code>, <code>saliente</code>, <code>diametro</code>), con punto decimal (la coma decimal solo funciona si la planilla está separada por punto y coma, como las que baja Excel en español).
+                    Para sumar otras, en <code>specs</code>: <code>base | Color: Gris | Peso: 40 kg</code>.
+                </p>
 
                 <div class="import-columns">
                     <code>titulo</code>
@@ -164,17 +169,21 @@ Loft Palermo,Interiores,Buenos Aires,2022,Reforma integral de loft,</div>
                     <code>descripcion</code>
                     <code>destacar <em>(opcional)</em></code>
                     <code>oculto <em>(opcional)</em></code>
+                    <code>specs <em>(opcional)</em></code>
+                    <code>terminacion <em>(opcional)</em></code>
+                    <code>alto · ancho · espesor · profundidad · saliente · diametro <em>(opcionales)</em></code>
                 </div>
 
-                <div class="import-example">titulo,categoria,descripcion,destacar,oculto
-Macetero Roma,Maceteros,Macetero de piedra reconstituida,si,
-Pieza Monolith,Esculturas,Pieza escultórica monolítica,,</div>
+                <div class="import-example">titulo,categoria,specs,terminacion,alto,ancho,espesor
+Pie de mesa Nº 4,Pie de mesas,base,,0.50,0.52,0.19
+Maceta Nº 40,Maceteros,base,,0.41,0.62,
+Banco Nº 3,Bancos,base | Peso: 60 kg,Pulida,0.45,1.20,</div>
 
                 <form method="POST" action="actions/importar_productos.php" enctype="multipart/form-data">
                     <?= csrf_field() ?>
                     <div class="form-group">
                         <label for="prod-datos">Pegar datos</label>
-                        <textarea id="prod-datos" name="datos" class="form-control" rows="5" placeholder="titulo,categoria,descripcion,destacar,oculto"></textarea>
+                        <textarea id="prod-datos" name="datos" class="form-control" rows="5" placeholder="titulo,categoria,specs,terminacion,alto,ancho"></textarea>
                     </div>
                     <div class="import-divider">o</div>
                     <div class="form-group">
