@@ -13,6 +13,13 @@ header('Content-Type: text/html; charset=utf-8');
 
 <head>
   <meta charset="UTF-8">
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-WZQDWTCZ');</script>
+  <!-- End Google Tag Manager -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Martineau | Chimeneas y esculturas en piedra París desde 1922</title>
   <meta name="description" content="Taller en Chacarita, Buenos Aires, que desde 1922 fabrica a mano chimeneas, esculturas, ménsulas, maceteros y piezas de piedra París y yeso a medida.">
@@ -116,6 +123,10 @@ header('Content-Type: text/html; charset=utf-8');
 </head>
 
 <body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WZQDWTCZ"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
   <!-- Loader / Splash — "relieve": la pantalla es un bloque de piedra tallado.
        Las vetas/surcos (generados abajo según el tamaño de pantalla) nacen del logo
        y se abren hacia los bordes esquivándolo; la M se talla con un barrido de
