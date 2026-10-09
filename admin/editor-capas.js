@@ -1,19 +1,3 @@
-/*
- * Etapa "Capas" del editor de fotos (editor-imagen.js), al estilo Canva: texto, formas,
- * imágenes, logo, plantillas y dibujo a mano sobre la foto ya editada, cada cosa en su
- * capa (se puede ocultar, bloquear y cambiar de orden).
- * Usa Fabric.js 5, que editor-imagen.js carga la primera vez que se abre esta etapa.
- *
- * EditorCapas.crear(escenario, panel, opciones) devuelve:
- *   ponerFondo(lienzo)  la foto editada (en tamaño final) va de fondo; si cambió de tamaño, las capas se acomodan
- *   hayCapas()          si quedó algo visible agregado
- *   componer()          un canvas en tamaño final con la foto y todas las capas
- *   teclado(e)          atajos de esta etapa; devuelve true si usó la tecla
- *   limpiar()           borra todo (al abrir otra foto)
- *   exportarDiseno()    las capas para guardar en un diseño; cargarDiseno(d) las vuelve a poner
- *   ajustar()           vuelve a medir el espacio disponible (al cambiar el tamaño de la ventana)
- * opciones.assets: URL de la carpeta assets (para el logo)
- */
 window.EditorCapas = (() => {
     const FUENTES = [
         ['Bodoni Moda', 'Bodoni (la del sitio)'],
@@ -30,13 +14,11 @@ window.EditorCapas = (() => {
         + '&family=Montserrat:ital,wght@0,400;0,700;1,400&family=Lato:ital,wght@0,400;0,700;1,400'
         + '&family=Josefin+Sans:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Great+Vibes&display=swap';
 
-    // Propiedades propias que se guardan en el historial además de las de Fabric
     const PROPS = ['nombre', 'bloqueado', 'selectable', 'evented', 'esLogo', 'logoArchivo', 'colorLogo'];
     const CREMA = '#f4efea';
     const TINTA = '#2a221c';
     const MAX_HISTORIAL = 60;
 
-    // Qué secciones de propiedades muestra cada tipo de capa
     const SECCIONES = {
         textbox: ['texto', 'relleno', 'borde', 'comun'],
         rect: ['relleno', 'borde', 'esquinas', 'comun'],
@@ -104,7 +86,7 @@ window.EditorCapas = (() => {
             transparentCorners: false,
             cornerSize: 11,
             borderScaleFactor: 1.5,
-            objectCaching: false,   // que el texto salga nítido en la foto final, que es más grande
+            objectCaching: false,
         });
 
         const elemento = document.createElement('canvas');
@@ -116,8 +98,8 @@ window.EditorCapas = (() => {
             selectionBorderColor: '#8b7355',
         });
 
-        let fondo = null;       // la foto en tamaño final
-        let escala = 1;         // tamaño en pantalla / tamaño final
+        let fondo = null;
+        let escala = 1;
         let historial = [];
         let indice = -1;
         let restaurando = false;
@@ -233,8 +215,6 @@ window.EditorCapas = (() => {
         const H = () => canvas.getHeight();
         const sombra = () => new fabric.Shadow({ color: 'rgba(0, 0, 0, 0.45)', blur: Math.max(4, W() * 0.015), offsetX: 2, offsetY: 2 });
 
-        // ─── Historial ───
-
         const instantanea = () => canvas.getObjects().map(o => o.toObject(PROPS));
 
         const actualizarHistorial = () => {
@@ -269,9 +249,6 @@ window.EditorCapas = (() => {
             });
         };
 
-        // ─── Agregar ───
-
-        // Lo nuevo aparece en el centro, seleccionado
         const sumar = (objeto, nombre) => {
             objeto.set({ nombre, left: W() / 2, top: H() / 2, originX: 'center', originY: 'center' });
             if (canvas.isDrawingMode) dibujar(false);
@@ -327,7 +304,6 @@ window.EditorCapas = (() => {
             estrella: 'Estrella', flecha: 'Flecha', line: 'Línea',
         };
 
-        // Logo pintado de un color (los archivos del logo son claros sobre transparente)
         const tintar = (img, color) => {
             const c = document.createElement('canvas');
             c.width = img.naturalWidth;
@@ -383,7 +359,6 @@ window.EditorCapas = (() => {
             imagen: () => archivo.click(),
             logo: () => agregarLogo('logo-wordmark.webp', 'Logo', 0.45),
             sello: () => agregarLogo('logo-badge.webp', 'Sello', 0.2),
-            // Plantillas: varias capas que después se editan por separado
             franja: async () => {
                 const alto = H() * 0.16;
                 const banda = new fabric.Rect({ width: W(), height: alto, fill: 'rgba(30, 24, 18, 0.72)' });
@@ -438,8 +413,6 @@ window.EditorCapas = (() => {
             });
         });
 
-        // ─── Dibujo a mano ───
-
         const dibujar = activo => {
             canvas.isDrawingMode = activo;
             botonDibujar.classList.toggle('is-activo', activo);
@@ -464,11 +437,9 @@ window.EditorCapas = (() => {
         });
         canvas.on('path:created', e => {
             e.path.set({ nombre: 'Trazo' });
-            historial[indice] = instantanea();   // el alta ya se registró, sin el nombre
+            historial[indice] = instantanea();
             refrescarLista();
         });
-
-        // ─── Propiedades de la capa seleccionada ───
 
         const activos = () => canvas.getActiveObjects();
 
@@ -575,7 +546,7 @@ window.EditorCapas = (() => {
             const objetos = activos();
             if (!objetos.length) return;
             canvas.discardActiveObject();
-            restaurando = true;          // un solo paso de historial para todo lo borrado
+            restaurando = true;
             objetos.forEach(o => canvas.remove(o));
             restaurando = false;
             registrar();
@@ -642,8 +613,6 @@ window.EditorCapas = (() => {
             q('[data-valor-opacidad]').textContent = Math.round((ref.opacity ?? 1) * 100) + '%';
             q('[data-sombra]').checked = !!ref.shadow;
         };
-
-        // ─── Lista de capas ───
 
         const nombreDe = o => {
             if (o.type === 'textbox') {
@@ -712,13 +681,10 @@ window.EditorCapas = (() => {
             refrescarLista();
         };
 
-        // ─── Eventos del lienzo ───
-
         canvas.on('object:added', () => { if (!restaurando) registrar(); refrescarLista(); });
         canvas.on('object:removed', () => { if (!restaurando) registrar(); refrescarLista(); });
         canvas.on('object:modified', e => {
             const o = e.target;
-            // Al agrandar un texto desde las esquinas, que cambie el tamaño de letra y no se estire
             if (o && o.type === 'textbox' && (o.scaleX !== 1 || o.scaleY !== 1)) {
                 o.set({ fontSize: o.fontSize * o.scaleY, width: o.width * o.scaleX, scaleX: 1, scaleY: 1 });
                 o.setCoords();
@@ -730,7 +696,6 @@ window.EditorCapas = (() => {
         canvas.on('text:changed', refrescarLista);
         canvas.on('text:editing:exited', registrar);
 
-        // Guías al centro: el objeto se "pega" a la mitad de la foto
         canvas.on('object:moving', e => {
             const o = e.target;
             const c = o.getCenterPoint();
@@ -764,8 +729,6 @@ window.EditorCapas = (() => {
         deshacer.addEventListener('click', () => irA(indice - 1));
         rehacer.addEventListener('click', () => irA(indice + 1));
 
-        // ─── API ───
-
         const medir = () => {
             const ancho = escenario.clientWidth || 600;
             const alto = Math.max(240, window.innerHeight * 0.62);
@@ -773,7 +736,6 @@ window.EditorCapas = (() => {
             canvas.setDimensions({ width: Math.round(fondo.width * escala), height: Math.round(fondo.height * escala) });
         };
 
-        // Si la foto cambió de tamaño (otro recorte, otro giro), las capas mantienen su lugar relativo
         const reubicar = anterior => {
             const fx = W() / anterior.w, fy = H() / anterior.h;
             if (Math.abs(fx - 1) < 0.001 && Math.abs(fy - 1) < 0.001) return;
@@ -796,7 +758,7 @@ window.EditorCapas = (() => {
             canvas.setBackgroundImage(new fabric.Image(lienzo, {
                 left: 0, top: 0, originX: 'left', originY: 'top', scaleX: escala, scaleY: escala,
             }), canvas.renderAll.bind(canvas));
-            if (indice < 0) registrar();      // el estado inicial, sin capas
+            if (indice < 0) registrar();
             else if (anterior) historial[indice] = instantanea();
             refrescar();
         };
@@ -820,13 +782,10 @@ window.EditorCapas = (() => {
 
         const hayCapas = () => canvas.getObjects().some(o => o.visible !== false);
 
-        // Para guardar el diseño: las capas y el tamaño en el que estaban (al volver a
-        // abrirlo se acomodan al tamaño que tenga la foto entonces)
         const exportarDiseno = () => ({ objetos: instantanea(), ancho: W(), alto: H() });
 
         const cargarDiseno = async diseno => {
             const objetos = (diseno && diseno.objetos) || [];
-            // Las fuentes tienen que estar cargadas antes de medir los textos
             const familias = [...new Set(objetos.filter(o => o.fontFamily).map(o => o.fontFamily))];
             await Promise.all(familias.map(cargarFuente));
             await new Promise(listo => {

@@ -1,21 +1,10 @@
 <?php
-/*
- * Fotos del slideshow de la portada: al subir una se generan dos versiones WebP.
- * - Computadora: hasta 2105 px de ancho (el tamaño de las originales).
- * - Celular: recorte vertical centrado de 750×1210, que es lo que se ve en un
- *   teléfono parado (object-position: center). Pesa ~3 veces menos y es lo que
- *   hace que la portada cargue rápido en celulares.
- */
 
 const PORTADA_ANCHO_MAX = 2105;
 const PORTADA_MOVIL_ANCHO = 750;
 const PORTADA_MOVIL_ALTO = 1210;
 const PORTADA_TAMANO_MAX = 15 * 1024 * 1024;
 
-/**
- * Procesa una foto subida. Devuelve ['imagen' => ruta, 'imagen_movil' => ruta]
- * (rutas relativas al sitio) o lanza una excepción con un mensaje para el usuario.
- */
 function portada_procesar(array $archivo): array
 {
     if (!function_exists('imagewebp') || !function_exists('imagecreatefromjpeg')) {
@@ -29,7 +18,7 @@ function portada_procesar(array $archivo): array
     }
 
     $mime = (new finfo(FILEINFO_MIME_TYPE))->file($archivo['tmp_name']);
-    @ini_set('memory_limit', '256M');   // fotos de cámara grandes
+    @ini_set('memory_limit', '256M');
 
     if ($mime === 'image/jpeg') {
         $origen = @imagecreatefromjpeg($archivo['tmp_name']);
@@ -50,11 +39,9 @@ function portada_procesar(array $archivo): array
     $carpeta = dirname(__DIR__) . '/admin/uploads';
     if (!is_dir($carpeta)) mkdir($carpeta, 0755, true);
 
-    // Computadora: misma proporción, como mucho PORTADA_ANCHO_MAX de ancho
     $escala = min(1, PORTADA_ANCHO_MAX / $ancho);
     $grande = portada_recortar($origen, 0, 0, $ancho, $alto, (int)round($ancho * $escala), (int)round($alto * $escala));
 
-    // Celular: recorte centrado con la proporción de un teléfono parado
     $proporcion = PORTADA_MOVIL_ANCHO / PORTADA_MOVIL_ALTO;
     if ($ancho / $alto > $proporcion) {
         $rw = (int)round($alto * $proporcion);
@@ -80,7 +67,6 @@ function portada_procesar(array $archivo): array
     ];
 }
 
-/** Copia la zona (x, y, w, h) del origen a una imagen nueva de destW × destH */
 function portada_recortar($origen, int $x, int $y, int $w, int $h, int $destW, int $destH)
 {
     $destino = imagecreatetruecolor($destW, $destH);
@@ -88,12 +74,6 @@ function portada_recortar($origen, int $x, int $y, int $w, int $h, int $destW, i
     return $destino;
 }
 
-/**
- * Guarda una versión que llega ya editada desde el editor del panel (el navegador
- * aplica los ajustes y el recorte y la manda como JPEG). Se valida que sea una
- * imagen, se lleva al tamaño final ($ancho × $alto; con $alto null mantiene la
- * proporción y $ancho es el máximo) y se guarda como WebP. Devuelve la ruta relativa.
- */
 function portada_guardar_editada(array $archivo, int $ancho, ?int $alto, int $calidad, string $sufijo): string
 {
     if (!function_exists('imagewebp')) {
@@ -145,10 +125,6 @@ function portada_guardar_editada(array $archivo, int $ancho, ?int $alto, int $ca
     return "admin/uploads/$nombre";
 }
 
-/**
- * Borra archivos de una foto, solo los subidos desde el panel (las 4 originales de
- * assets/ quedan siempre). $conservar: rutas que no hay que borrar (la original).
- */
 function portada_borrar_archivos(array $foto, array $conservar = []): void
 {
     $rutas = array_unique(array_filter([

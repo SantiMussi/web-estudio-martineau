@@ -10,7 +10,6 @@ if (isset($_SESSION['user_id'])) {
 const LOGIN_MAX_INTENTOS = 8;
 const LOGIN_BLOQUEO_MINUTOS = 10;
 
-// Combina IP + usuario para no poder bloquear a otra persona solo con su nombre de usuario.
 function rate_limit_clave(string $username): string {
     $ip = $_SERVER['REMOTE_ADDR'] ?? 'desconocida';
     return $ip . '|' . mb_strtolower(trim($username));
@@ -27,7 +26,6 @@ function rate_limit_asegurar_tabla(PDO $pdo): void {
     ');
 }
 
-// Segundos restantes de bloqueo, o 0 si se puede intentar. Si algo falla acá, no bloqueamos el login real.
 function rate_limit_bloqueado(PDO $pdo, string $clave): int {
     try {
         rate_limit_asegurar_tabla($pdo);
@@ -112,7 +110,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
         } else {
             rate_limit_registrar_fallo($pdo, $rate_clave);
-            // Mensaje genérico para no revelar si el email existe
             $error = 'Credenciales incorrectas.';
         }
     }

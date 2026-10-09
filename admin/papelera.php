@@ -20,7 +20,6 @@ foreach (PAPELERA_TABLAS as $tipo => $tabla) {
         $items[] = ['tipo' => $tipo] + $fila;
     }
 }
-// Lo último que se eliminó, primero
 usort($items, function ($a, $b) {
     return strcmp($b['eliminado_at'], $a['eliminado_at']);
 });
@@ -48,7 +47,6 @@ $pagina_activa = 'papelera.php';
     <link rel="stylesheet" href="admin.css?v=17">
 </head>
 <body>
-    <!-- Sidebar Toggle Móvil -->
     <button class="sidebar-toggle" aria-label="Menú">
         <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -56,7 +54,6 @@ $pagina_activa = 'papelera.php';
     <div class="admin-layout">
         <?php require __DIR__ . '/sidebar.php'; ?>
 
-        <!-- Main Content -->
         <main class="admin-main">
             <div class="admin-topbar">
                 <h1>Papelera</h1>
@@ -73,7 +70,6 @@ $pagina_activa = 'papelera.php';
                 <?php endif; ?>
             </div>
 
-            <!-- Flash Messages -->
             <?php if ($msg): ?>
                 <div class="alert <?= flash_alert_class($msg['type']) ?>">
                     <?= e($msg['text']) ?>
@@ -97,7 +93,6 @@ $pagina_activa = 'papelera.php';
                     </div>
                 </div>
             <?php else: ?>
-                <!-- Acciones sobre los seleccionados (las casillas de la tabla apuntan a este form) -->
                 <form method="POST" action="actions/papelera.php" id="form-seleccion" class="barra-seleccion" data-seleccion="tabla-papelera" hidden>
                     <?= csrf_field() ?>
                     <span class="barra-seleccion-cuenta" data-seleccion-cuenta></span>

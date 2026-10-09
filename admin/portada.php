@@ -5,7 +5,6 @@ require_once __DIR__ . '/auth.php';
 try {
     $fotos = $pdo->query('SELECT * FROM portada ORDER BY orden ASC, id ASC')->fetchAll();
 } catch (Exception $e) {
-    // La tabla la crea migraciones.php; si falló, se reintenta en el próximo pedido
     $fotos = [];
 }
 $visibles = count(array_filter($fotos, fn($f) => !$f['oculto']));
@@ -33,7 +32,6 @@ $pagina_activa = 'portada.php';
     <link rel="stylesheet" href="admin.css?v=17">
 </head>
 <body>
-    <!-- Sidebar Toggle Móvil -->
     <button class="sidebar-toggle" aria-label="Menú">
         <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -41,13 +39,11 @@ $pagina_activa = 'portada.php';
     <div class="admin-layout">
         <?php require __DIR__ . '/sidebar.php'; ?>
 
-        <!-- Main Content -->
         <main class="admin-main">
             <div class="admin-topbar">
                 <h1>Fotos de la portada</h1>
             </div>
 
-            <!-- Flash Messages -->
             <?php if ($msg): ?>
                 <div class="alert <?= flash_alert_class($msg['type']) ?>">
                     <?= e($msg['text']) ?>
@@ -145,7 +141,6 @@ $pagina_activa = 'portada.php';
         </main>
     </div>
 
-    <!-- MODAL: Editor de foto (admin/portada-editor.js) -->
     <div class="modal-overlay" id="modal-editor-portada">
         <div class="modal editor-modal">
             <div class="modal-header">
@@ -163,11 +158,9 @@ $pagina_activa = 'portada.php';
                     </div>
                     <div class="editor-foto" data-modo="recorte">
                         <canvas data-editor-vista></canvas>
-                        <!-- Recorte de la foto (computadora): se mueve y se cambia de tamaño desde las esquinas -->
                         <div class="editor-recorte" data-editor-recorte>
                             <i data-esquina="nw"></i><i data-esquina="ne"></i><i data-esquina="sw"></i><i data-esquina="se"></i>
                         </div>
-                        <!-- Lo que se ve en celulares, dentro del recorte: se arrastra -->
                         <div class="editor-marco" data-editor-marco title="Arrastrá para elegir qué parte se ve en celulares"><span>Celular</span></div>
                     </div>
                     <p class="form-ayuda" data-editor-ayuda></p>
@@ -216,7 +209,6 @@ $pagina_activa = 'portada.php';
         </div>
     </div>
 
-    <!-- Copia local: la política de seguridad del panel solo deja cargar scripts del propio sitio -->
     <script src="vendor/Sortable.min.js?v=1.15.7"></script>
     <script src="admin.js?v=25"></script>
     <script src="portada-editor.js?v=2"></script>

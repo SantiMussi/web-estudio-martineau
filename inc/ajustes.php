@@ -1,13 +1,4 @@
 <?php
-/*
- * Datos de contacto del sitio (teléfono, WhatsApp, mail, Instagram, dirección, horario).
- *
- * Se editan desde el panel (admin/ajustes.php) y se guardan en la tabla `ajustes`
- * (clave → valor). Las fichas PHP los leen acá; las páginas HTML los piden a
- * api/datos.php?tipo=contacto y los aplican con script.js. Si la tabla todavía no
- * existe o la base no responde, se usan los valores por defecto de abajo, que son
- * los mismos que tiene escritos el HTML.
- */
 
 const AJUSTES_DEFECTO = [
     'telefono'  => '+54 9 11 3191-7014',
@@ -33,13 +24,11 @@ function ajustes_cargar(?PDO $pdo): array
                 }
             }
         } catch (Throwable $e) {
-            // La tabla se crea al entrar al panel después de actualizar el código
         }
     }
     return $cache = $ajustes;
 }
 
-/** La tabla la crea admin/migraciones.php al entrar al panel */
 function ajustes_guardar(PDO $pdo, array $valores): void
 {
     $stmt = $pdo->prepare('
@@ -53,7 +42,6 @@ function ajustes_guardar(PDO $pdo, array $valores): void
     }
 }
 
-/** Los datos ya listos para usar en links (los mismos que arma script.js) */
 function contacto_links(array $a): array
 {
     $tel = preg_replace('/[^\d+]/', '', $a['telefono']);

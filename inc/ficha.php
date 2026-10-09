@@ -1,12 +1,4 @@
 <?php
-/*
- * Fichas de producto / proyecto armadas en el servidor.
- *
- * Antes la página se completaba solo con JavaScript, así que Google y las vistas
- * previas al compartir (WhatsApp, Facebook…) veían "Producto — Martineau" en todas.
- * Ahora el título, la descripción, la imagen, los datos estructurados y el
- * contenido salen del servidor; el JS queda de respaldo si la base no responde.
- */
 
 require_once __DIR__ . '/ajustes.php';
 require_once __DIR__ . '/slugs.php';
@@ -14,7 +6,6 @@ require_once __DIR__ . '/slugs.php';
 const SEO_SITIO = 'https://armartineau.com.ar';
 const SEO_EMPRESA_ID = SEO_SITIO . '/#empresa';
 
-/** Conexión a la base, una sola vez por pedido (config.php no se puede incluir dos veces) */
 function ficha_pdo(): ?PDO
 {
     static $pdo = false;
@@ -30,20 +21,12 @@ function ficha_pdo(): ?PDO
     return $pdo;
 }
 
-/** Datos de contacto cargados desde el panel, con los links ya armados */
 function ficha_contacto(): array
 {
     $datos = ajustes_cargar(ficha_pdo());
     return ['datos' => $datos, 'links' => contacto_links($datos)];
 }
 
-/**
- * Trae el ítem publicado (no oculto) de la base, por su slug (/producto/chimenea-luis-xv)
- * o por id (links viejos /producto?id=12). Un slug viejo (de antes de renombrarlo) también
- * lo encuentra; ficha_redirigir() después manda a la dirección actual.
- * Devuelve el array, null si no existe (→ 404) o false si la base no respondió
- * (→ la página se arma con JS como antes, sin marcarla como inexistente).
- */
 function ficha_cargar(string $tipo, int $id, string $slug = '')
 {
     if ($id <= 0 && $slug === '') return null;
@@ -73,7 +56,6 @@ function ficha_cargar(string $tipo, int $id, string $slug = '')
             $item = $stmt->fetch();
 
             if (!$item) {
-                // ¿Es la dirección vieja de una ficha a la que le cambiaron el nombre?
                 $stmt = $pdo->prepare('SELECT item_id FROM redirecciones_slug WHERE tipo = :tipo AND slug = :slug');
                 $stmt->execute(['tipo' => $tipo, 'slug' => $slug]);
                 $id = (int)$stmt->fetchColumn();
@@ -105,14 +87,12 @@ function seo_e($texto): string
     return htmlspecialchars((string)$texto, ENT_QUOTES, 'UTF-8');
 }
 
-/** URL absoluta para una imagen guardada como ruta relativa del sitio */
 function seo_url_absoluta(string $ruta): string
 {
     if (preg_match('#^https?://#i', $ruta)) return $ruta;
     return SEO_SITIO . '/' . ltrim($ruta, '/');
 }
 
-/** Descripción para buscadores: una sola línea, cortada en una palabra (~155 caracteres) */
 function seo_recortar(string $texto, int $max = 155): string
 {
     $texto = trim(preg_replace('/\s+/u', ' ', $texto));
@@ -130,16 +110,11 @@ function seo_json_ld(array $datos): string
     );
 }
 
-/** Todas las imágenes de la ficha: la principal primero y después la galería */
 function ficha_imagenes(array $item): array
 {
     return array_values(array_filter(array_merge([$item['imagen']], $item['imagenes'])));
 }
 
-/**
- * Metadatos de la página según el resultado de ficha_cargar().
- * $tipo: 'producto' | 'proyecto'
- */
 function ficha_seo(string $tipo, $item, int $id, string $slug = ''): array
 {
     $esProyecto = $tipo === 'proyecto';
@@ -197,7 +172,6 @@ function ficha_seo(string $tipo, $item, int $id, string $slug = ''): array
     }
     $migas[] = ['@type' => 'ListItem', 'position' => count($migas) + 1, 'name' => $item['titulo']];
 
-    // Pieza hecha a mano (no se venden con precio publicado, así que no va como Product)
     $obra = [
         '@type' => 'CreativeWork',
         'name' => $item['titulo'],
@@ -234,10 +208,6 @@ function ficha_seo(string $tipo, $item, int $id, string $slug = ''): array
     ];
 }
 
-/**
- * Si se llegó por un link viejo (?id=12) o por un slug que ya cambió, redirige (301)
- * a la dirección actual de la ficha. Conserva ?categoria= (para el botón "Volver").
- */
 function ficha_redirigir(string $tipo, $item, string $slugPedido): void
 {
     if (!is_array($item) || empty($item['slug']) || $item['slug'] === $slugPedido) return;
@@ -250,7 +220,6 @@ function ficha_redirigir(string $tipo, $item, string $slugPedido): void
     exit();
 }
 
-/** El bloque de <head> común a las dos fichas */
 function ficha_head(array $seo): void
 {
     ?>
@@ -260,7 +229,6 @@ function ficha_head(array $seo): void
   <meta name="robots" content="<?= seo_e($seo['robots']) ?>">
   <meta name="theme-color" content="#2E2820">
 
-  <!-- Vista previa al compartir (WhatsApp, Facebook, LinkedIn, X) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Martineau">
   <meta property="og:locale" content="es_AR">
@@ -274,7 +242,6 @@ function ficha_head(array $seo): void
   <meta name="twitter:image" content="<?= seo_e($seo['imagen']) ?>">
 <?php if ($seo['ld']): ?>
 
-  <!-- Datos estructurados (schema.org) -->
   <script type="application/ld+json">
 <?= $seo['ld'] ?>
 
@@ -282,7 +249,6 @@ function ficha_head(array $seo): void
 <?php endif;
 }
 
-/** Galería + info: el mismo HTML que arma el JS de respaldo */
 function ficha_cuerpo(string $tipo, array $item): void
 {
     $esProyecto = $tipo === 'proyecto';
@@ -334,7 +300,6 @@ function ficha_cuerpo(string $tipo, array $item): void
 <?php
 }
 
-/** Mensaje cuando el id no existe (la respuesta ya salió con 404) */
 function ficha_no_encontrada(string $tipo): void
 {
     $esProyecto = $tipo === 'proyecto';
@@ -346,7 +311,6 @@ function ficha_no_encontrada(string $tipo): void
 <?php
 }
 
-/** Sección "Contacto" del pie, con los datos cargados desde el panel (la misma que las páginas HTML) */
 function ficha_contacto_seccion(): void
 {
     ['datos' => $d, 'links' => $l] = ficha_contacto();
@@ -435,7 +399,6 @@ function ficha_contacto_seccion(): void
 <?php
 }
 
-/** Botón flotante de WhatsApp */
 function ficha_whatsapp_flotante(): void
 {
     $l = ficha_contacto()['links'];

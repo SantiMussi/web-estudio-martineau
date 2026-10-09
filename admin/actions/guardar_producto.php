@@ -92,7 +92,6 @@ try {
             if (in_array($img, $imagenes_a_eliminar)) {
                 eliminar_imagen($img);
             } elseif (isset($reemplazos[$img]) && ($editada = subir_imagen($reemplazos[$img])) !== false) {
-                // Editada en el panel: la nueva queda en el mismo lugar de la galería
                 eliminar_imagen($img);
                 $galeria_final[] = $editada;
             } else {
@@ -153,7 +152,6 @@ try {
         $_SESSION['flash_msg'] = ['type' => 'success', 'text' => 'Producto creado correctamente.'];
     }
 
-    // URL amigable de la ficha (/producto/nombre-de-la-pieza, ver inc/slugs.php)
     $id_guardado = $id ?: (int)$pdo->lastInsertId();
     if ($id_guardado > 0 && fslug_disponibles($pdo)) {
         fslug_asignar($pdo, 'producto', $id_guardado, trim((string)($_POST['slug'] ?? '')), $titulo);

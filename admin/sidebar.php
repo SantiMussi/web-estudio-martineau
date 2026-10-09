@@ -1,8 +1,4 @@
 <?php
-/*
- * Menú lateral del panel, común a todas las pantallas.
- * Antes de incluirlo, cada página define $pagina_activa con el nombre de su archivo.
- */
 if (!isset($pagina_activa, $pdo)) {
     http_response_code(404);
     exit();

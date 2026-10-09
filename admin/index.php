@@ -38,7 +38,6 @@ $pagina_activa = 'index.php';
     <link rel="stylesheet" href="admin.css?v=17">
 </head>
 <body>
-    <!-- Sidebar Toggle Móvil -->
     <button class="sidebar-toggle" aria-label="Menú">
         <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -46,7 +45,6 @@ $pagina_activa = 'index.php';
     <div class="admin-layout">
         <?php require __DIR__ . '/sidebar.php'; ?>
 
-        <!-- Main Content -->
         <main class="admin-main">
             <div class="admin-topbar">
                 <h1>Productos</h1>
@@ -58,14 +56,12 @@ $pagina_activa = 'index.php';
                 </div>
             </div>
 
-            <!-- Flash Messages -->
             <?php if ($msg): ?>
                 <div class="alert <?= flash_alert_class($msg['type']) ?>">
                     <?= e($msg['text']) ?>
                 </div>
             <?php endif; ?>
 
-            <!-- Tabla de Productos -->
             <?php if (empty($productos)): ?>
                 <div class="admin-table-wrapper">
                     <div class="empty-state">
@@ -89,8 +85,6 @@ $pagina_activa = 'index.php';
                     </select>
                     <span class="admin-filter-count" data-filtro-count="sortable-productos"></span>
 
-                    <!-- Órdenes predefinidos: con una categoría filtrada ordenan solo esa categoría.
-                         Después se puede seguir ajustando a mano arrastrando las filas. -->
                     <span class="admin-filter-orden">
                         <label for="orden-productos">Ordenar</label>
                         <select id="orden-productos" class="form-control" data-ordenar-tabla="sortable-productos" data-ordenar-guardar="productos">
@@ -105,7 +99,6 @@ $pagina_activa = 'index.php';
                         <button type="button" class="btn-admin btn-secondary btn-sm" data-ordenar-aplicar="sortable-productos" disabled>Ordenar todo</button>
                     </span>
                 </div>
-                <!-- Acciones sobre los seleccionados (las casillas de la tabla apuntan a este form) -->
                 <form method="POST" action="actions/acciones_masivas.php" id="form-seleccion" class="barra-seleccion" data-seleccion="sortable-productos" hidden>
                     <?= csrf_field() ?>
                     <input type="hidden" name="tipo" value="producto">
@@ -231,7 +224,6 @@ $pagina_activa = 'index.php';
         </main>
     </div>
 
-    <!-- MODAL: Crear/Editar Producto -->
     <div class="modal-overlay" id="modal-producto">
         <div class="modal">
             <div class="modal-header">
@@ -246,13 +238,11 @@ $pagina_activa = 'index.php';
                 <input type="hidden" name="id" value="">
 
                 <div class="modal-body">
-                    <!-- Título -->
                     <div class="form-group">
                         <label for="titulo">Título</label>
                         <input type="text" id="titulo" name="titulo" class="form-control" placeholder="Ej: Modelo Atria" required>
                     </div>
 
-                    <!-- Dirección web (URL amigable, ver inc/slugs.php) -->
                     <div class="form-group">
                         <label for="slug">Dirección web</label>
                         <div class="slug-campo">
@@ -263,7 +253,6 @@ $pagina_activa = 'index.php';
                     </div>
 
                     <div class="form-row">
-                        <!-- Categoría -->
                         <div class="form-group">
                             <label for="categoria_id">Categoría</label>
                             <select id="categoria_id" name="categoria_id" class="form-control" required>
@@ -274,7 +263,6 @@ $pagina_activa = 'index.php';
                             </select>
                         </div>
 
-                        <!-- Destacar -->
                         <div class="form-group" style="display:flex; align-items:flex-end; padding-bottom: 0.4rem;">
                             <label class="form-check" style="margin-right: 1rem;">
                                 <input type="checkbox" name="destacar" value="1">
@@ -287,13 +275,11 @@ $pagina_activa = 'index.php';
                         </div>
                     </div>
 
-                    <!-- Descripción -->
                     <div class="form-group">
                         <label for="descripcion">Descripción</label>
                         <textarea id="descripcion" name="descripcion" class="form-control" rows="4" placeholder="Descripción del producto..."></textarea>
                     </div>
 
-                    <!-- Imagen Principal -->
                     <div class="form-group">
                         <label>Imagen Principal <span style="color:var(--admin-danger)">*</span></label>
                         <div id="current-main-image" style="display:none; margin-bottom: 15px;">
@@ -311,7 +297,6 @@ $pagina_activa = 'index.php';
                         <div class="image-preview"></div>
                     </div>
 
-                    <!-- Galería -->
                     <div class="form-group">
                         <label>Galería de Imágenes actuales</label>
                         <div id="current-gallery" style="display:none; margin-bottom: 10px; gap: 10px; flex-wrap: wrap; background: var(--admin-bg); padding: 10px; border-radius: 4px;">
@@ -325,7 +310,6 @@ $pagina_activa = 'index.php';
                         <div class="image-preview"></div>
                     </div>
 
-                    <!-- Specs Dinámicos -->
                     <div class="form-group">
                         <label>Especificaciones Técnicas</label>
                         <div class="specs-container">
@@ -349,7 +333,6 @@ $pagina_activa = 'index.php';
         </div>
     </div>
 
-    <!-- Copia local: la política de seguridad del panel solo deja cargar scripts del propio sitio -->
     <script src="vendor/Sortable.min.js?v=1.15.7"></script>
     <script src="admin.js?v=25"></script>
     <script src="editor-imagen.js?v=4"></script>

@@ -39,7 +39,6 @@ const Store = {
   },
 
   async _fetch(tipo, params = {}) {
-    // document.baseURI: en las fichas (/producto/nombre) hay <base href="/">
     const url = new URL('api/datos.php', document.baseURI);
     url.searchParams.set('tipo', tipo);
     for (const [key, val] of Object.entries(params)) {
@@ -88,8 +87,6 @@ const Store = {
     return cats;
   },
 
-  // Si hay productos marcados como destacados manualmente, se usan esos.
-  // Si no hay ninguno, se muestran unos pocos al azar (cambian en cada carga de la página).
   getProductosDestacados(cantidadAleatoria = 4) {
     const productos = this.getProductos();
     const destacados = productos.filter(p => p.destacar === true);
@@ -121,15 +118,12 @@ const Store = {
 
 };
 
-// Link a la ficha de un producto o proyecto: /producto/chimenea-luis-xv si ya tiene
-// URL amigable (ver inc/slugs.php), si no el link viejo con ?id=. Ruta relativa a la raíz.
 function urlFicha(tipo, item) {
   return item.slug
     ? tipo + '/' + encodeURIComponent(item.slug)
     : tipo + '?id=' + encodeURIComponent(item.id);
 }
 
-// Escapa texto antes de insertarlo en HTML (evita XSS con datos cargados desde el panel admin).
 function escapeHtml(str) {
   if (str === null || str === undefined) return '';
   return String(str)
@@ -140,8 +134,6 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
-// Puebla los dropdowns de categorías del navbar (desktop) y del menú hamburguesa (mobile):
-// Catálogo con las categorías de productos y Portfolio con las de proyectos.
 function renderNavCategorias() {
   const destinos = { producto: 'catalogo', proyecto: 'portfolio' };
 
@@ -151,7 +143,6 @@ function renderNavCategorias() {
 
     const categorias = Store.getCategorias(tipo);
     if (categorias.length === 0) {
-      // Sin categorías no tiene sentido el desplegable: queda solo el link
       contenedores.forEach(el => {
         const item = el.closest('.has-dropdown');
         if (item) item.classList.remove('has-dropdown');

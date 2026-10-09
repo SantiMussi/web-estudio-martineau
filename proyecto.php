@@ -2,9 +2,9 @@
 require __DIR__ . '/inc/ficha.php';
 
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-$slug = isset($_GET['slug']) ? strtolower((string)$_GET['slug']) : '';   // /proyecto/nombre-de-la-pieza
-$item = ficha_cargar('proyecto', $id, $slug);   // array | null (no existe) | false (la base no respondió)
-ficha_redirigir('proyecto', $item, $slug);       // links viejos → dirección actual (301)
+$slug = isset($_GET['slug']) ? strtolower((string)$_GET['slug']) : '';
+$item = ficha_cargar('proyecto', $id, $slug);
+ficha_redirigir('proyecto', $item, $slug);
 if ($item === null) http_response_code(404);
 $seo = ficha_seo('proyecto', $item, $id, $slug);
 header('Content-Type: text/html; charset=utf-8');
@@ -21,12 +21,10 @@ header('Content-Type: text/html; charset=utf-8');
   'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
   })(window,document,'script','dataLayer','GTM-WZQDWTCZ');</script>
   <!-- End Google Tag Manager -->
-  <!-- Las fichas pueden estar en /producto/nombre: todas las rutas relativas parten de la raíz -->
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <?php ficha_head($seo); ?>
 
-  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=2">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png?v=2">
@@ -34,7 +32,6 @@ header('Content-Type: text/html; charset=utf-8');
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Fuente sin bloquear el primer pintado: se pide ya y se aplica apenas llega -->
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"></noscript>
   <link rel="stylesheet" href="styles.css?v=69">
@@ -46,7 +43,6 @@ header('Content-Type: text/html; charset=utf-8');
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
 
-  <!-- Header -->
   <header class="site-header" id="header">
     <div class="container header-inner">
       <a href="/" class="logo" aria-label="Martineau - Ir al inicio"><img src="assets/logo-wordmark.webp"
@@ -97,15 +93,12 @@ header('Content-Type: text/html; charset=utf-8');
     </nav>
   </header>
 
-  <!-- Detalle: lo arma el servidor (inc/ficha.php); el JS de abajo es el respaldo -->
   <main class="product-detail-page container" id="proyecto-detail-root"<?= $item !== false ? ' data-ssr="1"' : '' ?>>
 <?php if ($item) ficha_cuerpo('proyecto', $item); elseif ($item === null) ficha_no_encontrada('proyecto'); ?>
   </main>
 
-  <!-- Sección Contacto -->
 <?php ficha_contacto_seccion(); ?>
 
-  <!-- Footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
       <p class="footer-copy">&copy; Todos los derechos reservados, Martineau</p>
@@ -113,16 +106,13 @@ header('Content-Type: text/html; charset=utf-8');
     </div>
   </footer>
 
-  <!-- WhatsApp -->
 <?php ficha_whatsapp_flotante(); ?>
 
-  <!-- Store compartido (capa de datos / simulacion) -->
   <script src="store.js?v=9"></script>
 
   <script>
 
     document.addEventListener('DOMContentLoaded', async () => {
-      // La ficha llega armada desde el servidor (SEO); si la base no respondió, se arma acá
       const ssr = document.getElementById('proyecto-detail-root').dataset.ssr;
       if (ssr) activarGaleria();
       await Store.init();
@@ -196,7 +186,6 @@ header('Content-Type: text/html; charset=utf-8');
 
       activarGaleria();
 
-      // Reinicializar animaciones
       if (window.initScrollReveal) window.initScrollReveal();
     }
 

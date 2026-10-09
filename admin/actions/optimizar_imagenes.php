@@ -16,11 +16,9 @@ const OPT_CALIDAD = 80;
 const OPT_LIMITE_POR_EJECUCION = 30;
 const OPT_TIEMPO_MAXIMO_SEGUNDOS = 25;
 
-// Redimensiona (si hace falta) y re-codifica como WebP una imagen que ya está en disco.
-// Devuelve null si no se pudo procesar, o un array con la ruta final y si hubo cambios.
 function optimizar_imagen_archivo(string $ruta_relativa): ?array {
     if (!function_exists('imagewebp') || !function_exists('imagecreatefromjpeg')) {
-        return null; // GD no disponible en este servidor
+        return null;
     }
 
     $ruta_absoluta = dirname(__DIR__, 2) . '/' . $ruta_relativa;
@@ -56,7 +54,6 @@ function optimizar_imagen_archivo(string $ruta_relativa): ?array {
     $ancho = imagesx($img_res);
     $alto = imagesy($img_res);
 
-    // Ya es liviana y no hace falta redimensionar: no la tocamos.
     if ($mime === 'image/webp' && $ancho <= OPT_MAX_ANCHO && $tamano_original < 400 * 1024) {
         imagedestroy($img_res);
         return ['ruta' => $ruta_relativa, 'cambio' => false, 'ahorro' => 0];
@@ -108,7 +105,7 @@ function procesar_tabla_imagenes(
 
     foreach ($filas as $fila) {
         if ($procesadas >= OPT_LIMITE_POR_EJECUCION || microtime(true) >= $hasta) {
-            return true; // queda trabajo pendiente
+            return true;
         }
 
         $huboCambios = false;

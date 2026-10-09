@@ -1,21 +1,11 @@
 <?php
-/*
- * Diseños guardados del editor de fotos (admin/editor-imagen.js): la foto original,
- * los ajustes y las capas, para poder retomarlos después donde se dejaron. Responde JSON.
- *
- *   GET  ?accion=listar        → {ok, disenos: [{id, nombre, miniatura, actualizado}]}
- *   GET  ?accion=ver&id=N      → {ok, diseno: {id, nombre, original, datos}}
- *   POST accion=guardar        → crea o actualiza (con id). Archivos: original (solo al
- *                                crear) y miniatura. → {ok, id, original}
- *   POST accion=eliminar, id   → borra el diseño y sus archivos
- */
 require_once __DIR__ . '/../auth.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
 const DISENOS_CARPETA = 'admin/uploads/disenos';
 const DISENOS_TAMANO_MAX = 20 * 1024 * 1024;
-const DISENOS_DATOS_MAX = 40 * 1024 * 1024;   // las capas pueden traer imágenes adentro
+const DISENOS_DATOS_MAX = 40 * 1024 * 1024;
 
 function disenos_responder(array $respuesta, int $codigo = 200): void
 {
@@ -24,7 +14,6 @@ function disenos_responder(array $respuesta, int $codigo = 200): void
     exit();
 }
 
-/** Guarda un archivo subido si es una imagen de los tipos permitidos. Devuelve la ruta relativa al sitio. */
 function disenos_guardar_archivo(array $archivo, string $base, string $sufijo, array $tipos): string
 {
     if (($archivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK || !is_uploaded_file($archivo['tmp_name'])) {
@@ -48,7 +37,6 @@ function disenos_guardar_archivo(array $archivo, string $base, string $sufijo, a
     return DISENOS_CARPETA . "/$nombre";
 }
 
-/** Borra un archivo de un diseño (solo de la carpeta de diseños) */
 function disenos_borrar(?string $ruta): void
 {
     if ($ruta && strpos($ruta, DISENOS_CARPETA . '/') === 0 && strpos($ruta, '..') === false) {
@@ -110,7 +98,6 @@ try {
             }
         }
 
-        // Nombres nuevos en cada guardado: las imágenes se cachean por un año
         $base = 'diseno-' . bin2hex(random_bytes(8));
         $nuevos = [];
         try {

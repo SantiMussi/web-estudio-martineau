@@ -75,8 +75,6 @@ try {
             }
         }
 
-        // Galería: igual que en productos, las fotos nuevas se suman, las marcadas con la
-        // cruz se borran y las editadas en el panel reemplazan a la original en su lugar
         $galeria_actual = $actual['imagenes'] ? json_decode($actual['imagenes'], true) : [];
         if (!is_array($galeria_actual)) $galeria_actual = [];
 
@@ -150,7 +148,6 @@ try {
         $_SESSION['flash_msg'] = ['type' => 'success', 'text' => 'Proyecto creado correctamente.'];
     }
 
-    // URL amigable de la ficha (/proyecto/nombre-de-la-pieza, ver inc/slugs.php)
     $id_guardado = $id ?: (int)$pdo->lastInsertId();
     if ($id_guardado > 0 && fslug_disponibles($pdo)) {
         fslug_asignar($pdo, 'proyecto', $id_guardado, trim((string)($_POST['slug'] ?? '')), $titulo);

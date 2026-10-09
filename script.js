@@ -1,8 +1,5 @@
-// Martineau Studio - Script principal
-
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Función para limitar la frecuencia de ejecución (Throttle)
     const throttle = (func, limit) => {
         let inThrottle;
         return function () {
@@ -16,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Función para retrasar la ejecución (Debounce)
     const debounce = (func, delay) => {
         let timeout;
         return function () {
@@ -27,7 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     };
 
-    // Comportamiento del header al hacer scroll
     const initHeader = () => {
         const header = document.querySelector('.site-header');
         if (!header) return;
@@ -53,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
         handleScroll();
     };
 
-    // Menú de navegación móvil
     const initMobileNav = () => {
         const navToggle = document.querySelector('.nav-toggle');
         const mobileNav = document.querySelector('.mobile-nav');
@@ -85,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Acordeón de categorías en el menú móvil
     const initNavDropdowns = () => {
         document.querySelectorAll('.mobile-nav-chevron').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -101,19 +94,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Efecto Parallax en sección Hero (Desactivado)
     const initParallax = () => {
-        // Parallax desactivado intencionalmente
     };
 
-    // Nosotros, "Del molde a la pieza": cada paso se "llena" al entrar en pantalla
-    // y la línea central avanza con el scroll.
     const initProceso = () => {
         const steps = document.querySelectorAll('.pp-step');
         if (!steps.length) return;
 
-        // Las fotos son lazy: se piden una pantalla antes de llegar, y la animación
-        // espera a que estén decodificadas (así no se "revela" un arco vacío).
         const fotosDe = (el) => [...el.querySelectorAll('img')];
         const pedirFotos = (el) => fotosDe(el).forEach(img => { img.loading = 'eager'; });
         const fotosListas = (el) => Promise.all(fotosDe(el).map(img =>
@@ -138,7 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     const step = entry.target;
                     io.unobserve(step);
                     pedirFotos(step);
-                    // Tope de 2,5 s: con conexión lenta la animación igual se muestra
                     const tope = new Promise(r => setTimeout(r, 2500));
                     Promise.race([fotosListas(step), tope]).then(() => step.classList.add('is-in'));
                 }
@@ -161,7 +147,6 @@ document.addEventListener('DOMContentLoaded', () => {
         actualizarLinea();
     };
 
-    // Espera a que una imagen esté lista para mostrarse, con un tope para conexiones lentas.
     const imagenLista = (img, tope = 2500) => {
         if (!img) return Promise.resolve();
         img.loading = 'eager';
@@ -169,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return Promise.race([decodificada, new Promise(r => setTimeout(r, tope))]);
     };
 
-    // Vitrina de la home: cada hornacina aparece cuando su foto ya cargó.
     window.initVitrina = () => {
         const nichos = document.querySelectorAll('.nicho:not([data-vitrina])');
         if (!nichos.length) return;
@@ -187,8 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
         nichos.forEach(n => { n.dataset.vitrina = '1'; io.observe(n); });
     };
 
-    // Índice de obras de la home: foto grande en arco + lista. Rota sola (con barra de
-    // progreso) y al pasar el mouse por una obra se muestra esa.
     window.initObras = () => {
         const root = document.querySelector('.obras');
         if (!root || root.dataset.obras) return;
@@ -215,7 +197,6 @@ document.addEventListener('DOMContentLoaded', () => {
             if (contador) contador.textContent = String(actual + 1).padStart(2, '0');
         };
 
-        // Cuando termina la barra de la obra activa, pasa a la siguiente
         items.forEach((item, i) => {
             const barra = item.querySelector('.obras-barra');
             if (barra) barra.addEventListener('animationend', () => {
@@ -228,7 +209,6 @@ document.addEventListener('DOMContentLoaded', () => {
         root.addEventListener('mouseenter', () => root.classList.add('is-hover'));
         root.addEventListener('mouseleave', () => root.classList.remove('is-hover'));
 
-        // Entra en pantalla: precarga todas las fotos y arranca. Fuera de pantalla: pausa.
         const io = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting && !root.classList.contains('is-in')) {
@@ -241,8 +221,6 @@ document.addEventListener('DOMContentLoaded', () => {
         io.observe(root);
     };
 
-    // Slideshow del hero. Funciona con cualquier cantidad de imágenes y saltea las que
-    // no cargan (p. ej. si se borró el archivo), para que nunca quede un turno en negro.
     const initHeroSlideshow = () => {
         const container = document.querySelector('.hero-slides');
         if (!container) return;
@@ -264,13 +242,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         container.querySelectorAll('.hero-slide img').forEach(img => {
             const slide = img.closest('.hero-slide');
-            // Las diferidas (data-src) todavía no tienen src: no están rotas, se cargan abajo
             if (!img.dataset.src && img.complete && img.naturalWidth === 0) quitar(slide);
             else img.addEventListener('error', () => quitar(slide));
         });
 
-        // Las fotos 2 en adelante se piden recién cuando la página terminó de cargar,
-        // así no le compiten a la primera (que es la que se ve apenas entrás)
         const cargarDiferidas = () => {
             container.querySelectorAll('source[data-srcset]').forEach(s => {
                 s.srcset = s.dataset.srcset;
@@ -307,10 +282,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setInterval(avanzar, DURACION);
     };
 
-    // Ajusta el fit de las fotos de producto según su propia proporción: las que son
-    // muy anchas y poco altas (más anchas que altas) usan "contain" para que se vea
-    // la pieza completa en vez de hacerle un zoom feo; el resto usa "cover" para
-    // llenar el recuadro sin bordes.
     window.initSmartImageFit = () => {
         document.querySelectorAll('.product-image-wrapper img').forEach(img => {
             const aplicar = () => {
@@ -362,7 +333,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Scroll suave a secciones del menú
     const initSmoothScroll = () => {
         const links = document.querySelectorAll('a[href*="#"]');
         const headerHeight = 80;
@@ -374,8 +344,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const targetUrl = new URL(this.href, window.location.origin);
                 const currentUrl = new URL(window.location.href);
 
-                // "#contacto" siempre es esta página (en las fichas hay <base href="/">,
-                // y sin esto this.href apuntaría a la home)
                 const isSamePage = this.getAttribute('href').startsWith('#') ||
                     targetUrl.pathname === currentUrl.pathname ||
                     (targetUrl.pathname === '/' && currentUrl.pathname === '/index.html') ||
@@ -406,14 +374,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Gestión del formulario de contacto
     const initFormHandling = () => {
         const form = document.querySelector('.contact-form');
         if (!form) return;
 
         const inputs = form.querySelectorAll('input, textarea');
 
-        // Efecto visual para etiquetas flotantes
         inputs.forEach(input => {
             const checkValue = () => {
                 if (input.value.trim() !== '') {
@@ -440,7 +406,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Envío y validación del formulario
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
@@ -463,7 +428,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 submitBtn.innerText = 'Enviando...';
                 submitBtn.disabled = true;
 
-                // Simulación de envío
                 setTimeout(() => {
                     submitBtn.innerText = '¡Mensaje Enviado!';
                     form.reset();
@@ -478,7 +442,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Filtrado y Paginación
     window.initFiltersAndPagination = () => {
         const containers = document.querySelectorAll('.filter-container');
         if (containers.length === 0) return;
@@ -499,11 +462,6 @@ document.addEventListener('DOMContentLoaded', () => {
             let currentFilter = botonActivo ? botonActivo.getAttribute('data-filter') : 'all';
             let currentPage = 1;
 
-            // Mantiene la categoría activa en la URL y en los links de cada item,
-            // para que al volver desde el detalle se respete el filtro elegido.
-            // No hace nada si el contenedor todavía no tiene items: initFiltersAndPagination()
-            // corre una vez antes de que lleguen los datos async (grid vacío) y de nuevo
-            // después, y no hay que pisar el ?categoria= de la URL con ese primer pase vacío.
             const syncFilterState = () => {
                 if (items.length === 0) return;
                 const url = new URL(window.location.href);
@@ -544,7 +502,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 renderPagination(totalPages);
             };
 
-            // Paginado compacto: ‹ 1 … 4 5 6 … 22 ›  (menos vecinos en el celu)
             const mqCompacto = window.matchMedia('(max-width: 640px)');
             let ultimoTotal = 0;
 
@@ -585,11 +542,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const vecinos = mqCompacto.matches ? 1 : 2;
                 let desde = Math.max(2, currentPage - vecinos);
                 let hasta = Math.min(totalPages - 1, currentPage + vecinos);
-                // Mantener siempre la misma cantidad de botones cerca de los extremos
                 const ancho = vecinos * 2;
                 if (currentPage - vecinos <= 2) hasta = Math.min(totalPages - 1, 1 + ancho + 1);
                 if (currentPage + vecinos >= totalPages - 1) desde = Math.max(2, totalPages - ancho - 1);
-                // Si el salto es de una sola página, mostrar el número en vez de "…"
                 if (desde === 3) desde = 2;
                 if (hasta === totalPages - 2) hasta = totalPages - 1;
 
@@ -631,8 +586,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
-    // Antes y Después. La posición vive en la variable CSS --ba-pos de la sección
-    // (0 = todo "después", 100 = todo "antes") y el CSS la traduce a transforms.
     const initBeforeAfter = () => {
         const seccion = document.querySelector('.before-after');
         const container = document.querySelector('.ba-container');
@@ -652,7 +605,6 @@ document.addEventListener('DOMContentLoaded', () => {
             botones.forEach(b => b.classList.toggle('is-activo', Number(b.dataset.baIr) === Math.round(pos)));
         };
 
-        // Movimiento suave (botones, teclado y la entrada)
         const animarA = (valor) => {
             seccion.classList.add('is-animando');
             aplicar(valor);
@@ -693,7 +645,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
         botones.forEach(b => b.addEventListener('click', () => animarA(Number(b.dataset.baIr))));
 
-        // Entrada: arranca mostrando solo el "antes" (la pared vacía) y se abre hasta la mitad
         aplicar(100);
         const observer = new IntersectionObserver((entries) => {
             if (!entries[0].isIntersecting) return;
@@ -703,17 +654,12 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(container);
     };
 
-    // Loader Premium: se va cuando termina su animación (la barra de progreso) y la
-    // primera foto del hero ya está lista, sin esperar a que cargue toda la página
-    // (antes esperaba el "load" completo + 2,9 s y en celulares tardaba mucho más).
     const initLoader = () => {
         const loader = document.querySelector('.loader-wrapper');
         if (!loader) return;
 
         const esperar = ms => new Promise(r => setTimeout(r, ms));
 
-        // La animación dura 2,9 s (la barra de progreso: 0,3 s de demora + 2,6 s) y
-        // arranca con el primer pintado, que es antes de que corra este script
         const animacionLista = esperar(2900);
 
         const hero = document.querySelector('.hero-slide.is-active img');
@@ -724,7 +670,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         animacionLista
-            // Si la foto viene lenta, se le da como mucho 1,5 s más
             .then(() => Promise.race([heroLista, esperar(1500)]))
             .then(() => {
                 loader.classList.add('hidden');
@@ -732,9 +677,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     };
 
-    // Datos de contacto: se editan desde el panel. Las páginas HTML traen escritos los
-    // de siempre y, si la API responde, se reemplazan por los cargados (las fichas PHP
-    // ya salen armadas del servidor y no tienen data-contacto).
     const initContacto = () => {
         const elementos = document.querySelectorAll('[data-contacto]');
         if (!elementos.length || window.location.protocol === 'file:') return;
@@ -743,7 +685,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const conSaltos = (el, partes) => el.replaceChildren(
             ...partes.flatMap((parte, i) => i ? [document.createElement('br'), parte] : [parte])
         );
-        // Solo si cambió: volver a poner el mismo src recarga el mapa
         const fijar = (el, atributo, valor) => {
             if (valor && el.getAttribute(atributo) !== valor) el.setAttribute(atributo, valor);
         };
@@ -757,7 +698,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (empresa.address) empresa.address.streetAddress = c.direccion;
                 empresa.sameAs = [c.instagram];
                 el.textContent = JSON.stringify(ld);
-            } catch (e) { /* se queda el que viene en el HTML */ }
+            } catch (e) {  }
         };
 
         fetch(new URL('api/datos.php?tipo=contacto', document.baseURI))
@@ -780,13 +721,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 });
             })
-            // Sin API (vista previa local, base caída): quedan los datos escritos en el HTML
             .catch(() => {});
     };
 
-    // Reseñas de Nosotros: se cargan desde el panel. El HTML trae escritas las de
-    // siempre; si la API responde, se reemplazan (y si no hay ninguna visible, la
-    // sección se oculta).
     const initResenas = () => {
         const grilla = document.querySelector('[data-resenas]');
         if (!grilla || window.location.protocol === 'file:') return;
@@ -798,9 +735,6 @@ document.addEventListener('DOMContentLoaded', () => {
             detalle: (card.querySelector('.testimonio-autor span') || {}).textContent || ''
         }));
 
-        // Las reseñas también van como datos estructurados de la empresa (schema.org), para
-        // que Google las asocie a Martineau. Ojo: Google no muestra estrellas por reseñas
-        // publicadas en el sitio de la propia empresa; esas salen del Perfil de Google.
         const publicarDatosEstructurados = lista => {
             let ld = document.getElementById('ld-resenas');
             if (!lista.length) { if (ld) ld.remove(); return; }
@@ -835,7 +769,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (seccion) seccion.hidden = true;
                     return;
                 }
-                // Si son las mismas que ya están escritas, no se tocan (no se repite la animación)
                 if (firma(resenas) === firma(actuales)) return;
 
                 grilla.replaceChildren(...resenas.map(r => {
@@ -862,11 +795,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 }));
                 window.initScrollReveal();
             })
-            // Sin API (vista previa local, base caída): quedan las reseñas escritas en el HTML
             .catch(() => {});
     };
 
-    // Inicialización de componentes
     const init = () => {
         initContacto();
         initResenas();
@@ -874,7 +805,6 @@ document.addEventListener('DOMContentLoaded', () => {
         initHeader();
         initMobileNav();
         initNavDropdowns();
-        // initParallax(); // Parallax desactivado
         window.initScrollReveal();
         initSmoothScroll();
         initFormHandling();

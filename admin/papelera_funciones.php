@@ -1,12 +1,4 @@
 <?php
-/*
- * Papelera de productos y proyectos.
- *
- * Eliminar desde el panel no borra: marca el ítem con eliminado_at y lo oculta (así
- * el sitio público, que ya filtra por "oculto", deja de mostrarlo sin cambiar nada).
- * Desde la papelera se puede restaurar o borrar del todo; a los PAPELERA_DIAS días
- * se borra solo, con sus imágenes.
- */
 
 const PAPELERA_DIAS = 30;
 const PAPELERA_TABLAS = ['producto' => 'productos', 'proyecto' => 'proyectos'];
@@ -19,7 +11,6 @@ function papelera_tabla(string $tipo): string
     return PAPELERA_TABLAS[$tipo];
 }
 
-/** "IN (:id0, :id1…)" con sus parámetros, para operar sobre varios ítems de una vez */
 function papelera_in(array $ids): array
 {
     $ids = array_values(array_unique(array_filter(array_map('intval', $ids), function ($id) { return $id > 0; })));
@@ -32,7 +23,6 @@ function papelera_in(array $ids): array
     return [$marcas ? 'IN (' . implode(', ', $marcas) . ')' : 'IN (NULL)', $params];
 }
 
-/** Manda a la papelera. Devuelve cuántos ítems se movieron. */
 function papelera_enviar(PDO $pdo, string $tipo, array $ids): int
 {
     $tabla = papelera_tabla($tipo);
@@ -47,7 +37,6 @@ function papelera_enviar(PDO $pdo, string $tipo, array $ids): int
     return $stmt->rowCount();
 }
 
-/** Saca de la papelera y deja la visibilidad como estaba antes de eliminarlo */
 function papelera_restaurar(PDO $pdo, string $tipo, array $ids): int
 {
     $tabla = papelera_tabla($tipo);
@@ -62,7 +51,6 @@ function papelera_restaurar(PDO $pdo, string $tipo, array $ids): int
     return $stmt->rowCount();
 }
 
-/** Borra del todo (con imágenes) ítems que ya están en la papelera */
 function papelera_borrar(PDO $pdo, string $tipo, array $ids): int
 {
     $tabla = papelera_tabla($tipo);
@@ -76,7 +64,6 @@ function papelera_borrar(PDO $pdo, string $tipo, array $ids): int
     [$in, $params] = papelera_in(array_column($items, 'id'));
     $pdo->prepare("DELETE FROM $tabla WHERE id $in")->execute($params);
 
-    // Las imágenes se borran después de las filas: si falla el DELETE, no quedan fichas sin fotos
     foreach ($items as $item) {
         $galeria = json_decode((string)$item['imagenes'], true);
         foreach (array_filter(array_merge([$item['imagen']], is_array($galeria) ? $galeria : [])) as $img) {
@@ -86,7 +73,6 @@ function papelera_borrar(PDO $pdo, string $tipo, array $ids): int
     return count($items);
 }
 
-/** Borra lo que lleva más de PAPELERA_DIAS días en la papelera */
 function papelera_purgar_vencidos(PDO $pdo): int
 {
     $borrados = 0;

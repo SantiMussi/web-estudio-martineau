@@ -1,16 +1,11 @@
-/* ═══════════════════════════════════════════════════════════
-   admin.css — Panel de Administración Martineau Studio
-   Tema Claro Cálido coherente con el sitio público
-   ═══════════════════════════════════════════════════════════ */
-
 :root {
-    --admin-bg: #E1DED7;        /* dust-grey — fondo de página */
-    --admin-bg-alt: #D8D3C9;    /* sidebar / zonas hundidas */
-    --admin-bg-card: #F3F1EC;   /* tarjetas, tablas, modales (elevados) */
-    --admin-text: #38322A;      /* espresso */
-    --admin-text-muted: #6E6150;/* stone-brown */
-    --admin-text-light: #8A7C6C;/* dusty-taupe */
-    --admin-accent: #6E6150;    /* stone-brown */
+    --admin-bg: #E1DED7;
+    --admin-bg-alt: #D8D3C9;
+    --admin-bg-card: #F3F1EC;
+    --admin-text: #38322A;
+    --admin-text-muted: #6E6150;
+    --admin-text-light: #8A7C6C;
+    --admin-accent: #6E6150;
     --admin-accent-dark: #574B3C;
     --admin-border: #CBC4B6;
     --admin-success: #4C7A54;
@@ -41,7 +36,6 @@ body {
     color: #F4F1ED;
 }
 
-/* Scrollbar */
 ::-webkit-scrollbar { width: 5px; }
 ::-webkit-scrollbar-track { background: var(--admin-bg); }
 ::-webkit-scrollbar-thumb { background: var(--admin-border); border-radius: 3px; }
@@ -50,13 +44,11 @@ body {
 a { color: var(--admin-accent); text-decoration: none; }
 a:hover { color: var(--admin-accent-dark); }
 
-/* ─── LAYOUT ─── */
 .admin-layout {
     display: flex;
     min-height: 100vh;
 }
 
-/* ─── SIDEBAR ─── */
 .admin-sidebar {
     width: var(--admin-sidebar-w);
     background: var(--admin-bg-alt);
@@ -143,7 +135,6 @@ a:hover { color: var(--admin-accent-dark); }
 
 .sidebar-footer a:hover { color: var(--admin-danger); }
 
-/* ─── MAIN CONTENT ─── */
 .admin-main {
     flex: 1;
     margin-left: var(--admin-sidebar-w);
@@ -173,7 +164,6 @@ a:hover { color: var(--admin-accent-dark); }
     align-items: center;
 }
 
-/* ─── BUTTONS ─── */
 .btn-admin {
     display: inline-flex;
     align-items: center;
@@ -246,7 +236,6 @@ a:hover { color: var(--admin-accent-dark); }
     color: var(--admin-accent);
 }
 
-/* ─── FILTRO DE TABLA ─── */
 .admin-filter-bar {
     display: flex;
     align-items: center;
@@ -274,7 +263,6 @@ a:hover { color: var(--admin-accent-dark); }
     color: var(--admin-text-light);
 }
 
-/* Órdenes predefinidos: a la derecha de la barra de filtros */
 .admin-filter-orden {
     display: inline-flex;
     align-items: center;
@@ -283,7 +271,6 @@ a:hover { color: var(--admin-accent-dark); }
     flex-wrap: wrap;
 }
 
-/* Filas que se arrastran juntas (casilla marcada) */
 .admin-table tr.fila-en-grupo td {
     background: rgba(110, 97, 80, 0.1);
 }
@@ -293,7 +280,6 @@ a:hover { color: var(--admin-accent-dark); }
     cursor: not-allowed;
 }
 
-/* ─── TABLE ─── */
 .admin-table-wrapper {
     background: var(--admin-bg-card);
     border: 1px solid var(--admin-border);
@@ -353,7 +339,6 @@ a:hover { color: var(--admin-accent-dark); }
     align-items: center;
 }
 
-/* Badge Destacar */
 .badge {
     display: inline-flex;
     align-items: center;
@@ -383,7 +368,6 @@ a:hover { color: var(--admin-accent-dark); }
     border: 1px solid rgba(110, 97, 80, 0.28);
 }
 
-/* Toggle Button */
 .toggle-btn {
     background: none;
     border: none;
@@ -391,12 +375,11 @@ a:hover { color: var(--admin-accent-dark); }
     padding: 0;
 }
 
-/* ─── MODAL ─── */
 .modal-overlay {
     display: none;
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(46, 40, 32, 0.5); /* Warm scrim to compensate for lack of blur */
+    background: rgba(46, 40, 32, 0.5);
     z-index: 200;
     align-items: center;
     justify-content: center;
@@ -473,7 +456,6 @@ a:hover { color: var(--admin-accent-dark); }
     border-top: 1px solid var(--admin-border);
 }
 
-/* ─── FORMS ─── */
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -547,7 +529,6 @@ select.form-control {
     color: var(--admin-text-muted);
 }
 
-/* ─── FILE UPLOAD ─── */
 .file-upload-area {
     border: 2px dashed var(--admin-border);
     border-radius: var(--admin-radius);
@@ -627,7 +608,6 @@ select.form-control {
     justify-content: center;
 }
 
-/* ─── SPECS BUILDER ─── */
 .specs-container {
     display: flex;
     flex-direction: column;
@@ -675,7 +655,6 @@ select.form-control {
     background: rgba(110, 97, 80, 0.07);
 }
 
-/* ─── IMPORTACIÓN MASIVA ─── */
 .import-card {
     background: var(--admin-bg-card);
     border: 1px solid var(--admin-border);
@@ -748,7 +727,6 @@ select.form-control {
     background: var(--admin-border);
 }
 
-/* ─── DATOS DE CONTACTO ─── */
 .ajustes-intro {
     color: var(--admin-text-muted);
     font-size: 0.85rem;
@@ -767,7 +745,6 @@ select.form-control {
     color: var(--admin-text-light);
 }
 
-/* ─── DIRECCIÓN WEB (slug) DE LAS FICHAS ─── */
 .slug-campo {
     display: flex;
     align-items: stretch;
@@ -796,7 +773,6 @@ select.form-control {
     .slug-campo .form-control { border-radius: 6px; }
 }
 
-/* ─── PORTADA ─── */
 .portada-subir {
     margin-bottom: 1.5rem;
 }
@@ -818,7 +794,6 @@ select.form-control {
     width: 62px;
 }
 
-/* ─── EDITOR DE FOTOS DE LA PORTADA ─── */
 .modal.editor-modal {
     max-width: 1080px;
     width: 100%;
@@ -845,7 +820,6 @@ select.form-control {
     height: auto;
 }
 
-/* El recuadro de lo que se ve en celulares; lo de afuera queda oscurecido */
 .editor-marco {
     position: absolute;
     border: 2px solid #fff;
@@ -857,7 +831,6 @@ select.form-control {
     cursor: grabbing;
 }
 
-/* Recorte de la foto (modo Recortar): se mueve y se achica desde las esquinas */
 .editor-recorte {
     position: absolute;
     border: 2px solid #fff;
@@ -879,12 +852,10 @@ select.form-control {
 .editor-recorte i[data-esquina="sw"] { bottom: -2px; left: -2px; cursor: nesw-resize; }
 .editor-recorte i[data-esquina="se"] { bottom: -2px; right: -2px; cursor: nwse-resize; }
 
-/* Modo Recortar: no se muestra el recuadro del celular */
 .editor-foto[data-modo="recorte"] .editor-marco {
     display: none;
 }
 
-/* Modo Celular: el recorte queda marcado pero quieto, y se mueve el recuadro del celular */
 .editor-foto[data-modo="celular"] .editor-recorte {
     pointer-events: none;
     border-style: dashed;
@@ -1005,8 +976,6 @@ select.form-control {
     }
 }
 
-/* ─── EDITOR DE FOTOS DE PRODUCTOS Y PROYECTOS (editor-imagen.js) ─── */
-/* La foto entera a la vista, sea vertical u horizontal */
 .editor-foto-libre {
     width: fit-content;
     max-width: 100%;
@@ -1019,7 +988,6 @@ select.form-control {
     max-height: 62vh;
 }
 
-/* Tercios dentro del recorte, de guía para enderezar */
 .editor-foto-libre .editor-recorte {
     background-image:
         linear-gradient(to right, transparent calc(33.33% - 0.5px), rgba(255, 255, 255, 0.45) calc(33.33% - 0.5px), rgba(255, 255, 255, 0.45) calc(33.33% + 0.5px), transparent calc(33.33% + 0.5px), transparent calc(66.66% - 0.5px), rgba(255, 255, 255, 0.45) calc(66.66% - 0.5px), rgba(255, 255, 255, 0.45) calc(66.66% + 0.5px), transparent calc(66.66% + 0.5px)),
@@ -1234,7 +1202,6 @@ select.form-control {
     color: var(--admin-text-light);
 }
 
-/* Etapas del editor: Foto (ajustes) y Capas (texto, formas…) */
 .editor-modal .modal-header {
     gap: 1rem;
 }
@@ -1281,7 +1248,6 @@ select.form-control {
     display: none;
 }
 
-/* Pie del editor: diseños a la izquierda, Cancelar / Aplicar a la derecha */
 .editor-pie {
     align-items: center;
     flex-wrap: wrap;
@@ -1397,7 +1363,6 @@ select.form-control {
     color: var(--admin-text-muted);
 }
 
-/* Página "Editor de fotos": los diseños guardados */
 .disenos-grilla {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
@@ -1451,7 +1416,6 @@ select.form-control {
     }
 }
 
-/* ─── CAPAS (editor-capas.js) ─── */
 .capas-escenario {
     display: flex;
     justify-content: center;
@@ -1728,7 +1692,6 @@ select.form-control {
     }
 }
 
-/* Botón de editar en las miniaturas de los formularios */
 .preview-thumb .editar-preview {
     position: absolute;
     bottom: -6px;
@@ -1762,7 +1725,6 @@ select.form-control {
     stroke-linejoin: round;
 }
 
-/* Una foto ya subida que se va a reemplazar por la editada al guardar */
 .preview-thumb.is-reemplazada {
     display: none !important;
 }
@@ -1772,7 +1734,6 @@ select.form-control {
     outline-offset: 1px;
 }
 
-/* ─── REVISAR FICHAS ─── */
 .revision-resumen {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -1830,7 +1791,6 @@ select.form-control {
     border: 1px solid rgba(138, 99, 20, 0.3);
 }
 
-/* ─── PÁGINAS EN LAS LISTAS LARGAS ─── */
 .admin-table tr.fuera-de-pagina {
     display: none;
 }
@@ -1889,7 +1849,6 @@ select.form-control {
     color: var(--admin-text-light);
 }
 
-/* ─── EXPORTAR ─── */
 .exportar-botones {
     display: flex;
     flex-wrap: wrap;
@@ -1903,7 +1862,6 @@ select.form-control {
     max-width: 75ch;
 }
 
-/* ─── RESEÑAS ─── */
 .resena-texto {
     max-width: 48ch;
     font-style: italic;
@@ -1912,7 +1870,6 @@ select.form-control {
     color: var(--admin-text-muted);
 }
 
-/* ─── SELECCIÓN DE VARIAS FILAS ─── */
 .col-check {
     width: 40px;
 }
@@ -1974,7 +1931,6 @@ select.form-control {
     display: none;
 }
 
-/* ─── PAPELERA ─── */
 .sidebar-contador {
     margin-left: auto;
     min-width: 1.4rem;
@@ -1986,7 +1942,6 @@ select.form-control {
     text-align: center;
 }
 
-/* ─── ALERTS / FEEDBACK ─── */
 .alert {
     padding: 0.85rem 1.25rem;
     border-radius: var(--admin-radius);
@@ -2015,7 +1970,6 @@ select.form-control {
     color: var(--admin-warning);
 }
 
-/* ─── EMPTY STATE ─── */
 .empty-state {
     text-align: center;
     padding: 4rem 2rem;
@@ -2036,7 +1990,6 @@ select.form-control {
     margin-bottom: 1.5rem;
 }
 
-/* ─── MOBILE TOGGLE ─── */
 .sidebar-toggle {
     display: none;
     position: fixed;
@@ -2059,7 +2012,6 @@ select.form-control {
     stroke-width: 2;
 }
 
-/* ─── DRAG & DROP REORDERING ─── */
 .drag-handle {
     cursor: grab;
     color: var(--admin-text-muted);
@@ -2083,7 +2035,6 @@ select.form-control {
     cursor: grabbing;
 }
 
-/* ─── RESPONSIVE ─── */
 @media (max-width: 768px) {
     .admin-sidebar {
         transform: translateX(-100%);

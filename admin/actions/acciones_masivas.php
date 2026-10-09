@@ -8,7 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 verificar_csrf();
 
-// Lo mismo que los botones de cada fila, pero para varios productos o proyectos a la vez
 $tipo = ($_POST['tipo'] ?? '') === 'proyecto' ? 'proyecto' : 'producto';
 $volver = $tipo === 'proyecto' ? '../proyectos.php' : '../index.php';
 

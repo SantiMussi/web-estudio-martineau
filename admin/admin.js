@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initCapitalizarTitulo();
 });
 
-// Deja siempre la primera letra del título en mayúscula, sin tocar el resto de lo escrito.
 function capitalizarPrimeraLetra(str) {
     return str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
 }
@@ -23,7 +22,7 @@ function initCapitalizarTitulo() {
             if (!val) return;
             const primera = val.charAt(0);
             const mayus = primera.toUpperCase();
-            if (primera === mayus) return; // ya está en mayúscula: no tocar el valor ni mover el cursor
+            if (primera === mayus) return;
             const pos = input.selectionStart;
             input.value = mayus + val.slice(1);
             input.setSelectionRange(pos, pos);
@@ -31,7 +30,6 @@ function initCapitalizarTitulo() {
     });
 }
 
-// Combina el filtro por categoría (si existe) y el buscador de texto (si existe) para una misma tabla.
 function initTableFilters() {
     const tbodyIds = new Set();
     document.querySelectorAll('[data-filtro-categoria]').forEach(el => tbodyIds.add(el.getAttribute('data-filtro-categoria')));
@@ -46,7 +44,6 @@ function initTableFilters() {
         const countEl = document.querySelector(`[data-filtro-count="${tbodyId}"]`);
         const storageKey = 'admin_filtro_categoria_' + tbodyId;
 
-        // Restaurar la última categoría filtrada (se pierde el estado en cada guardado porque recarga la página)
         if (select) {
             try {
                 const guardado = localStorage.getItem(storageKey);
@@ -54,7 +51,6 @@ function initTableFilters() {
                     select.value = guardado;
                 }
             } catch (e) {
-                // localStorage no disponible: seguimos sin filtro restaurado
             }
         }
 
@@ -86,7 +82,6 @@ function initTableFilters() {
                 try {
                     localStorage.setItem(storageKey, valorCategoria);
                 } catch (e) {
-                    // localStorage no disponible: el filtro no persiste, pero sigue funcionando en esta carga
                 }
             }
         };
@@ -129,7 +124,6 @@ function initModals() {
                     const idInput = form.querySelector('input[name="id"]');
                     if (idInput) idInput.value = '';
 
-                    // Re-habilitar campos que un editarXxx() haya bloqueado (ej: tipo de categoría)
                     form.querySelectorAll('[disabled]').forEach(el => el.disabled = false);
                     form.querySelectorAll('.solo-en-edicion').forEach(el => el.hidden = true);
 
@@ -145,13 +139,12 @@ function initModals() {
                     const currentGalleryDiv = form.querySelector('#current-gallery');
                     if (currentGalleryDiv) {
                         currentGalleryDiv.style.display = 'none';
-                        currentGalleryDiv.innerHTML = '';   // sin fotos ni reemplazos de la ficha anterior
+                        currentGalleryDiv.innerHTML = '';
                     }
 
                     const imagePreviews = form.querySelectorAll('.image-preview');
                     imagePreviews.forEach(p => p.innerHTML = '');
 
-                    // Si la tabla está filtrada por categoría, precargar esa categoría en el form
                     const catSelect = form.querySelector('[name="categoria_id"]');
                     const filtroCat = document.querySelector('[data-filtro-categoria]');
                     if (catSelect && filtroCat && filtroCat.value) {
@@ -252,7 +245,6 @@ function editarItem(data, modalId) {
     const title = overlay.querySelector('.modal-header h2');
     if (title) title.textContent = data._modal_title || 'Editar';
 
-    // Sin archivos elegidos (o editados) para la ficha que se abrió antes
     form.querySelectorAll('input[type="file"]').forEach(input => { input.value = ''; });
     form.querySelectorAll('.image-preview').forEach(p => { p.innerHTML = ''; });
 
@@ -265,7 +257,6 @@ function editarItem(data, modalId) {
             if (previewThumb) {
                 previewThumb.style.display = 'inline-block';
                 previewThumb.classList.remove('is-reemplazada');
-                // Editar la foto principal: la editada entra como foto nueva y reemplaza a esta al guardar
                 if (!previewThumb.querySelector('.editar-preview')) {
                     const editar = botonEditarFoto(async () => {
                         const editada = await EditorImagen.abrir('../' + currentMainImgDiv.dataset.ruta);
@@ -308,13 +299,11 @@ function editarItem(data, modalId) {
                     hidden.value = img;
                     div.appendChild(hidden);
                 });
-                // Editar una foto de la galería: al guardar reemplaza a la original en el mismo lugar
                 const editar = botonEditarFoto(async () => {
                     const previa = currentGalleryDiv._reemplazos.get(img);
                     const editada = await EditorImagen.abrir(previa || '../' + img, { nombre: img.split('/').pop() });
                     if (!editada) return;
                     reemplazarFotoGaleria(currentGalleryDiv, img, editada);
-                    // Como data: (no blob:, que la política de seguridad de esta página puede bloquear)
                     const lector = new FileReader();
                     lector.onload = () => { div.querySelector('img').src = lector.result; };
                     lector.readAsDataURL(editada);
@@ -429,8 +418,6 @@ function initImagePreviews() {
             if (!input || !e.dataTransfer.files.length) return;
 
             if (input.multiple) {
-                // Suma lo que ya estaba cargado en vez de reemplazarlo, para poder
-                // arrastrar las imágenes de a una y que se vayan acumulando.
                 const dt = new DataTransfer();
                 Array.from(input.files).forEach(f => dt.items.add(f));
                 Array.from(e.dataTransfer.files).forEach(f => dt.items.add(f));
@@ -444,8 +431,6 @@ function initImagePreviews() {
     });
 }
 
-// Si todavía no se escribió un título, lo precarga con el nombre del archivo
-// de la imagen principal (sin extensión y sin el prefijo "Copia de ").
 function precargarTituloDesdeImagen(input) {
     const form = input.closest('form');
     if (!form) return;
@@ -464,7 +449,6 @@ function precargarTituloDesdeImagen(input) {
     if (titulo) tituloInput.value = capitalizarPrimeraLetra(titulo);
 }
 
-// Botón de lápiz para abrir una foto en el editor (editor-imagen.js), si la página lo carga
 function botonEditarFoto(alEditar) {
     if (!window.EditorImagen) return null;
     const boton = document.createElement('button');
@@ -477,8 +461,6 @@ function botonEditarFoto(alEditar) {
     return boton;
 }
 
-// Las fotos de la galería ya subidas que se editaron viajan en galeria_reemplazo[] (los archivos)
-// y galeria_reemplazo_de[] (la ruta de la foto que reemplaza cada uno, en el mismo orden).
 function reemplazarFotoGaleria(contenedor, ruta, archivo) {
     contenedor._reemplazos.set(ruta, archivo);
 
@@ -508,9 +490,8 @@ function reemplazarFotoGaleria(contenedor, ruta, archivo) {
 
 function previewFiles(input, previewContainer, multiple) {
     if (!previewContainer) return;
-    previewContainer.innerHTML = ''; // Limpiar siempre porque el input file nativo reemplaza la selección
+    previewContainer.innerHTML = '';
 
-    // Con una foto principal nueva (o editada), la que ya estaba se reemplaza al guardar
     if (!multiple) {
         const form = input.closest('form');
         const actual = form && form.querySelector('#current-main-image .preview-thumb');
@@ -537,10 +518,9 @@ function previewFiles(input, previewContainer, multiple) {
                     if (j !== i) dt.items.add(input.files[j]);
                 }
                 input.files = dt.files;
-                previewFiles(input, previewContainer, multiple); // Volver a renderizar
+                previewFiles(input, previewContainer, multiple);
             });
 
-            // La editada reemplaza a la elegida en el mismo lugar
             const editar = botonEditarFoto(async () => {
                 const editada = await EditorImagen.abrir(file);
                 if (!editada) return;
@@ -574,11 +554,11 @@ function generarSlug(texto) {
     return texto
         .toLowerCase()
         .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '') // Quitar acentos
-        .replace(/[^a-z0-9\s-]/g, '')    // Solo alfanuméricos
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9\s-]/g, '')
         .trim()
-        .replace(/[\s]+/g, '-')          // Espacios a guiones
-        .replace(/-+/g, '-');            // Múltiples guiones a uno
+        .replace(/[\s]+/g, '-')
+        .replace(/-+/g, '-');
 }
 
 function initDeleteConfirmations() {
@@ -590,7 +570,6 @@ function initDeleteConfirmations() {
         });
     });
 
-    // Botones con su propio mensaje de confirmación
     document.querySelectorAll('[data-confirmar]').forEach(btn => {
         btn.addEventListener('click', (e) => {
             if (!confirm(btn.getAttribute('data-confirmar'))) {
@@ -600,10 +579,6 @@ function initDeleteConfirmations() {
     });
 }
 
-// Casillas para operar sobre varias filas de una tabla a la vez.
-// El form de la barra lleva data-seleccion="<id del tbody>" y las casillas de cada fila
-// apuntan a ese form con el atributo form="...". Solo cuentan las filas visibles:
-// si el filtro de categoría o el buscador esconden una fila marcada, no se manda.
 function initSeleccion() {
     document.querySelectorAll('form[data-seleccion]').forEach(barra => {
         const tbody = document.getElementById(barra.getAttribute('data-seleccion'));
@@ -612,11 +587,9 @@ function initSeleccion() {
         const todos = document.querySelector(`[data-seleccion-todos="${tbody.id}"]`);
         const cuenta = barra.querySelector('[data-seleccion-cuenta]');
         const casillas = () => [...tbody.querySelectorAll(`input[type="checkbox"][form="${barra.id}"]`)];
-        // Con páginas: se pueden marcar filas de varias páginas, pero "todos" marca solo la actual
         const visible = casilla => casilla.closest('tr').style.display !== 'none';
         const enPagina = casilla => visible(casilla) && !casilla.closest('tr').classList.contains('fuera-de-pagina');
 
-        // Para marcar las de todas las páginas (las que deja ver el filtro), como en Gmail
         const botonTodas = document.createElement('button');
         botonTodas.type = 'button';
         botonTodas.className = 'barra-seleccion-todas';
@@ -634,9 +607,7 @@ function initSeleccion() {
                 todos.checked = marcadasPagina > 0 && marcadasPagina === pagina.length;
                 todos.indeterminate = marcadasPagina > 0 && marcadasPagina < pagina.length;
             }
-            // Solo tiene sentido si hay filas fuera de la página actual
             botonTodas.hidden = visibles.length <= pagina.length;
-            // Con filtro, "todos" son los que pasan el filtro (las casillas ocultas no cuentan)
             const filtroCat = document.querySelector(`[data-filtro-categoria="${tbody.id}"]`);
             const buscador = document.querySelector(`[data-buscar-tabla="${tbody.id}"]`);
             const deQue = filtroCat && filtroCat.value !== '' ? ' de la categoría'
@@ -660,8 +631,6 @@ function initSeleccion() {
                 actualizar();
             });
         }
-        // Las casillas, el filtro y el buscador cambian la cuenta. La casilla "todos" se
-        // excluye: su evento input llega antes que el change y la destildaría antes de usarla.
         const alCambiar = e => { if (e.target !== todos) actualizar(); };
         document.addEventListener('input', alCambiar);
         document.addEventListener('change', alCambiar);
@@ -723,13 +692,8 @@ function escapeAttr(str) {
 document.addEventListener('DOMContentLoaded', () => {
     const initSortable = (id, tabla) => {
         const el = document.getElementById(id);
-        // Sortable (admin/vendor): si no cargó, que no frene lo demás (páginas, etc.)
         if (!el || typeof Sortable === 'undefined') return;
 
-        // Mover en conjunto: las filas con la casilla marcada se arrastran juntas.
-        // La selección de Sortable se sincroniza con las casillas justo antes de arrastrar
-        // (multiDragKey CTRL: un clic común en la fila no la selecciona, así no interfiere
-        // con los botones de Editar, Duplicar, etc.).
         const conCasillas = !!el.querySelector('input[name="items[]"]');
         const multiDrag = conCasillas && Sortable.utils && typeof Sortable.utils.select === 'function';
         if (multiDrag) {
@@ -741,7 +705,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     else Sortable.utils.deselect(tr);
                 });
             };
-            // Al tildar/destildar, la fila se marca (o no) como parte del grupo
             el.addEventListener('change', (e) => {
                 if (e.target.name !== 'items[]') return;
                 const tr = e.target.closest('tr');
@@ -783,7 +746,6 @@ document.addEventListener('DOMContentLoaded', () => {
     abrirFichaPedida();
 });
 
-// Guarda el orden completo de una tabla (lista de ids). Devuelve true si se guardó.
 function guardarOrden(tabla, orden) {
     const csrfInput = document.querySelector('input[name="csrf_token"]');
     return fetch('actions/guardar_orden.php', {
@@ -810,10 +772,6 @@ function guardarOrden(tabla, orden) {
     });
 }
 
-// Órdenes predefinidos (nombre, categoría, fecha, destacados). Sin filtro ordenan toda
-// la tabla; con una categoría filtrada, solo los de esa categoría, que se reparten en
-// los mismos lugares que ya ocupaban (el resto no se mueve). Se guarda como el orden
-// manual, así que después se puede seguir ajustando arrastrando.
 function initOrdenAutomatico() {
     document.querySelectorAll('[data-ordenar-aplicar]').forEach(boton => {
         const tbodyId = boton.getAttribute('data-ordenar-aplicar');
@@ -823,7 +781,6 @@ function initOrdenAutomatico() {
         if (!tbody || !select) return;
         const tabla = select.getAttribute('data-ordenar-guardar');
 
-        // numeric: "Nº 2" va antes que "Nº 10"; sensitivity base: ignora tildes y mayúsculas
         const colator = new Intl.Collator('es', { numeric: true, sensitivity: 'base' });
         const titulo = tr => {
             const el = tr.querySelector('.table-title');
@@ -833,11 +790,9 @@ function initOrdenAutomatico() {
         const comparadores = {
             'nombre': porNombre,
             'nombre-desc': (a, b) => porNombre(b, a),
-            // Sin categoría al final
             'categoria': (a, b) => colator.compare(a.dataset.categoriaNombre || '￿', b.dataset.categoriaNombre || '￿') || porNombre(a, b),
             'nuevos': (a, b) => (b.dataset.creado || '').localeCompare(a.dataset.creado || ''),
             'viejos': (a, b) => (a.dataset.creado || '').localeCompare(b.dataset.creado || ''),
-            // sort es estable: entre destacados (y entre normales) queda el orden que tenían
             'destacados': (a, b) => Number(b.dataset.destacado || 0) - Number(a.dataset.destacado || 0),
         };
 
@@ -847,7 +802,6 @@ function initOrdenAutomatico() {
 
         const actualizar = () => {
             const enCategoria = categoriaActual() !== null;
-            // "Categoría y nombre" no tiene sentido dentro de una sola categoría
             const opcionCategoria = select.querySelector('option[value="categoria"]');
             if (opcionCategoria) {
                 opcionCategoria.disabled = enCategoria;
@@ -894,15 +848,12 @@ function initOrdenAutomatico() {
     });
 }
 
-// "Al principio" / "Al final" en la barra de selección: mueve juntos los marcados
-// (aunque estén en otras páginas de la lista). Con una categoría filtrada se mueven
-// dentro de esa categoría, en los lugares que ocupan; el resto no se toca.
 function initMoverSeleccion() {
     document.querySelectorAll('[data-mover-seleccion]').forEach(boton => {
         const tbody = document.getElementById(boton.getAttribute('data-mover-tabla'));
         if (!tbody) return;
         const tabla = boton.getAttribute('data-mover-guardar');
-        const destino = boton.getAttribute('data-mover-seleccion'); // 'principio' | 'final'
+        const destino = boton.getAttribute('data-mover-seleccion');
         const filtroCat = document.querySelector(`[data-filtro-categoria="${tbody.id}"]`);
 
         boton.addEventListener('click', () => {
@@ -935,11 +886,6 @@ function initMoverSeleccion() {
     });
 }
 
-// Páginas en las listas largas (productos). Se hace en el navegador sobre las filas
-// que ya están, así siguen andando el buscador y el filtro (las páginas se arman con
-// lo filtrado), el arrastrar para ordenar (se guarda el orden completo) y la selección.
-// Recuerda la página al volver de guardar, y si se llega con ?editar=ID abre la página
-// donde está esa ficha.
 function initPaginacion(tbodyId, porPagina = 30) {
     const tbody = document.getElementById(tbodyId);
     if (!tbody) return;
@@ -953,7 +899,7 @@ function initPaginacion(tbodyId, porPagina = 30) {
 
     const clave = 'admin_pagina_' + tbodyId;
     let pagina = 1;
-    try { pagina = parseInt(sessionStorage.getItem(clave), 10) || 1; } catch (e) { /* sin storage: arranca en la 1 */ }
+    try { pagina = parseInt(sessionStorage.getItem(clave), 10) || 1; } catch (e) {  }
 
     const filtradas = () => [...tbody.querySelectorAll('tr[data-id]')].filter(tr => tr.style.display !== 'none');
 
@@ -983,7 +929,7 @@ function initPaginacion(tbodyId, porPagina = 30) {
         const filas = filtradas();
         const total = Math.max(1, Math.ceil(filas.length / porPagina));
         pagina = Math.min(Math.max(1, pagina), total);
-        try { sessionStorage.setItem(clave, pagina); } catch (e) { /* no persiste, sigue andando */ }
+        try { sessionStorage.setItem(clave, pagina); } catch (e) {  }
 
         tbody.querySelectorAll('tr[data-id]').forEach(tr => tr.classList.remove('fuera-de-pagina'));
         filas.forEach((tr, i) => {
@@ -1003,7 +949,6 @@ function initPaginacion(tbodyId, porPagina = 30) {
             numeros.className = 'admin-paginacion-numeros';
             numeros.append(boton('‹', pagina - 1, { desactivado: pagina === 1, etiqueta: 'Página anterior' }));
             for (let n = 1; n <= total; n++) {
-                // Con muchas páginas: primera, última y las vecinas de la actual
                 if (n === 1 || n === total || Math.abs(n - pagina) <= 1) {
                     numeros.append(boton(String(n), n, { actual: n === pagina }));
                 } else if (Math.abs(n - pagina) === 2) {
@@ -1019,7 +964,6 @@ function initPaginacion(tbodyId, porPagina = 30) {
         tbody.dispatchEvent(new Event('paginacion'));
     };
 
-    // El buscador, el filtro de categoría y los órdenes predefinidos vuelven a la página 1
     document.querySelectorAll(`[data-buscar-tabla="${tbodyId}"], [data-filtro-categoria="${tbodyId}"]`).forEach(el => {
         el.addEventListener(el.tagName === 'SELECT' ? 'change' : 'input', () => {
             pagina = 1;
@@ -1034,8 +978,6 @@ function initPaginacion(tbodyId, porPagina = 30) {
     render();
 }
 
-// "Dirección web" de productos y proyectos: mientras se crea uno nuevo se arma sola
-// con el título; si la tocan a mano o es una ficha que ya existe, no se pisa.
 function initSlugFichas() {
     document.querySelectorAll('input[data-slug-desde]').forEach(slug => {
         const form = slug.form;
@@ -1053,7 +995,6 @@ function initSlugFichas() {
     });
 }
 
-// Desde "Revisar fichas" se llega con ?editar=ID: abre esa ficha directamente
 function abrirFichaPedida() {
     const id = new URLSearchParams(window.location.search).get('editar');
     if (!id || !/^\d+$/.test(id)) return;

@@ -8,7 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 verificar_csrf();
 
-// Los ítems llegan como "producto:12" / "proyecto:7" (la papelera mezcla los dos tipos)
 function papelera_items_por_tipo(array $valores): array
 {
     $por_tipo = [];

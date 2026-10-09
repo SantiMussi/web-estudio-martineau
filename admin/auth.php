@@ -1,14 +1,12 @@
 <?php
 require_once __DIR__ . '/config.php';
 
-// Ruta absoluta: este archivo se incluye tanto desde admin/*.php como desde admin/actions/*.php,
-// y una ruta relativa resolvería mal en ese segundo caso.
 if (!isset($_SESSION['user_id'])) {
     header('Location: /admin/login.php');
     exit();
 }
 
-const SESION_INACTIVIDAD_MAX_SEGUNDOS = 1800; // 30 minutos sin actividad
+const SESION_INACTIVIDAD_MAX_SEGUNDOS = 1800;
 
 if (isset($_SESSION['ultima_actividad']) && (time() - $_SESSION['ultima_actividad']) > SESION_INACTIVIDAD_MAX_SEGUNDOS) {
     $_SESSION = [];
@@ -40,11 +38,9 @@ require_once __DIR__ . '/../inc/slugs.php';
 try {
     migrar_base($pdo);
 } catch (Exception $e) {
-    // Se vuelve a intentar en el próximo pedido; mientras, lo nuevo del panel puede fallar
     error_log('[migraciones.php] ' . $e->getMessage());
 }
 
-// Slugs de las fichas nuevas, duplicadas o importadas (ver inc/slugs.php)
 try {
     if (fslug_disponibles($pdo)) fslug_completar($pdo);
 } catch (Exception $e) {

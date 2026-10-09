@@ -1,9 +1,4 @@
 <?php
-/*
- * Sitemap para buscadores, generado desde la base: se sirve como /sitemap.xml
- * (ver .htaccess). Incluye las páginas fijas y cada producto y proyecto publicado,
- * con sus imágenes (así también aparecen en Google Imágenes).
- */
 require __DIR__ . '/inc/ficha.php';
 
 $paginas = [
@@ -36,7 +31,6 @@ try {
         }
     }
 } catch (Throwable $e) {
-    // Sin base igual se publican las páginas fijas
     error_log('[sitemap.php] ' . $e->getMessage());
 }
 

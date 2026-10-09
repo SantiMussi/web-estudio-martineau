@@ -1,11 +1,4 @@
 <?php
-/*
- * Fotos de la galería de un producto o proyecto que se editaron en el panel
- * (admin/editor-imagen.js). El formulario las manda en galeria_reemplazo[] y, en el
- * mismo orden, la ruta de la foto que reemplaza cada una en galeria_reemplazo_de[].
- *
- * Devuelve [ruta anterior => archivo de $_FILES] solo con las que llegaron bien.
- */
 function fgal_reemplazos(): array {
     $de = $_POST['galeria_reemplazo_de'] ?? [];
     $archivos = $_FILES['galeria_reemplazo'] ?? null;

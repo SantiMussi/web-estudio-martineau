@@ -1,16 +1,13 @@
-/* Reset y Variables Base - Premium Warm Light Theme */
 :root {
-  /* Paleta base (neutros cálidos: taupe, beige y piedra) */
   --dusty-taupe: #897B6B;
   --khaki-beige: #B8B0A3;
   --dust-grey: #E1DED7;
   --stone-brown: #6E6150;
   --dusty-taupe-2: #A19585;
 
-  /* Semánticos - tema claro cálido */
-  --color-bg: #EFEDE8;              /* papel cálido (tinte claro de dust-grey) */
-  --color-bg-alt: var(--dust-grey); /* secciones alternas */
-  --color-text: #38322A;            /* espresso: stone-brown oscurecido para lectura */
+  --color-bg: #EFEDE8;
+  --color-bg-alt: var(--dust-grey);
+  --color-text: #38322A;
   --color-text-muted: var(--stone-brown);
   --color-text-light: var(--dusty-taupe);
   --color-accent: var(--stone-brown);
@@ -20,19 +17,15 @@
   --color-black: #2A241D;
   --color-overlay: rgba(42, 36, 29, 0.6);
 
-  /* Texto y detalles sobre imágenes / héroes oscuros */
   --ink-on-dark: #F4F1ED;
   --ink-on-dark-muted: #C9BCA9;
 
-  /* Gradientes Premium */
   --grad-accent: linear-gradient(135deg, var(--dusty-taupe-2) 0%, var(--stone-brown) 100%);
   --grad-dark: radial-gradient(circle at top right, #F5F3EE 0%, var(--color-bg) 100%);
 
-  /* Tipografías — Cormorant Garamond en toda la página */
   --font-sans: 'Cormorant Garamond', 'Didot', 'Bodoni MT', 'Playfair Display', Georgia, 'Times New Roman', serif;
   --font-serif: 'Cormorant Garamond', 'Didot', 'Bodoni MT', 'Playfair Display', Georgia, 'Times New Roman', serif;
 
-  /* Transiciones y Easing */
   --ease-smooth: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
   --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -51,7 +44,6 @@ html {
 
 body {
   font-family: var(--font-sans);
-  /* Cormorant a 400 es muy fina para pantalla: todo el sitio va un paso más grueso */
   font-weight: 500;
   background: var(--color-bg);
   background-image: var(--grad-dark);
@@ -67,7 +59,6 @@ body {
   color: var(--color-black);
 }
 
-/* Barra de scroll personalizada */
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -82,7 +73,6 @@ body {
   background: var(--color-accent);
 }
 
-/* Tipografía */
 h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1rem;
 }
@@ -114,7 +104,6 @@ h3 {
 p {
   max-width: 65ch;
   margin-bottom: 1.5rem;
-  /* Un tono más oscuro que --color-text-muted: con Cormorant se perdía sobre el fondo claro */
   color: var(--color-accent-dark);
   font-size: 1.05rem;
 }
@@ -143,9 +132,7 @@ p:last-child {
   margin-right: 15px;
 }
 
-/* Loader / Splash — logo Martineau */
 .loader-wrapper {
-  /* Medidas del logo: las líneas guía se calculan a partir de acá */
   --lw: clamp(118px, 34vw, 250px);
   --lh: calc(var(--lw) * 375 / 280);
   --inset: clamp(12px, 2.4vw, 30px);
@@ -170,7 +157,6 @@ p:last-child {
   pointer-events: none;
 }
 
-/* Las dos mitades del "molde": fondo piedra con viñeta y grano */
 .loader-panel {
   position: absolute;
   top: 0;
@@ -187,7 +173,6 @@ p:last-child {
 
 .loader-panel-l { left: 0; background-position: left top; }
 .loader-panel-r { right: 0; background-position: right top; }
-/* Las mitades se pisan 2px para no dejar rendija; el grano no se duplica ahí */
 .loader-panel-r::before { left: 2px; }
 
 .loader-panel::before {
@@ -198,7 +183,6 @@ p:last-child {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .16 0 0 0 0 .12 0 0 0 .9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* El borde de la mitad derecha: una línea de luz en la junta al abrirse */
 .loader-panel-r::after {
   content: '';
   position: absolute;
@@ -215,7 +199,6 @@ p:last-child {
 .loader-wrapper.hidden .loader-panel-r { transform: translateX(101%); }
 .loader-wrapper.hidden .loader-panel-r::after { opacity: 1; }
 
-/* Marco de pantalla completa: eco del doble marco redondeado del logo */
 .loader-frame {
   position: absolute;
   inset: var(--inset);
@@ -232,8 +215,6 @@ p:last-child {
   animation-delay: 0.1s;
 }
 
-/* Relieve: una chimenea de la casa dibujada en alzado alrededor del logo.
-   Los paths los genera el script inline de index.html según la pantalla. */
 .loader-relief {
   position: absolute;
   inset: 0;
@@ -243,10 +224,8 @@ p:last-child {
   stroke: var(--ink);
   stroke-linecap: round;
   clip-path: inset(var(--inset) round 26px);
-  /* Se desvanecen arriba y abajo para no pisar los textos de los bordes */
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 95px, #000 calc(100% - 95px), transparent 100%);
   mask-image: linear-gradient(to bottom, transparent 0, #000 95px, #000 calc(100% - 95px), transparent 100%);
-  /* Sombra de 1px debajo de cada línea: se leen como surcos tallados */
   filter: drop-shadow(0 1px 0 rgba(62, 52, 40, 0.28));
 }
 
@@ -268,7 +247,6 @@ p:last-child {
   opacity: 1;
 }
 
-/* Datos en los bordes, como el rótulo de un plano */
 .loader-meta {
   position: absolute;
   inset: calc(var(--inset) + clamp(14px, 2.2vw, 26px)) calc(var(--inset) + clamp(18px, 3vw, 40px));
@@ -303,7 +281,6 @@ p:last-child {
   gap: clamp(14px, 2.5vw, 32px);
 }
 
-/* Barra de progreso: termina justo cuando la M termina de tallarse */
 .lm-progress {
   flex: 1;
   min-width: 40px;
@@ -321,7 +298,6 @@ p:last-child {
   animation: lgProgress 2.6s cubic-bezier(0.6, 0, 0.3, 1) 0.3s both;
 }
 
-/* Al salir: primero se va el contenido, después se abre el molde */
 .loader-frame,
 .loader-relief,
 .loader-meta {
@@ -352,7 +328,6 @@ p:last-child {
   .lm-br { display: none; }
 }
 
-/* El monograma se dibuja trazo a trazo (SVG stroke). Corre siempre. */
 .loader-logo {
   display: block;
   width: var(--lw);
@@ -370,8 +345,6 @@ p:last-child {
 .lg-frame-o { animation-duration: 0.75s; animation-delay: 0.15s; }
 .lg-frame-i { animation-duration: 0.75s; animation-delay: 0.35s; }
 
-/* "Talla": un frente diagonal de borde suave (como la pasada de una gubia)
-   descubre la M; después aparece su sombra y el glifo toma volumen de relieve. */
 .lg-talla {
   transform: translateX(-100px);
   animation: lgTalla 1.35s cubic-bezier(0.55, 0, 0.3, 1) 0.85s both;
@@ -418,15 +391,12 @@ p:last-child {
   to { transform: scaleX(1); }
 }
 
-/* Con "reduce": el dibujo igual corre; se quita el latido en bucle y el
-   molde no se abre deslizando, simplemente se desvanece */
 @media (prefers-reduced-motion: reduce) {
   .loader-mark { animation: none; }
   .loader-panel { transition: opacity 0.5s ease 0.2s; }
   .loader-wrapper.hidden .loader-panel { transform: none; opacity: 0; }
 }
 
-/* Layout y utilidades */
 .container {
   width: 100%;
   max-width: 1600px;
@@ -459,7 +429,6 @@ button {
   cursor: pointer;
 }
 
-/* Animación de aparición Avanzada 3D */
 .reveal {
   opacity: 0;
   transform: translateY(60px) rotateX(10deg);
@@ -472,7 +441,6 @@ button {
   transform: translateY(0) rotateX(0);
 }
 
-/* Header Glassmorphism */
 .site-header {
   position: fixed;
   top: 0;
@@ -492,7 +460,6 @@ button {
   }
 }
 
-/* Páginas sin hero de imagen: el header necesita fondo para que se lea el texto claro */
 .page-detail .site-header {
   background-color: rgba(46, 40, 32, 0.9);
   backdrop-filter: blur(8px);
@@ -531,7 +498,6 @@ button {
   transition: clip-path 0.5s var(--ease-smooth);
 }
 
-/* Al scrollear, el wordmark se "cierra" dejando visible solo la M inicial */
 .site-header.scrolled .logo img {
   clip-path: inset(0 82% 0 0);
 }
@@ -585,9 +551,6 @@ button {
     position: relative;
   }
 
-  /* Puente invisible sobre el hueco entre el link y el desplegable: sin esto,
-     el hover se corta al mover el mouse hacia abajo y el menú se cierra antes
-     de llegar a las categorías. */
   .nav-item.has-dropdown::after {
     content: '';
     position: absolute;
@@ -647,7 +610,6 @@ button {
   }
 }
 
-/* Botón menú móvil */
 .nav-toggle {
   display: flex;
   flex-direction: column;
@@ -683,7 +645,6 @@ button {
   transform: translateY(-9.5px) rotate(-45deg);
 }
 
-/* Menú móvil overlay */
 .mobile-nav {
   position: fixed;
   top: 0;
@@ -732,7 +693,6 @@ button {
   transform: translateY(0);
 }
 
-/* Staggered entrance delays */
 .mobile-nav.active .mobile-nav-list li:nth-child(1) { transition-delay: 0.2s; }
 .mobile-nav.active .mobile-nav-list li:nth-child(2) { transition-delay: 0.3s; }
 .mobile-nav.active .mobile-nav-list li:nth-child(3) { transition-delay: 0.4s; }
@@ -832,7 +792,6 @@ body.no-scroll {
   overflow: hidden;
 }
 
-/* Sección Hero */
 .hero {
   position: relative;
   height: 100vh;
@@ -845,7 +804,6 @@ body.no-scroll {
   overflow: hidden;
 }
 
-/* Slideshow del Hero: crossfade + Ken Burns entre las imágenes de portada */
 .hero-slides {
   position: absolute;
   top: 0;
@@ -857,9 +815,6 @@ body.no-scroll {
   background-color: var(--color-black);
 }
 
-/* El ciclo lo maneja initHeroSlideshow() en script.js, así funciona con cualquier
-   cantidad de imágenes. La que entra se funde ENCIMA de la anterior (que queda opaca
-   debajo con .is-prev), así nunca se ve el fondo negro entre una y otra. */
 .hero-slide {
   position: absolute;
   inset: 0;
@@ -892,7 +847,6 @@ body.no-scroll {
   object-position: center;
   filter: brightness(1.2) contrast(0.97) saturate(0.9);
   transform: scale(1);
-  /* Fuera de pantalla vuelve a escala 1 de golpe, una vez que ya terminó de desvanecerse */
   transition: transform 0s linear 2.2s;
 }
 
@@ -910,13 +864,9 @@ body.no-scroll {
   height: 100%;
   z-index: -1;
   background:
-    /* velo detrás del texto (centro) */
     radial-gradient(ellipse 60% 54% at 50% 42%, rgba(24, 20, 16, 0.62) 0%, rgba(24, 20, 16, 0.22) 54%, transparent 80%),
-    /* scrim para el navbar */
     linear-gradient(to bottom, rgba(24, 20, 16, 0.5) 0%, rgba(24, 20, 16, 0.1) 14%, transparent 26%),
-    /* fundido inferior */
     linear-gradient(to top, rgba(24, 20, 16, 0.55) 0%, transparent 32%),
-    /* velo uniforme muy leve */
     rgba(24, 20, 16, 0.06);
 }
 
@@ -925,7 +875,6 @@ body.no-scroll {
   padding: 0 1.5rem;
 }
 
-/* El h1 envuelve subtítulo + título (SEO); visualmente no suma nada */
 .hero-heading {
   margin: 0;
   font-size: inherit;
@@ -958,8 +907,6 @@ body.no-scroll {
   margin-bottom: 2rem;
 }
 
-/* Botón: moderno y sobrio. Bloque sólido espresso, esquinas rectas y una flecha
-   que avanza al pasar el mouse. Anima solo color y transform (sin repintar). */
 .btn {
   --btn-fondo: var(--color-text);
   --btn-texto: var(--ink-on-dark);
@@ -968,14 +915,12 @@ body.no-scroll {
   align-items: center;
   justify-content: center;
   gap: 0.9rem;
-  /* Un poco más abajo que arriba: las mayúsculas de Cormorant quedan ópticamente centradas */
   padding: 1.1rem 2rem 1.2rem 2.2rem;
   border: 1px solid var(--btn-fondo);
   background-color: var(--btn-fondo);
   color: var(--btn-texto);
   font-family: var(--font-sans);
   font-weight: 700;
-  /* 700 es el máximo de Cormorant: un trazo fino del mismo color le suma cuerpo */
   -webkit-text-stroke: 0.35px currentColor;
   text-transform: uppercase;
   letter-spacing: 0.2em;
@@ -984,7 +929,6 @@ body.no-scroll {
   transition: background-color 0.4s var(--ease-out), border-color 0.4s var(--ease-out), color 0.4s var(--ease-out);
 }
 
-/* Flecha fina que avanza */
 .btn::after {
   content: '';
   width: 22px;
@@ -1010,14 +954,12 @@ body.no-scroll {
   outline-offset: 4px;
 }
 
-/* Sobre imágenes / héroes: bloque claro, se lee sobre cualquier foto */
 .btn-outline-light {
   --btn-fondo: var(--ink-on-dark);
   --btn-texto: var(--color-text);
   --btn-fondo-hover: #FFFFFF;
 }
 
-/* Indicador de scroll */
 .scroll-indicator {
   position: absolute;
   bottom: 3rem;
@@ -1060,7 +1002,6 @@ body.no-scroll {
   100% { top: 60px; }
 }
 
-/* Sección El Estudio */
 .about {
   padding: 10rem 0;
   position: relative;
@@ -1085,7 +1026,6 @@ body.no-scroll {
   aspect-ratio: 3/2;
 }
 
-/* Efecto de marco de foto en about */
 .about-image::before {
   content: '';
   position: absolute;
@@ -1124,13 +1064,11 @@ body.no-scroll {
   filter: contrast(1.1);
 }
 
-/* Sección Catálogo */
 .catalog {
   padding: 10rem 0;
   background-color: var(--color-bg-alt);
 }
 
-/* En la página Catálogo arranca directo con el buscador, no hace falta tanto aire arriba */
 .catalog.page-catalog {
   padding-top: 4.5rem;
 }
@@ -1171,14 +1109,12 @@ body.no-scroll {
     gap: 2.5rem;
   }
 
-  /* Asimetría en catálogo */
   .catalog-grid .product-card:nth-child(4n+2),
   .catalog-grid .product-card:nth-child(4n+4) {
     transform: translateY(40px);
   }
 }
 
-/* Estado de carga de grillas (catálogo, portfolio, destacados) */
 .grid-loading {
   grid-column: 1 / -1;
   display: flex;
@@ -1284,7 +1220,6 @@ body.no-scroll {
   color: var(--color-text-muted);
 }
 
-/* Sección Portfolio */
 .portfolio {
   padding: 10rem 0;
 }
@@ -1371,7 +1306,6 @@ body.no-scroll {
   transform: translateY(0);
 }
 
-/* Sección Contacto */
 .contact {
   background-color: var(--color-bg-alt);
   padding: 8rem 0;
@@ -1493,7 +1427,6 @@ body.no-scroll {
   color: var(--color-accent);
 }
 
-/* Footer */
 .site-footer {
   padding: 1.5rem 0;
   border-top: 1px solid var(--color-border);
@@ -1521,10 +1454,6 @@ body.no-scroll {
   margin: 0;
 }
 
-/* Sección Antes y Después: fondo greige (paleta de la clienta), foto limpia en
-   rectángulo con un marco de línea desplazado, y un resplandor cálido suave que
-   crece a medida que se ve la chimenea encendida.
-   --ba-pos (0-100) = cuánto se ve del "antes", desde la izquierda. */
 .before-after {
   --ba-pos: 50;
   --ba-fondo: #D4CEC2;
@@ -1583,7 +1512,6 @@ body.no-scroll {
   max-width: 400px;
 }
 
-/* Control segmentado: línea fina, la opción activa en bloque sólido */
 .ba-botones {
   display: inline-flex;
   border: 1px solid var(--color-text);
@@ -1626,8 +1554,6 @@ body.no-scroll {
 
 .ba-ayuda svg { width: 18px; height: 18px; }
 
-/* Marco moderno: la foto en rectángulo limpio (2:1, se ve completa) y una línea
-   fina desplazada detrás, como un marco de galería. Nada pisa la foto. */
 .ba-marco {
   position: relative;
   width: 100%;
@@ -1690,7 +1616,6 @@ body.no-scroll {
   display: block;
 }
 
-/* El "antes" se recorta con dos transform opuestos (sin clip-path, sin repintar) */
 .ba-after {
   z-index: 1;
   overflow: hidden;
@@ -1711,7 +1636,6 @@ body.no-scroll {
   transform: translateX(calc(var(--ba-pos) * 1%));
 }
 
-/* Movimientos automáticos (botones y entrada): con transición. Al arrastrar, sin. */
 .before-after.is-animando .ba-after,
 .before-after.is-animando .ba-after-inner,
 .before-after.is-animando .ba-slider {
@@ -1748,7 +1672,6 @@ body.no-scroll {
   transition: transform 0.4s var(--ease-out), background-color 0.4s;
 }
 
-/* Segundo aro, como moldura */
 .ba-slider-button::before {
   content: '';
   position: absolute;
@@ -1787,7 +1710,6 @@ body.no-scroll {
 .ba-container.sin-antes .ba-etiqueta--antes,
 .ba-container.sin-despues .ba-etiqueta--despues { opacity: 0; }
 
-/* Hero Secundario */
 .hero-secondary {
   position: relative;
   height: 50vh;
@@ -1832,7 +1754,6 @@ body.no-scroll {
   margin: 0 auto;
 }
 
-/* Filtros y Paginación */
 .filters {
   display: flex;
   justify-content: center;
@@ -1946,11 +1867,8 @@ body.no-scroll {
   display: none !important;
 }
 
-/* ==========================================================================
-   Product Detail Page (Mockup)
-   ========================================================================== */
 .product-detail-page {
-  padding-top: 120px; /* Space for fixed header */
+  padding-top: 120px;
   padding-bottom: 6rem;
 }
 
@@ -1992,7 +1910,6 @@ body.no-scroll {
   }
 }
 
-/* Gallery */
 .product-gallery {
   display: flex;
   flex-direction: column;
@@ -2053,7 +1970,6 @@ body.no-scroll {
   object-fit: cover;
 }
 
-/* Info */
 .product-info {
   display: flex;
   flex-direction: column;
@@ -2084,7 +2000,6 @@ body.no-scroll {
   line-height: 1.8;
 }
 
-/* Specs */
 .product-specs {
   margin-bottom: 3rem;
   border-top: 1px solid var(--color-border);
@@ -2118,7 +2033,6 @@ body.no-scroll {
   gap: 1rem;
 }
 
-/* WhatsApp Float Button - Premium Style */
 .whatsapp-float {
   position: fixed;
   bottom: 40px;
@@ -2221,10 +2135,6 @@ body.no-scroll {
     display: none;
   }
 }
-
-/* ==========================================================================
-   Página Nosotros
-   ========================================================================== */
 
 .about-hero {
   position: relative;
@@ -2597,7 +2507,6 @@ body.no-scroll {
   text-transform: uppercase;
 }
 
-  /* Nuestro Taller */
 .about-taller {
   padding: 7rem 0;
   background: var(--color-bg);
@@ -2823,10 +2732,6 @@ body.no-scroll {
   }
 }
 
-/* ==========================================================================
-   Sim — panel admin mockup local (sim/admin.html)
-   ========================================================================== */
-
 .admin-container {
   padding: 8rem 2rem 4rem;
   max-width: 1200px;
@@ -2875,7 +2780,6 @@ body.no-scroll {
   cursor: pointer;
 }
 
-/* ============ Nosotros: "Productos artesanales — Del molde a la pieza" ============ */
 .pp {
   --pp-plaster: #ECE6DA;
   --pp-ink: #2E2820;
@@ -2889,14 +2793,11 @@ body.no-scroll {
   overflow: hidden;
 }
 
-/* Grano de yeso */
 .pp::before {
   content: '';
   position: absolute;
   inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .24 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  /* Sin mix-blend-mode: combinado con el backdrop-filter del header genera
-     líneas y manchas en Chrome al repintar (p. ej. al pasar el mouse por el menú) */
   opacity: 0.3;
   pointer-events: none;
 }
@@ -2931,7 +2832,6 @@ body.no-scroll {
   margin: 0 auto 2.6rem;
 }
 
-/* La mezcla: los tres materiales de la ficha técnica */
 .pp-mix {
   display: inline-flex;
   flex-wrap: wrap;
@@ -2980,7 +2880,6 @@ body.no-scroll {
     #E4DCCD;
 }
 
-/* Pasos */
 .pp-steps {
   margin: 0 auto;
   padding: 0 1.5rem;
@@ -3001,13 +2900,11 @@ body.no-scroll {
 .pp-media {
   position: relative;
   max-width: 440px;
-  /* Deja lugar a la derecha para la foto chica, que sobresale del arco */
   width: 84%;
   margin: 0 auto 0 4%;
   padding-bottom: 12%;
 }
 
-/* Foto principal en arco (hornacina) con doble moldura, como el marco del logo */
 .pp-arch {
   position: relative;
   margin: 0;
@@ -3039,7 +2936,6 @@ body.no-scroll {
   transition: clip-path 1.5s var(--ease-smooth), transform 2s var(--ease-smooth);
 }
 
-/* Foto chica superpuesta, tipo copia en papel */
 .pp-inset {
   position: absolute;
   right: -10%;
@@ -3075,7 +2971,6 @@ body.no-scroll {
   width: 100%;
 }
 
-/* Número hueco que se "llena" como un molde */
 .pp-num {
   display: block;
   font-family: var(--font-serif);
@@ -3089,8 +2984,6 @@ body.no-scroll {
   -webkit-background-clip: text;
   background-clip: text;
   transition: background-size 1.8s var(--ease-smooth) 0.3s;
-  /* Los números antiguos (3, 4…) bajan de la línea base: el padding agranda la caja
-     para que el relleno los cubra enteros y no pisen la etiqueta de abajo */
   padding-bottom: 0.24em;
   margin-bottom: 0.5rem;
 }
@@ -3140,7 +3033,6 @@ body.no-scroll {
   color: var(--pp-stone);
 }
 
-/* Estado inicial solo con JS activo (sin JS se ve todo) */
 .pp-js .pp-step .pp-arch img { clip-path: inset(100% 0 0 0); transform: scale(1.12); }
 .pp-js .pp-step .pp-inset { opacity: 0; transform: translateY(30px) rotate(6deg); }
 .pp-js .pp-step .pp-num { background-size: 100% 0%; }
@@ -3151,7 +3043,6 @@ body.no-scroll {
 .pp-media:hover .pp-inset,
 .pp-js .pp-step.is-in .pp-media:hover .pp-inset { transform: rotate(0deg) translateY(-6px); transition-delay: 0s; }
 
-/* Cierre */
 .pp-cierre {
   max-width: 900px;
   margin: 2rem auto 0;
@@ -3188,7 +3079,6 @@ body.no-scroll {
 }
 
 @media (min-width: 900px) {
-  /* Línea de vertido que se completa con el scroll */
   .pp-rail {
     display: block;
     position: absolute;
@@ -3251,9 +3141,6 @@ body.no-scroll {
   }
 }
 
-/* ============ Buscador de productos (buscador.js) ============ */
-
-/* Lupa del header */
 .nav-search {
   display: flex;
   align-items: center;
@@ -3279,7 +3166,6 @@ body.no-scroll {
   .nav-search--mobile { display: none; }
 }
 
-/* Barra visible en el catálogo */
 .bq-disparador {
   display: flex;
   align-items: center;
@@ -3323,11 +3209,10 @@ body.no-scroll {
   .bq-disparador kbd { display: none; }
 }
 
-/* Panel */
 .bq {
   position: fixed;
   inset: 0;
-  z-index: 10001; /* por encima del botón de WhatsApp (9999) */
+  z-index: 10001;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -3339,8 +3224,6 @@ body.no-scroll {
 .bq-backdrop {
   position: absolute;
   inset: 0;
-  /* Sin backdrop-filter: desenfocar toda la página (con el hero y las obras
-     animándose detrás) bajaba mucho los fps. Un velo más oscuro alcanza. */
   background: rgba(23, 19, 16, 0.78);
   opacity: 0;
   transition: opacity 0.25s ease;
@@ -3471,7 +3354,6 @@ body.no-scroll {
 .bq-item:hover,
 .is-active > .bq-item { background: var(--color-bg-alt); }
 
-/* Miniatura en arco, mismo motivo que "Del molde a la pieza" */
 .bq-item-foto {
   width: 46px;
   height: 58px;
@@ -3545,8 +3427,6 @@ body.no-scroll {
   .bq-cuerpo { padding: 1rem; }
 }
 
-/* ============ Home: piezas destacadas (vitrina) y obras realizadas ============ */
-
 .vitrina-seccion,
 .obras {
   --dz-frame: #C9BEAB;
@@ -3567,7 +3447,6 @@ body.no-scroll {
   padding: 3rem 0;
 }
 
-/* Fondo de yeso, igual que "Del molde a la pieza" */
 .vitrina-seccion {
   position: relative;
   background: #ECE6DA;
@@ -3585,7 +3464,6 @@ body.no-scroll {
 
 .vitrina-seccion > .container { position: relative; }
 
-/* --- Vitrina de hornacinas --- */
 .vitrina {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3611,7 +3489,6 @@ body.no-scroll {
   aspect-ratio: 3 / 4;
 }
 
-/* Moldura exterior del arco */
 .nicho-arco::before {
   content: '';
   position: absolute;
@@ -3623,7 +3500,6 @@ body.no-scroll {
   transition: transform 0.6s var(--ease-smooth), border-color 0.6s;
 }
 
-/* Repisa bajo la hornacina */
 .nicho-arco::after {
   content: '';
   position: absolute;
@@ -3651,7 +3527,6 @@ body.no-scroll {
   transition: transform 1.2s var(--ease-smooth);
 }
 
-/* Profundidad del nicho + luz cenital que se enciende al pasar el mouse */
 .nicho-foto::before,
 .nicho-foto::after {
   content: '';
@@ -3735,7 +3610,6 @@ body.no-scroll {
   .nicho-cat { font-size: 0.85rem; }
 }
 
-/* Entrada: la hornacina sube y la foto se "llena" de abajo hacia arriba */
 .vitrina-js .nicho {
   opacity: 0;
   transform: translateY(40px);
@@ -3743,7 +3617,6 @@ body.no-scroll {
   transition-delay: calc(var(--i, 0) * 0.12s);
 }
 
-/* Velo de yeso que se retira hacia arriba: la foto aparece de abajo hacia arriba */
 .nicho-velo {
   position: absolute;
   inset: 0;
@@ -3772,7 +3645,6 @@ body.no-scroll {
   .vitrina-js .nicho.is-in:hover .nicho-foto img { transform: scale(1.06); transition-delay: 0s; }
 }
 
-/* --- Índice de obras --- */
 .obras {
   display: grid;
   grid-template-columns: 1fr;
@@ -3821,8 +3693,6 @@ body.no-scroll {
   z-index: 0;
 }
 
-/* La foto nueva sube como una cortina: el marco sube y la imagen baja lo mismo,
-   así se ve "destaparse" sin moverse (todo con transform, sin repintar) */
 .obras-foto.is-prev { opacity: 1; z-index: 1; }
 .obras-foto.is-active { opacity: 1; z-index: 2; animation: obrasEntra 1.26s cubic-bezier(0.7, 0, 0.3, 1) both; }
 
@@ -3846,7 +3716,6 @@ body.no-scroll {
   100% { transform: translateY(0) scale(1); }
 }
 
-/* Contador en la enjuta (el rincón que deja la curva del arco) */
 .obras-contador {
   position: absolute;
   top: -0.6rem;
@@ -3947,7 +3816,6 @@ body.no-scroll {
 .obras-item.is-active .obras-texto { transform: translateX(0.6rem); }
 .obras-item.is-active .obras-flecha { opacity: 1; transform: none; }
 
-/* La barra de la obra activa marca cuánto falta para pasar a la siguiente */
 .obras.is-in .obras-item.is-active .obras-barra { animation: obrasBarra 6s linear forwards; }
 .obras.is-pausa .obras-item.is-active .obras-barra { animation-play-state: paused; }
 .obras.is-hover .obras-item.is-active .obras-barra { animation: none; transform: scaleX(1); }
@@ -3958,7 +3826,6 @@ body.no-scroll {
   to { transform: scaleX(1); }
 }
 
-/* Entrada de la sección: nada se anima hasta que está en pantalla */
 .obras-js .obras:not(.is-in) .obras-foto { animation: none; transform: translateY(100%); }
 .obras-js .obras:not(.is-in) .obras-foto img { animation: none; }
 
@@ -3990,10 +3857,6 @@ body.no-scroll {
   .obras-item { grid-template-columns: 2.4rem minmax(0, 1fr) auto; padding: 1.25rem 0.25rem; }
 }
 
-/* Rótulos chicos en mayúsculas sobre fondos claros: Cormorant a 400 en tamaños
-   de 0.6–0.8rem queda muy fino y se pierde, así que van a 700 (el máximo de la
-   fuente). Los que van sobre fondos oscuros —menú, héroe, comparador— se dejan
-   como están. */
 .section-label,
 .product-category,
 .grid-loading p,

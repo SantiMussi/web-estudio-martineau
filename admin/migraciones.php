@@ -1,13 +1,4 @@
 <?php
-/*
- * Cambios en la estructura de la base que necesitan las funciones nuevas del panel.
- *
- * Se aplican solos la primera vez que se entra al panel después de actualizar el
- * código (auth.php llama a migrar_base() una vez por sesión), así no hay que correr
- * nada a mano en el servidor. Cada paso se fija si ya está hecho antes de aplicarse.
- *
- * Al agregar un paso nuevo, subir ESQUEMA_VERSION para que se vuelva a revisar.
- */
 
 const ESQUEMA_VERSION = 5;
 
@@ -15,7 +6,6 @@ function migrar_base(PDO $pdo): void
 {
     if (($_SESSION['esquema_version'] ?? 0) === ESQUEMA_VERSION) return;
 
-    // Datos de contacto editables (admin/ajustes.php)
     $pdo->exec('
         CREATE TABLE IF NOT EXISTS ajustes (
             clave VARCHAR(50) PRIMARY KEY,
@@ -24,19 +14,15 @@ function migrar_base(PDO $pdo): void
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     ');
 
-    // Papelera: al eliminar, el ítem queda oculto con la fecha de borrado y se puede restaurar
     foreach (['productos', 'proyectos'] as $tabla) {
         if (!migracion_columna_existe($pdo, $tabla, 'eliminado_at')) {
             $pdo->exec("ALTER TABLE $tabla ADD COLUMN eliminado_at DATETIME NULL DEFAULT NULL");
         }
         if (!migracion_columna_existe($pdo, $tabla, 'oculto_antes')) {
-            // Si estaba oculto antes de ir a la papelera, al restaurarlo vuelve oculto
             $pdo->exec("ALTER TABLE $tabla ADD COLUMN oculto_antes TINYINT(1) NOT NULL DEFAULT 0");
         }
     }
 
-    // Reseñas de clientes (admin/resenas.php). Al crearla se cargan las dos que estaban
-    // escritas en nosotros.html, para que la sección no quede vacía.
     if (!migracion_tabla_existe($pdo, 'resenas')) {
         $pdo->exec('
             CREATE TABLE resenas (
@@ -64,9 +50,6 @@ function migrar_base(PDO $pdo): void
         ]);
     }
 
-    // URLs amigables (/producto/chimenea-luis-xv): el slug de cada ficha y las
-    // direcciones viejas que redirigen cuando se cambia (ver inc/slugs.php).
-    // Los slugs de lo que ya estaba cargado los completa fslug_completar() en auth.php.
     foreach (['productos', 'proyectos'] as $tabla) {
         if (!migracion_columna_existe($pdo, $tabla, 'slug')) {
             $pdo->exec("ALTER TABLE $tabla ADD COLUMN slug VARCHAR(100) NULL DEFAULT NULL, ADD INDEX idx_{$tabla}_slug (slug)");
@@ -82,8 +65,6 @@ function migrar_base(PDO $pdo): void
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     ');
 
-    // Fotos de la portada (admin/portada.php). Al crearla se cargan las 4 que estaban
-    // fijas en el HTML, con sus versiones livianas para celular.
     if (!migracion_tabla_existe($pdo, 'portada')) {
         $pdo->exec('
             CREATE TABLE portada (
@@ -105,9 +86,6 @@ function migrar_base(PDO $pdo): void
         }
     }
 
-    // Editor de fotos de la portada: se guarda la original (las ediciones siempre
-    // parten de ella, así no se pierde calidad) y los ajustes aplicados, para poder
-    // volver a abrirlos donde se dejaron.
     if (!migracion_columna_existe($pdo, 'portada', 'imagen_original')) {
         $pdo->exec('ALTER TABLE portada ADD COLUMN imagen_original VARCHAR(255) NULL DEFAULT NULL');
     }
@@ -115,8 +93,6 @@ function migrar_base(PDO $pdo): void
         $pdo->exec('ALTER TABLE portada ADD COLUMN ajustes TEXT NULL');
     }
 
-    // Diseños guardados del editor de fotos (admin/actions/disenos.php): la foto original,
-    // los ajustes y las capas, para retomarlos después
     $pdo->exec('
         CREATE TABLE IF NOT EXISTS disenos (
             id INT AUTO_INCREMENT PRIMARY KEY,

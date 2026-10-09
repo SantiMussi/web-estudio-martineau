@@ -1,34 +1,14 @@
-/*
- * Editor de fotos del panel, para no tener que pasar por Photoshop antes de subir una
- * foto a un producto o proyecto (el de la portada es otro: admin/portada-editor.js).
- *
- * EditorImagen.abrir(fuente, opciones) abre el editor sobre un File o una URL y devuelve
- * una promesa con la foto editada como File JPEG, o null si se canceló o no se cambió nada.
- *   opciones.boton:   texto del botón de confirmar (por defecto "Aplicar")
- *   opciones.siempre: true para devolver la foto aunque no se haya tocado nada
- *
- * - Girar 90°, espejar y enderezar (con zoom automático para que no queden esquinas vacías).
- * - Recortar con proporción libre o fija (4:5 es la de las fotos del catálogo).
- * - Luz (exposición, contraste, luces, sombras), color (saturación, viveza, calidez, tinte)
- *   y efectos (nitidez, viñeta, desvanecido), con vista previa en vivo e histograma.
- * - Ajuste automático (niveles por canal), filtros listos y logo como marca de agua.
- * - Deshacer / rehacer (Ctrl+Z / Ctrl+Y) y comparar con la original manteniendo apretado.
- * - La foto final sale con el lado más largo hasta el tamaño elegido.
- * - Etapa Capas (editor-capas.js): texto, formas, imágenes, logo, al estilo Canva.
- * - Diseños guardados en el servidor (actions/disenos.php) para retomarlos después.
- *   EditorImagen.abrirDiseno(id, opciones) abre uno, igual que abrir().
- */
 window.EditorImagen = (() => {
-    const VISTA_MAX = 900;          // la vista previa se procesa achicada, para que sea fluida
-    const LADO_RECOMENDADO = 1000;  // por debajo de esto, en la ficha se puede ver borrosa
-    const RECORTE_MINIMO = 0.08;    // el recorte no puede ser menor al 8% de la foto
+    const VISTA_MAX = 900;
+    const LADO_RECOMENDADO = 1000;
+    const RECORTE_MINIMO = 0.08;
     const CALIDAD = 0.9;
-    const MINIATURA = 84;           // lado de las vistas previas de los filtros
+    const MINIATURA = 84;
     const ASSETS = new URL('../assets/', document.baseURI).href;
     const FABRIC = 'https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js';
-    const SCRIPT = document.currentScript && document.currentScript.src;   // para cargar editor-capas.js de la misma carpeta
+    const SCRIPT = document.currentScript && document.currentScript.src;
     const API_DISENOS = new URL('actions/disenos.php', SCRIPT || document.baseURI).href;
-    const SITIO = new URL('../', SCRIPT || document.baseURI).href;          // las rutas guardadas son relativas al sitio
+    const SITIO = new URL('../', SCRIPT || document.baseURI).href;
     const PROPORCIONES = [
         ['0', 'Libre'],
         ['0.8', '4:5 (como en el catálogo)'],
@@ -45,7 +25,6 @@ window.EditorImagen = (() => {
         ['1200', 'Liviana (1200 px)'],
     ];
 
-    // [clave, nombre, mínimo, máximo, paso, unidad]
     const DESLIZADORES = {
         recorte: [
             ['enderezar', 'Enderezar', -15, 15, 0.5, '°'],
@@ -79,7 +58,6 @@ window.EditorImagen = (() => {
         vineta: 'Positivo oscurece los bordes; negativo los aclara hacia el blanco.',
     };
 
-    // Filtros listos: fijan los ajustes de color (lo demás queda como está)
     const FILTROS = [
         ['', 'Original', {}],
         ['natural', 'Natural', { contraste: 8, sombras: 15, viveza: 20 }],
@@ -108,46 +86,45 @@ window.EditorImagen = (() => {
     ];
 
     const iniciales = () => ({
-        giro: 0,            // cuartos de vuelta a la derecha (0–3)
+        giro: 0,
         espejo: false,
-        enderezar: 0,       // grados
+        enderezar: 0,
         ...Object.fromEntries(COLOR.map(c => [c, 0])),
-        auto: null,         // niveles por canal del ajuste automático: [bajo, factor] × R, G, B
+        auto: null,
         filtro: '',
-        recorte: { x: 0, y: 0, w: 1, h: 1 },   // fracciones de la foto ya girada
+        recorte: { x: 0, y: 0, w: 1, h: 1 },
         proporcion: 0,
     });
 
-    // El logo y el tamaño final se recuerdan para las próximas fotos
     const MARCA_INICIAL = { activa: false, estilo: 'texto', color: 'claro', posicion: 'abajo-der', tamano: 28, opacidad: 70 };
     const leer = (clave, defecto) => {
         try { return { ...defecto, ...JSON.parse(localStorage.getItem(clave) || '{}') }; } catch (e) { return { ...defecto }; }
     };
     const guardarPreferencia = (clave, valor) => {
-        try { localStorage.setItem(clave, JSON.stringify(valor)); } catch (e) { /* sin storage: no se recuerda */ }
+        try { localStorage.setItem(clave, JSON.stringify(valor)); } catch (e) {  }
     };
 
     const icono = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
 
-    let el = null;          // referencias a los elementos del modal (se arma al abrirlo la primera vez)
-    let imagen = null;      // la foto cargada
-    let base = null;        // píxeles de la vista previa ya girada, sin ajustes de color
+    let el = null;
+    let imagen = null;
+    let base = null;
     let ajustes = iniciales();
     let marca = leer('editor_imagen_marca', MARCA_INICIAL);
     let preferencias = leer('editor_imagen_preferencias', { lado: '2400' });
-    let logos = {};         // estilo → Image cargada
+    let logos = {};
     let historial = [];
     let indice = -1;
     let comparando = false;
     let pestana = 'recorte';
-    let etapa = 'foto';     // 'foto' (ajustes) o 'capas' (texto, formas… encima)
-    let capas = null;       // instancia de EditorCapas
+    let etapa = 'foto';
+    let capas = null;
     let cargandoCapas = null;
-    let pendiente = 0;      // requestAnimationFrame de la vista previa
-    let terminar = null;    // resuelve la promesa de abrir()
+    let pendiente = 0;
+    let terminar = null;
     let opciones = {};
-    let fuenteActual = null;    // File o URL de la foto abierta (para guardarla como original de un diseño)
-    let disenoActual = null;    // {id, nombre} si se abrió o guardó como diseño
+    let fuenteActual = null;
+    let disenoActual = null;
 
     const limitar = (v, min, max) => Math.min(max, Math.max(min, v));
 
@@ -159,16 +136,11 @@ window.EditorImagen = (() => {
     });
     const suave = (a, b, x) => { const t = limitar((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
 
-    // ─── Geometría ───
-
-    // Tamaño de la foto ya girada (en píxeles de la original)
     const marco = () => {
         const W = imagen.naturalWidth, H = imagen.naturalHeight;
         return ajustes.giro % 2 ? { w: H, h: W } : { w: W, h: H };
     };
 
-    // Dibuja la foto girada, espejada y enderezada ocupando el marco desde (0, 0).
-    // Al enderezar se agranda lo justo para que no queden esquinas vacías.
     const dibujarGirada = ctx => {
         const W = imagen.naturalWidth, H = imagen.naturalHeight;
         const F = marco();
@@ -179,21 +151,17 @@ window.EditorImagen = (() => {
         );
         const espejo = ajustes.espejo ? -1 : 1;
         ctx.translate(F.w / 2, F.h / 2);
-        // Espejado primero (en pantalla) y el giro invertido: así girar y enderezar van
-        // siempre para el mismo lado, esté espejada o no
         ctx.scale(espejo, 1);
         ctx.rotate(espejo * (ajustes.giro * 90 + ajustes.enderezar) * Math.PI / 180);
         ctx.scale(zoom, zoom);
         ctx.drawImage(imagen, -W / 2, -H / 2);
     };
 
-    // El recorte en píxeles de un lienzo de ancho × alto
     const enPixeles = (ancho, alto) => {
         const r = ajustes.recorte;
         return { x: r.x * ancho, y: r.y * alto, w: r.w * ancho, h: r.h * alto };
     };
 
-    // El recorte más grande con la proporción elegida, centrado donde estaba el actual
     const ajustarProporcion = () => {
         if (!(ajustes.proporcion > 0)) return;
         const F = marco();
@@ -206,13 +174,8 @@ window.EditorImagen = (() => {
         ajustes.recorte = { x: x / F.w, y: y / F.h, w: w / F.w, h: h / F.h };
     };
 
-    // ─── Color ───
-
     const sinColor = a => !a.auto && COLOR.every(c => !a[c]);
 
-    // Todos los ajustes de color sobre los píxeles (igual en la vista previa y al guardar).
-    // "zona" es el recorte dentro de "datos", para centrar la viñeta; "paso" agranda el radio
-    // de la nitidez en la foto final, que tiene más píxeles que la vista previa.
     const aplicar = (datos, a, zona, paso = 1) => {
         if (sinColor(a)) return datos;
         const p = datos.data, W = datos.width, H = datos.height;
@@ -224,8 +187,8 @@ window.EditorImagen = (() => {
         const rojo = (1 + a.calidez / 200) * (1 + a.tinte / 500);
         const verde = 1 - a.tinte / 250;
         const azul = (1 - a.calidez / 200) * (1 + a.tinte / 500);
-        const piso = a.desvanecer * 0.45;                  // el negro sube hasta ~45
-        const rango = 1 - (piso * 1.35) / 255;             // y el blanco baja un poco
+        const piso = a.desvanecer * 0.45;
+        const rango = 1 - (piso * 1.35) / 255;
         const n = a.auto;
         const vineta = a.vineta / 100;
         const z = zona || { x: 0, y: 0, w: W, h: H };
@@ -279,7 +242,7 @@ window.EditorImagen = (() => {
                     }
                 }
 
-                p[i] = r;          // Uint8ClampedArray: recorta solo a 0–255
+                p[i] = r;
                 p[i + 1] = g;
                 p[i + 2] = v;
             }
@@ -289,7 +252,6 @@ window.EditorImagen = (() => {
         return datos;
     };
 
-    // Nitidez: resalta la diferencia de cada píxel con sus vecinos
     const enfocar = (datos, k, paso) => {
         const W = datos.width, H = datos.height, p = datos.data;
         const o = new Uint8ClampedArray(p);
@@ -304,8 +266,6 @@ window.EditorImagen = (() => {
         }
     };
 
-    // Ajuste automático: estira cada canal entre sus extremos (sin contar el 0,4% más
-    // oscuro y el más claro), lo que además corrige si la foto tiene un tinte de color
     const calcularAuto = () => {
         const W = base.width;
         const z = enPixeles(base.width, base.height);
@@ -325,20 +285,17 @@ window.EditorImagen = (() => {
             while (bajo < 255 && (suma += h[bajo]) < corte) bajo++;
             suma = 0;
             while (alto > 0 && (suma += h[alto]) < corte) alto--;
-            if (alto - bajo < 40) { bajo = 0; alto = 255; }   // casi plana: no se toca
+            if (alto - bajo < 40) { bajo = 0; alto = 255; }
             niveles.push(bajo, 255 / (alto - bajo));
         });
         return niveles;
     };
-
-    // ─── Logo ───
 
     const cargarLogo = estilo => {
         if (logos[estilo]) return Promise.resolve(logos[estilo]);
         return new Promise(listo => {
             const img = new Image();
             img.onload = () => {
-                // Versiones clara y oscura del logo, pintando su forma de un solo color
                 const version = color => {
                     const c = document.createElement('canvas');
                     c.width = img.naturalWidth;
@@ -358,14 +315,12 @@ window.EditorImagen = (() => {
         });
     };
 
-    // Dibuja el logo dentro de la zona (el recorte) de un lienzo
     const dibujarLogo = (ctx, zona) => {
         if (!marca.activa) return;
         const logo = logos[marca.estilo];
         if (!logo) return;
         const fuente = logo[marca.color];
         const corto = Math.min(zona.w, zona.h);
-        // El sello es alto: se mide contra el lado corto para que no tape la foto
         const ancho = marca.estilo === 'sello' ? corto * marca.tamano / 100 * 0.7 : zona.w * marca.tamano / 100;
         const alto = ancho * fuente.height / fuente.width;
         const margen = corto * 0.04;
@@ -381,8 +336,6 @@ window.EditorImagen = (() => {
         ctx.drawImage(fuente, x, y, ancho, alto);
         ctx.restore();
     };
-
-    // ─── Vista previa ───
 
     const ubicar = (nodo, r, escala) => Object.assign(nodo.style, {
         left: r.x * escala + 'px', top: r.y * escala + 'px',
@@ -403,7 +356,6 @@ window.EditorImagen = (() => {
         el.aviso.hidden = Math.max(ancho, alto) >= LADO_RECOMENDADO;
     };
 
-    // Histograma de lo que queda dentro del recorte, ya con los ajustes
     const dibujarHistograma = datos => {
         const W = datos.width;
         const z = enPixeles(datos.width, datos.height);
@@ -414,7 +366,6 @@ window.EditorImagen = (() => {
                 hist[0][datos.data[i] >> 2]++; hist[1][datos.data[i + 1] >> 2]++; hist[2][datos.data[i + 2] >> 2]++;
             }
         }
-        // Escala sin contar los extremos, que suelen tener picos y aplastarían el resto
         let max = 1;
         hist.forEach(h => { for (let j = 1; j < 63; j++) max = Math.max(max, h[j]); });
 
@@ -451,12 +402,10 @@ window.EditorImagen = (() => {
         dibujarRecorte();
     };
 
-    // Para los deslizadores: como mucho una vista previa por cuadro
     const pintarPronto = () => {
         if (!pendiente) pendiente = requestAnimationFrame(pintar);
     };
 
-    // Vuelve a armar la base cuando cambia el giro, el espejo o el enderezado
     const rehacerBase = () => {
         const F = marco();
         const e = Math.min(1, VISTA_MAX / Math.max(F.w, F.h));
@@ -475,7 +424,6 @@ window.EditorImagen = (() => {
         if (pestana === 'filtros') dibujarFiltros();
     };
 
-    // Miniaturas de cada filtro sobre lo recortado (con el ajuste automático, si está)
     const dibujarFiltros = () => {
         if (!base) return;
         const temporal = document.createElement('canvas');
@@ -520,14 +468,11 @@ window.EditorImagen = (() => {
         el.marca.opciones.forEach(o => { o.disabled = !marca.activa; });
     };
 
-    // ─── Historial (deshacer / rehacer) ───
-
     const actualizarHistorial = () => {
         el.deshacer.disabled = indice <= 0;
         el.rehacer.disabled = indice >= historial.length - 1;
     };
 
-    // Guarda el estado después de cada cambio terminado (no en cada paso de un deslizador)
     const registrar = () => {
         const estado = JSON.stringify(ajustes);
         if (historial[indice] === estado) return;
@@ -545,8 +490,6 @@ window.EditorImagen = (() => {
         rehacerBase();
         actualizarHistorial();
     };
-
-    // ─── Modal ───
 
     const deslizador = ([clave, nombre, min, max, paso]) => `
         <label class="editor-control"${AYUDAS[clave] ? ` title="${AYUDAS[clave]}"` : ''}>
@@ -774,7 +717,6 @@ window.EditorImagen = (() => {
                 else pintarPronto();
             });
             d.addEventListener('change', registrar);
-            // Doble clic en el número: vuelve a 0
             el.valores[clave].addEventListener('dblclick', e => {
                 e.preventDefault();
                 if (!base || !ajustes[clave]) return;
@@ -786,7 +728,6 @@ window.EditorImagen = (() => {
             });
         });
 
-        // Pestañas
         const pestanas = [...overlay.querySelectorAll('[data-pestana]')];
         const paneles = [...overlay.querySelectorAll('[data-panel]')];
         const cambiarPestana = nombre => {
@@ -805,7 +746,7 @@ window.EditorImagen = (() => {
         overlay.querySelectorAll('[data-girar]').forEach(b => b.addEventListener('click', () => {
             if (!base) return;
             ajustes.giro = (ajustes.giro + Number(b.dataset.girar) + 4) % 4;
-            ajustes.recorte = { x: 0, y: 0, w: 1, h: 1 };   // la foto cambió de forma: se recorta de nuevo
+            ajustes.recorte = { x: 0, y: 0, w: 1, h: 1 };
             ajustarProporcion();
             rehacerBase();
             registrar();
@@ -814,7 +755,6 @@ window.EditorImagen = (() => {
         q('[data-espejar]').addEventListener('click', () => {
             if (!base) return;
             ajustes.espejo = !ajustes.espejo;
-            // El recorte queda sobre la misma parte de la foto
             ajustes.recorte.x = 1 - ajustes.recorte.x - ajustes.recorte.w;
             rehacerBase();
             registrar();
@@ -832,7 +772,6 @@ window.EditorImagen = (() => {
             registrar();
         });
 
-        // Comparar: mientras se mantiene apretado se ve sin los ajustes de luz y color
         const comparar = activo => {
             if (comparando === activo || !base) return;
             comparando = activo;
@@ -864,7 +803,6 @@ window.EditorImagen = (() => {
             registrar();
         });
 
-        // Logo
         const cambiarMarca = async () => {
             marca = {
                 activa: el.marca.activa.checked,
@@ -905,15 +843,12 @@ window.EditorImagen = (() => {
         el.aplicar.addEventListener('click', confirmar);
         el.etapas.forEach(b => b.addEventListener('click', () => cambiarEtapa(b.dataset.etapa)));
 
-        // Diseños guardados
         el.guardarDiseno.addEventListener('click', guardarDiseno);
         el.verDisenos.addEventListener('click', () => mostrarDisenos(el.disenos.hidden));
         overlay.addEventListener('pointerdown', e => {
             if (!el.disenos.hidden && !e.target.closest('.editor-pie-disenos')) mostrarDisenos(false);
         });
 
-        // Escape cierra solo el editor, no el formulario del producto que quedó abajo.
-        // Ctrl+Z deshace y Ctrl+Y (o Ctrl+Shift+Z) rehace. En Capas, los atajos son los de esa etapa.
         window.addEventListener('keydown', e => {
             if (!overlay.classList.contains('active')) return;
             if (etapa === 'capas' && capas && capas.teclado(e)) {
@@ -941,7 +876,6 @@ window.EditorImagen = (() => {
         initArrastre();
     };
 
-    // Arrastre genérico: llama a mover(dx, dy) con el desplazamiento en píxeles de la vista
     const arrastrar = (nodo, alEmpezar, mover) => {
         nodo.addEventListener('pointerdown', e => {
             if (!base) return;
@@ -952,7 +886,6 @@ window.EditorImagen = (() => {
             const inicio = { x: e.clientX, y: e.clientY, estado: alEmpezar() };
             const alMover = ev => {
                 mover((ev.clientX - inicio.x) * escala, (ev.clientY - inicio.y) * escala, inicio.estado);
-                // El logo y la viñeta siguen al recorte
                 if (marca.activa || ajustes.vineta) pintarPronto();
                 else dibujarRecorte();
             };
@@ -973,15 +906,13 @@ window.EditorImagen = (() => {
     const initArrastre = () => {
         const { vista, recorte } = el;
 
-        // Mover el recorte entero
         arrastrar(recorte, () => ({ ...ajustes.recorte }), (dx, dy, r0) => {
             ajustes.recorte.x = limitar(r0.x + dx / vista.width, 0, 1 - r0.w);
             ajustes.recorte.y = limitar(r0.y + dy / vista.height, 0, 1 - r0.h);
         });
 
-        // Cambiar el tamaño desde una esquina (la opuesta queda fija)
         recorte.querySelectorAll('[data-esquina]').forEach(esquina => {
-            const lado = esquina.dataset.esquina;   // nw, ne, sw, se
+            const lado = esquina.dataset.esquina;
             arrastrar(esquina, () => enPixeles(vista.width, vista.height), (dx, dy, c) => {
                 const W = vista.width, H = vista.height;
                 const izquierda = lado.includes('w'), arriba = lado.includes('n');
@@ -992,7 +923,6 @@ window.EditorImagen = (() => {
                 let w = Math.abs(px - fijoX);
                 let h = Math.abs(py - fijoY);
                 if (ajustes.proporcion > 0) {
-                    // La proporción es de la foto en píxeles; la vista tiene la misma forma
                     if (w / h > ajustes.proporcion) w = h * ajustes.proporcion;
                     else h = w / ajustes.proporcion;
                 }
@@ -1013,8 +943,6 @@ window.EditorImagen = (() => {
             && !(capas && capas.hayCapas())
             && r.x === 0 && r.y === 0 && r.w === 1 && r.h === 1;
     };
-
-    // ─── Etapa Capas (editor-capas.js + Fabric.js, se cargan la primera vez) ───
 
     const cargarScript = src => new Promise((listo, fallo) => {
         const s = document.createElement('script');
@@ -1051,7 +979,6 @@ window.EditorImagen = (() => {
         if (!base || nombre === etapa) return;
         mostrarEtapa(nombre);
         if (nombre === 'foto') {
-            // El lienzo estuvo oculto: recién ahora se puede medir de nuevo
             requestAnimationFrame(dibujarRecorte);
             return;
         }
@@ -1059,7 +986,6 @@ window.EditorImagen = (() => {
         el.capasEstado.textContent = 'Preparando…';
         try {
             await prepararCapas();
-            // La foto de fondo es la editada en la etapa Foto, en tamaño final
             const lienzo = await lienzoFinal();
             if (etapa !== 'capas' || !base) return;
             capas.ponerFondo(lienzo);
@@ -1069,13 +995,11 @@ window.EditorImagen = (() => {
         }
     };
 
-    // Cancelar no pide confirmación salvo que se pierda lo agregado en Capas
     const cancelar = () => {
         if (capas && capas.hayCapas() && !confirm('¿Cerrar sin aplicar? Se pierde lo que agregaste en Capas.')) return;
         cerrar(null);
     };
 
-    // La foto final: el recorte en tamaño completo (hasta el tamaño elegido), con todos los ajustes
     const lienzoFinal = async () => {
         if (marca.activa) await cargarLogo(marca.estilo);
         const F = marco();
@@ -1085,14 +1009,13 @@ window.EditorImagen = (() => {
         lienzo.width = Math.max(1, Math.round(c.w * k));
         lienzo.height = Math.max(1, Math.round(c.h * k));
         const ctx = lienzo.getContext('2d', { willReadFrequently: true });
-        ctx.fillStyle = '#fff';                 // las PNG con transparencia quedan sobre blanco
+        ctx.fillStyle = '#fff';
         ctx.fillRect(0, 0, lienzo.width, lienzo.height);
         ctx.imageSmoothingQuality = 'high';
         ctx.setTransform(k, 0, 0, k, -c.x * k, -c.y * k);
         dibujarGirada(ctx);
         ctx.setTransform(1, 0, 0, 1, 0, 0);
         if (!sinColor(ajustes)) {
-            // La nitidez mira vecinos más lejanos en proporción a cuánto más grande es que la vista previa
             const paso = limitar(Math.round(lienzo.width / (el.vista.width * ajustes.recorte.w)), 1, 4);
             ctx.putImageData(aplicar(ctx.getImageData(0, 0, lienzo.width, lienzo.height), ajustes, null, paso), 0, 0);
         }
@@ -1100,11 +1023,10 @@ window.EditorImagen = (() => {
         return lienzo;
     };
 
-    // La foto final con las capas encima, si hay
     const lienzoCompleto = async () => {
         const lienzo = await lienzoFinal();
         if (!capas || !capas.hayCapas()) return lienzo;
-        capas.ponerFondo(lienzo);   // por si se cambió algo en la etapa Foto después
+        capas.ponerFondo(lienzo);
         return capas.componer();
     };
 
@@ -1134,7 +1056,6 @@ window.EditorImagen = (() => {
     const cerrar = resultado => {
         if (!el) return;
         el.overlay.classList.remove('active');
-        // Si el editor se abrió desde el formulario de un producto, ese sigue abierto
         if (!document.querySelector('.modal-overlay.active')) document.body.style.overflow = '';
         if (pendiente) { cancelAnimationFrame(pendiente); pendiente = 0; }
         imagen = null;
@@ -1148,8 +1069,6 @@ window.EditorImagen = (() => {
         if (listo) listo(resultado);
     };
 
-    // Deja el editor listo para una foto (o un diseño guardado) y la carga.
-    // "carga" invalida lo que estuviera cargando antes, si se abre otra en el medio.
     let carga = 0;
     const prepararFoto = (fuente, diseno = null) => {
         const mia = ++carga;
@@ -1180,7 +1099,7 @@ window.EditorImagen = (() => {
 
         const img = new Image();
         img.onload = async () => {
-            if (mia !== carga) return;   // se cerró o se abrió otra mientras cargaba
+            if (mia !== carga) return;
             try {
                 imagen = img;
                 const datos = (diseno && diseno.datos) || {};
@@ -1200,9 +1119,7 @@ window.EditorImagen = (() => {
                 el.lado.value = preferencias.lado;
                 rehacerBase();
                 registrar();
-                // El tamaño en pantalla del lienzo se conoce recién después de pintarlo
                 requestAnimationFrame(dibujarRecorte);
-                // Si el diseño tenía capas, se abre directo en esa etapa
                 if (datos.capas && datos.capas.objetos && datos.capas.objetos.length) {
                     await cambiarEtapa('capas');
                     if (mia === carga && capas) await capas.cargarDiseno(datos.capas);
@@ -1215,7 +1132,6 @@ window.EditorImagen = (() => {
             if (mia === carga) el.estado.textContent = 'No se pudo abrir la foto.';
         };
         if (fuente instanceof Blob) {
-            // Como data: y no blob:, que la política de seguridad de algunas páginas bloquea
             leerComoUrl(fuente).then(url => { if (mia === carga) img.src = url; }, img.onerror);
         } else {
             img.src = fuente;
@@ -1224,7 +1140,7 @@ window.EditorImagen = (() => {
 
     const abrir = (fuente, opc = {}) => {
         if (!el) armar();
-        if (terminar) cerrar(null);   // había otra edición abierta
+        if (terminar) cerrar(null);
 
         opciones = { ...opc };
         if (!opciones.nombre) {
@@ -1241,8 +1157,6 @@ window.EditorImagen = (() => {
         return promesa;
     };
 
-    // ─── Diseños guardados (admin/actions/disenos.php) ───
-
     const pedirDisenos = async (consulta, cuerpo) => {
         const res = await fetch(API_DISENOS + consulta, cuerpo ? { method: 'POST', body: cuerpo } : { cache: 'no-store' });
         const json = await res.json().catch(() => null);
@@ -1252,7 +1166,6 @@ window.EditorImagen = (() => {
 
     const verDiseno = async id => (await pedirDisenos('?accion=ver&id=' + encodeURIComponent(id))).diseno;
 
-    // Abre un diseño guardado; lo que se aplique vuelve a quien abrió el editor
     const abrirDiseno = async (id, opc = {}) => {
         const diseno = await verDiseno(id);
         return abrir(SITIO + diseno.original, { ...opc, nombre: diseno.nombre, diseno });
@@ -1328,7 +1241,6 @@ window.EditorImagen = (() => {
         return isNaN(f) ? '' : f.toLocaleDateString('es-AR', { day: 'numeric', month: 'short', year: 'numeric' });
     };
 
-    // La lista de diseños guardados, desde el pie del editor
     const mostrarDisenos = async mostrar => {
         if (!el) return;
         el.disenos.hidden = !mostrar;

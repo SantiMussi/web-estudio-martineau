@@ -34,7 +34,6 @@ try {
         $stmt->execute($datos + ['id' => $id]);
         $_SESSION['flash_msg'] = ['type' => 'success', 'text' => 'Reseña actualizada.'];
     } else {
-        // Las nuevas van al final de la lista
         $orden = (int)$pdo->query('SELECT IFNULL(MAX(orden), -1) + 1 FROM resenas')->fetchColumn();
         $stmt = $pdo->prepare('INSERT INTO resenas (nombre, detalle, texto, oculto, orden) VALUES (:nombre, :detalle, :texto, :oculto, :orden)');
         $stmt->execute($datos + ['orden' => $orden]);

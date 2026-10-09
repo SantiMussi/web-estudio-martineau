@@ -11,7 +11,6 @@ $tipo = $_GET['tipo'] ?? '';
 $id   = isset($_GET['id']) ? (int)$_GET['id'] : null;
 
 try {
-    // URL amigable de cada ficha (la columna aparece al entrar al panel después de actualizar)
     $col_slug = fslug_disponibles($pdo) ? 'p.slug, ' : '';
 
     switch ($tipo) {
@@ -128,7 +127,6 @@ try {
             break;
 
         case 'resenas':
-            // Las de la sección Testimonios de nosotros.html (se cargan desde el panel)
             header('Cache-Control: public, max-age=60');
             $stmt = $pdo->query('
                 SELECT nombre, detalle, texto FROM resenas
@@ -139,7 +137,6 @@ try {
             break;
 
         case 'contacto':
-            // Lo piden todas las páginas HTML: que el navegador lo reuse un minuto
             header('Cache-Control: public, max-age=60');
             $ajustes = ajustes_cargar($pdo);
             echo json_encode($ajustes + ['links' => contacto_links($ajustes)]);

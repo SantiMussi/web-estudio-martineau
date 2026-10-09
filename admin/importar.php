@@ -25,7 +25,6 @@ $pagina_activa = 'importar.php';
     <link rel="stylesheet" href="admin.css?v=17">
 </head>
 <body>
-    <!-- Sidebar Toggle Móvil -->
     <button class="sidebar-toggle" aria-label="Menú">
         <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -33,13 +32,11 @@ $pagina_activa = 'importar.php';
     <div class="admin-layout">
         <?php require __DIR__ . '/sidebar.php'; ?>
 
-        <!-- Main Content -->
         <main class="admin-main">
             <div class="admin-topbar">
                 <h1>Importar y exportar</h1>
             </div>
 
-            <!-- Flash Messages -->
             <?php if ($msg): ?>
                 <div class="alert <?= flash_alert_class($msg['type']) ?>">
                     <?= e($msg['text']) ?>
@@ -50,7 +47,6 @@ $pagina_activa = 'importar.php';
                 Cargá varias categorías, proyectos o productos de una sola vez pegando datos separados por coma (o punto y coma) o subiendo un archivo <code>.csv</code> exportado de una planilla de cálculo (Excel, Google Sheets). La primera línea debe ser el encabezado con los nombres de columna. Las imágenes no se importan por este medio: se agregan después editando cada ítem desde su sección correspondiente.
             </p>
 
-            <!-- EXPORTAR Y BACKUP -->
             <div class="import-card">
                 <h2>Exportar y backup</h2>
                 <p>
@@ -78,7 +74,6 @@ $pagina_activa = 'importar.php';
                 </form>
             </div>
 
-            <!-- OPTIMIZAR IMÁGENES YA SUBIDAS -->
             <div class="import-card">
                 <h2>Optimizar imágenes ya subidas</h2>
                 <p>
@@ -90,7 +85,6 @@ $pagina_activa = 'importar.php';
                 </form>
             </div>
 
-            <!-- CATEGORÍAS -->
             <div class="import-card">
                 <h2>Categorías</h2>
                 <p>Si una categoría ya existe (mismo nombre y tipo), se omite sin duplicarla.</p>
@@ -120,7 +114,6 @@ Jardines,proyecto</div>
                 </form>
             </div>
 
-            <!-- PROYECTOS -->
             <div class="import-card">
                 <h2>Proyectos</h2>
                 <p>La columna <code>categoria</code> es el nombre de la categoría (tipo proyecto); si no existe, se crea sola. <code>destacar</code> acepta 1/0 o si/no.</p>
@@ -153,7 +146,6 @@ Loft Palermo,Interiores,Buenos Aires,2022,Reforma integral de loft,</div>
                 </form>
             </div>
 
-            <!-- PRODUCTOS -->
             <div class="import-card">
                 <h2>Productos (catálogo)</h2>
                 <p>La columna <code>categoria</code> es el nombre de la categoría (tipo producto); si no existe, se crea sola. <code>destacar</code> y <code>oculto</code> aceptan 1/0 o si/no.</p>

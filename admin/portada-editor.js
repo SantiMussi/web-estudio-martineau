@@ -1,18 +1,3 @@
-/*
- * Editor básico de las fotos de la portada (admin/portada.php).
- *
- * - Recortar: un recuadro sobre la foto que se mueve y se achica desde las esquinas
- *   (proporción libre o fija). Lo recortado es la foto que se ve en computadora.
- * - Celular: dentro del recorte, qué parte se ve en un teléfono parado (la versión
- *   para celular es un recorte vertical de 750×1210).
- * - Brillo, contraste y saturación, con vista previa en vivo.
- * - Siempre parte de la foto ORIGINAL: al guardar se aplica todo sobre ella en tamaño
- *   completo y se mandan las dos versiones (computadora y celular) a
- *   actions/editar_portada.php, que las guarda como WebP.
- *
- * Los ajustes se guardan normalizados (0–1): recorte = {x, y, w, h} sobre la foto
- * original y foco_x / foco_y = centro del recuadro del celular dentro del recorte.
- */
 (() => {
     const overlay = document.getElementById('modal-editor-portada');
     if (!overlay) return;
@@ -20,9 +5,9 @@
     const MOVIL_ANCHO = 750;
     const MOVIL_ALTO = 1210;
     const PROPORCION_MOVIL = MOVIL_ANCHO / MOVIL_ALTO;
-    const VISTA_ANCHO_MAX = 900;    // la vista previa se procesa achicada, para que sea fluida
-    const RECORTE_MINIMO = 0.15;    // el recorte no puede ser menor al 15% de la foto
-    const ANCHO_RECOMENDADO = 1600; // por debajo de esto, en pantallas grandes se ve borroso
+    const VISTA_ANCHO_MAX = 900;
+    const RECORTE_MINIMO = 0.15;
+    const ANCHO_RECOMENDADO = 1600;
 
     const vista = overlay.querySelector('[data-editor-vista]');
     const zona = overlay.querySelector('.editor-foto');
@@ -49,12 +34,11 @@
         proporcion: 0,
     });
 
-    let foto = null;          // { id, original, ajustes }
-    let imagen = null;        // la original cargada
-    let base = null;          // píxeles de la vista previa sin ajustes
+    let foto = null;
+    let imagen = null;
+    let base = null;
     let ajustes = iniciales();
 
-    // Brillo, contraste y saturación sobre los píxeles (igual en la vista previa y al guardar)
     const aplicar = (datos, a) => {
         const b = 1 + a.brillo / 100;
         const c = 1 + a.contraste / 100;
@@ -65,20 +49,18 @@
             const g = ((p[i + 1] * b) - 128) * c + 128;
             const v = ((p[i + 2] * b) - 128) * c + 128;
             const lum = 0.299 * r + 0.587 * g + 0.114 * v;
-            p[i] = lum + (r - lum) * s;          // Uint8ClampedArray: recorta solo a 0–255
+            p[i] = lum + (r - lum) * s;
             p[i + 1] = lum + (g - lum) * s;
             p[i + 2] = lum + (v - lum) * s;
         }
         return datos;
     };
 
-    // El recorte en píxeles de una imagen de ancho × alto
     const enPixeles = (ancho, alto) => {
         const r = ajustes.recorte;
         return { x: r.x * ancho, y: r.y * alto, w: r.w * ancho, h: r.h * alto };
     };
 
-    // Lo que va al celular, dentro de "caja" (el recorte, en las mismas coordenadas)
     const zonaMovil = caja => {
         let w, h;
         if (caja.w / caja.h > PROPORCION_MOVIL) { h = caja.h; w = h * PROPORCION_MOVIL; }
@@ -151,7 +133,7 @@
 
         const img = new Image();
         img.onload = () => {
-            if (foto !== datos) return;   // se abrió otra mientras cargaba
+            if (foto !== datos) return;
             imagen = img;
             const escala = Math.min(1, VISTA_ANCHO_MAX / img.naturalWidth);
             vista.width = Math.round(img.naturalWidth * escala);
@@ -162,7 +144,6 @@
             estado.hidden = true;
             zona.classList.remove('is-cargando');
             guardar.disabled = false;
-            // El tamaño en pantalla del lienzo se conoce recién después de pintarlo
             requestAnimationFrame(actualizar);
         };
         img.onerror = () => { estado.textContent = 'No se pudo cargar la foto original.'; };
@@ -181,7 +162,6 @@
         actualizar();
     }));
 
-    // Al elegir una proporción, el recorte pasa a la más grande que entra, centrada
     selectorProporcion.addEventListener('change', () => {
         ajustes.proporcion = Number(selectorProporcion.value);
         if (ajustes.proporcion > 0 && base) {
@@ -203,7 +183,6 @@
 
     window.addEventListener('resize', () => { if (base) dibujarMarcos(); });
 
-    // Arrastre genérico: llama a mover(dx, dy) con el desplazamiento en píxeles de la vista
     const arrastrar = (el, alEmpezar, mover) => {
         el.addEventListener('pointerdown', e => {
             if (!base) return;
@@ -229,15 +208,13 @@
 
     const limitar = (v, min, max) => Math.min(max, Math.max(min, v));
 
-    // Mover el recorte entero
     arrastrar(cajaRecorte, () => ({ ...ajustes.recorte }), (dx, dy, r0) => {
         ajustes.recorte.x = limitar(r0.x + dx / vista.width, 0, 1 - r0.w);
         ajustes.recorte.y = limitar(r0.y + dy / vista.height, 0, 1 - r0.h);
     });
 
-    // Cambiar el tamaño desde una esquina (la opuesta queda fija)
     cajaRecorte.querySelectorAll('[data-esquina]').forEach(esquina => {
-        const lado = esquina.dataset.esquina;   // nw, ne, sw, se
+        const lado = esquina.dataset.esquina;
         arrastrar(esquina, () => enPixeles(vista.width, vista.height), (dx, dy, c) => {
             const W = vista.width, H = vista.height;
             const izquierda = lado.includes('w'), arriba = lado.includes('n');
@@ -261,12 +238,10 @@
         });
     });
 
-    // Mover el recuadro del celular dentro del recorte
     arrastrar(marco, () => {
         const caja = enPixeles(vista.width, vista.height);
         return { caja, movil: zonaMovil(caja) };
     }, (dx, dy, { caja, movil }) => {
-        // Centro nuevo del recuadro, expresado como fracción del recorte
         const cx = (movil.x + movil.w / 2 + dx - caja.x) / caja.w;
         const cy = (movil.y + movil.h / 2 + dy - caja.y) / caja.h;
         const mx = (movil.w / 2) / caja.w, my = (movil.h / 2) / caja.h;
@@ -283,7 +258,6 @@
         guardar.textContent = 'Guardando…';
 
         try {
-            // Lo recortado, en tamaño original, con los ajustes
             const c = enPixeles(imagen.naturalWidth, imagen.naturalHeight);
             const grande = document.createElement('canvas');
             grande.width = Math.max(1, Math.round(c.w));
@@ -292,7 +266,6 @@
             ctx.drawImage(imagen, c.x, c.y, c.w, c.h, 0, 0, grande.width, grande.height);
             ctx.putImageData(aplicar(ctx.getImageData(0, 0, grande.width, grande.height), ajustes), 0, 0);
 
-            // Versión para celular, sacada de lo recortado
             const m = zonaMovil({ x: 0, y: 0, w: grande.width, h: grande.height });
             const movil = document.createElement('canvas');
             movil.width = MOVIL_ANCHO;

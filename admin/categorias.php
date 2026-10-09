@@ -33,7 +33,6 @@ $pagina_activa = 'categorias.php';
     <link rel="stylesheet" href="admin.css?v=17">
 </head>
 <body>
-    <!-- Sidebar Toggle Móvil -->
     <button class="sidebar-toggle" aria-label="Menú">
         <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -41,7 +40,6 @@ $pagina_activa = 'categorias.php';
     <div class="admin-layout">
         <?php require __DIR__ . '/sidebar.php'; ?>
 
-        <!-- Main Content -->
         <main class="admin-main">
             <div class="admin-topbar">
                 <h1>Categorías</h1>
@@ -53,14 +51,12 @@ $pagina_activa = 'categorias.php';
                 </div>
             </div>
 
-            <!-- Flash Messages -->
             <?php if ($msg): ?>
                 <div class="alert <?= flash_alert_class($msg['type']) ?>">
                     <?= e($msg['text']) ?>
                 </div>
             <?php endif; ?>
 
-            <!-- Tabla de Categorías -->
             <?php if (empty($categorias)): ?>
                 <div class="admin-table-wrapper">
                     <div class="empty-state">
@@ -144,7 +140,6 @@ $pagina_activa = 'categorias.php';
         </main>
     </div>
 
-    <!-- MODAL: Crear Categoría -->
     <div class="modal-overlay" id="modal-categoria">
         <div class="modal" style="max-width: 500px;">
             <div class="modal-header">
@@ -159,19 +154,16 @@ $pagina_activa = 'categorias.php';
                 <input type="hidden" name="id" value="">
 
                 <div class="modal-body">
-                    <!-- Nombre -->
                     <div class="form-group">
                         <label for="nombre">Nombre</label>
                         <input type="text" id="nombre" name="nombre" class="form-control" placeholder="Ej: Chimeneas" required>
                     </div>
 
-                    <!-- Slug (auto-generado) -->
                     <div class="form-group">
                         <label for="slug">Slug (URL)</label>
                         <input type="text" id="slug" name="slug" class="form-control" placeholder="Se genera automáticamente" readonly>
                     </div>
 
-                    <!-- Tipo -->
                     <div class="form-group">
                         <label for="tipo">Tipo</label>
                         <select id="tipo" name="tipo" class="form-control" required>
@@ -193,7 +185,6 @@ $pagina_activa = 'categorias.php';
         </div>
     </div>
 
-    <!-- MODAL: Reasignar y borrar categoría -->
     <div class="modal-overlay" id="modal-reasignar-categoria">
         <div class="modal" style="max-width: 500px;">
             <div class="modal-header">
@@ -231,7 +222,6 @@ $pagina_activa = 'categorias.php';
         </div>
     </div>
 
-    <!-- MODAL: Vaciar categoría -->
     <div class="modal-overlay" id="modal-vaciar-categoria">
         <div class="modal" style="max-width: 500px;">
             <div class="modal-header">

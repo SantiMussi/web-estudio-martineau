@@ -2,11 +2,6 @@
 
 require_once __DIR__ . '/auth.php';
 
-/*
- * Fichas a las que les falta algo. Importa para el SEO: la descripción es lo que
- * Google y la vista previa de WhatsApp muestran de cada pieza, y las fichas con
- * varias fotos se ven mejor en Google Imágenes.
- */
 const REVISION_DESC_MINIMA = 80;
 
 $problemas = [
@@ -71,7 +66,6 @@ $pagina_activa = 'revision.php';
     <link rel="stylesheet" href="admin.css?v=17">
 </head>
 <body>
-    <!-- Sidebar Toggle Móvil -->
     <button class="sidebar-toggle" aria-label="Menú">
         <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -79,7 +73,6 @@ $pagina_activa = 'revision.php';
     <div class="admin-layout">
         <?php require __DIR__ . '/sidebar.php'; ?>
 
-        <!-- Main Content -->
         <main class="admin-main">
             <div class="admin-topbar">
                 <h1>Revisar fichas</h1>

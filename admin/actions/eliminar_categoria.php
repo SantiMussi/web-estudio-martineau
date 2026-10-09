@@ -35,7 +35,6 @@ try {
 
     $pdo->beginTransaction();
 
-    // Lo que está en la papelera queda sin categoría (si se restaura, se le asigna otra al editarlo)
     $stmt = $pdo->prepare("UPDATE $tabla SET categoria_id = NULL WHERE categoria_id = :id");
     $stmt->execute(['id' => $id]);
 

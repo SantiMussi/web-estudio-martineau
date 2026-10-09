@@ -18,7 +18,6 @@
   <meta name="author" content="Santiago Mussi">
   <meta name="theme-color" content="#2E2820">
 
-  <!-- Vista previa al compartir (WhatsApp, Facebook, LinkedIn, X) -->
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Martineau">
   <meta property="og:locale" content="es_AR">
@@ -34,7 +33,6 @@
   <meta name="twitter:description" content="Catálogo de Martineau: chimeneas de estilo, esculturas, ménsulas, maceteros, jardineras y pisos de piedra París, hechos a mano en Buenos Aires.">
   <meta name="twitter:image" content="https://armartineau.com.ar/assets/og-martineau.jpg">
 
-  <!-- Datos estructurados (schema.org) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -60,7 +58,6 @@
   }
   </script>
 
-  <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="/favicon.ico?v=2">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png?v=2">
   <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16.png?v=2">
@@ -68,7 +65,6 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Fuente sin bloquear el primer pintado: se pide ya y se aplica apenas llega -->
   <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"></noscript>
   <link rel="stylesheet" href="styles.css?v=69">
@@ -79,7 +75,6 @@
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WZQDWTCZ"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
-  <!-- Header y Navegación -->
   <header class="site-header" id="header">
     <div class="container header-inner">
       <a href="/" class="logo" aria-label="Martineau Studio - Ir al inicio"><img src="assets/logo-wordmark.webp"
@@ -130,7 +125,6 @@
     </nav>
   </header>
 
-  <!-- Hero Secundario -->
   <section class="hero-secondary" style="background-image: url('assets/hero-taller.webp');">
     <div class="hero-secondary-overlay"></div>
     <div class="hero-secondary-content container">
@@ -140,17 +134,13 @@
   </section>
 
 
-  <!-- Catálogo -->
   <section class="catalog section page-catalog" id="catalogo-page">
     <div class="container">
 
-      <!-- Filtros -->
       <div class="filters reveal" id="catalog-filters">
-        <!-- Generado por JS -->
         <button class="filter-btn active" data-filter="all">Todas</button>
       </div>
 
-      <!-- Grid: se rellena dinámicamente por JS -->
       <div class="catalog-grid filter-container" id="catalog-grid" data-per-page="8">
         <div class="grid-loading">
           <span class="spinner"></span>
@@ -158,15 +148,12 @@
         </div>
       </div>
 
-      <!-- Paginación -->
       <div class="pagination reveal" id="pagination-controls">
-        <!-- Generado por JS -->
       </div>
 
     </div>
   </section>
 
-  <!-- Sección Contacto -->
   <section class="contact section" id="contacto">
     <div class="container">
 
@@ -250,7 +237,6 @@
     </div>
   </section>
 
-  <!-- Footer -->
   <footer class="site-footer">
     <div class="container footer-inner">
       <p class="footer-copy">&copy; Todos los derechos reservados, Martineau</p>
@@ -258,7 +244,6 @@
     </div>
   </footer>
 
-  <!-- WhatsApp Floating Button -->
   <a href="https://wa.me/5491131917014" data-contacto="whatsapp" class="whatsapp-float" target="_blank" rel="noopener noreferrer"
     aria-label="Contactar por WhatsApp">
     <div class="whatsapp-pulse"></div>
@@ -271,13 +256,11 @@
     <span class="whatsapp-text">¡Hablemos!</span>
   </a>
 
-  <!-- Store compartido (capa de datos / simulación) -->
   <script src="store.js?v=9"></script>
 
   <script>
 
     document.addEventListener('DOMContentLoaded', async () => {
-      // Inicializa el store (solo necesario mientras se use la simulación)
       await Store.init();
       renderCatalogo();
       renderNavCategorias();
@@ -314,13 +297,10 @@
         </a>
       `).join('');
 
-      // Reinicializar las animaciones para los elementos recién creados
       if (window.initScrollReveal) window.initScrollReveal();
 
-      // Ajustar el fit de las imágenes según su proporción
       if (window.initSmartImageFit) window.initSmartImageFit();
 
-      // Re-inicializa los filtros y la paginación del script principal
       if (window.initFiltersAndPagination) window.initFiltersAndPagination();
     }
 

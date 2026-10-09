@@ -8,7 +8,6 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 verificar_csrf();
 
-// No borra: lo manda a la papelera, desde donde se puede restaurar
 try {
     $id = (int)($_POST['id'] ?? 0);
 

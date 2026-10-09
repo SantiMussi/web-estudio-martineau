@@ -5,7 +5,6 @@ require_once __DIR__ . '/../inc/ajustes.php';
 
 $ajustes = ajustes_cargar($pdo);
 
-// Si el guardado falló por un dato inválido, se muestra lo que se había escrito
 if (isset($_SESSION['ajustes_borrador'])) {
     $ajustes = array_merge($ajustes, $_SESSION['ajustes_borrador']);
     unset($_SESSION['ajustes_borrador']);
@@ -34,7 +33,6 @@ $pagina_activa = 'ajustes.php';
     <link rel="stylesheet" href="admin.css?v=17">
 </head>
 <body>
-    <!-- Sidebar Toggle Móvil -->
     <button class="sidebar-toggle" aria-label="Menú">
         <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -42,13 +40,11 @@ $pagina_activa = 'ajustes.php';
     <div class="admin-layout">
         <?php require __DIR__ . '/sidebar.php'; ?>
 
-        <!-- Main Content -->
         <main class="admin-main">
             <div class="admin-topbar">
                 <h1>Datos de contacto</h1>
             </div>
 
-            <!-- Flash Messages -->
             <?php if ($msg): ?>
                 <div class="alert <?= flash_alert_class($msg['type']) ?>">
                     <?= e($msg['text']) ?>

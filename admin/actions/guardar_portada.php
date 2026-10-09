@@ -21,9 +21,7 @@ if ($total === 0 || ($total === 1 && $archivos['error'][0] === UPLOAD_ERR_NO_FIL
 
 $subidas = 0;
 $errores = [];
-// Las nuevas van al final del slideshow
 $orden = (int)$pdo->query('SELECT IFNULL(MAX(orden), -1) + 1 FROM portada')->fetchColumn();
-// La versión grande queda también como original: el editor siempre parte de ella
 $stmt = $pdo->prepare('INSERT INTO portada (imagen, imagen_movil, imagen_original, orden) VALUES (:imagen, :movil, :original, :orden)');
 
 for ($i = 0; $i < $total; $i++) {

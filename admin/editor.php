@@ -2,17 +2,9 @@
 
 require_once __DIR__ . '/auth.php';
 
-/*
- * Editor de fotos suelto: se elige una foto de la compu o el celular, se edita
- * (admin/editor-imagen.js) y se descarga. La edición pasa en el navegador; al servidor
- * solo va lo que se guarda como diseño (admin/actions/disenos.php), que se lista acá.
- * Las fotos de los productos y proyectos también se pueden editar directo desde su
- * ficha, con el lápiz de cada miniatura.
- */
 try {
     $disenos = $pdo->query('SELECT id, nombre, miniatura, updated_at FROM disenos ORDER BY updated_at DESC, id DESC')->fetchAll();
 } catch (Exception $e) {
-    // La tabla la crea migraciones.php; si falló, se reintenta en el próximo pedido
     $disenos = [];
 }
 
@@ -36,7 +28,6 @@ $pagina_activa = 'editor.php';
     <link rel="stylesheet" href="admin.css?v=17">
 </head>
 <body>
-    <!-- Sidebar Toggle Móvil -->
     <button class="sidebar-toggle" aria-label="Menú">
         <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -44,7 +35,6 @@ $pagina_activa = 'editor.php';
     <div class="admin-layout">
         <?php require __DIR__ . '/sidebar.php'; ?>
 
-        <!-- Main Content -->
         <main class="admin-main">
             <div class="admin-topbar">
                 <h1>Editor de fotos</h1>
@@ -116,12 +106,10 @@ $pagina_activa = 'editor.php';
                 setTimeout(() => URL.revokeObjectURL(url), 10000);
             };
 
-            // Al cerrar el editor, si se guardó un diseño, se recarga para verlo en la lista
             const alTerminar = () => {
                 if (guardoAlgo) setTimeout(() => window.location.reload(), 600);
             };
 
-            // De a una: la siguiente se abre al descargar o cancelar la anterior
             const editar = async archivos => {
                 for (const archivo of archivos) {
                     if (!archivo.type.startsWith('image/')) continue;
@@ -132,7 +120,6 @@ $pagina_activa = 'editor.php';
                 alTerminar();
             };
 
-            // También al arrastrarlas: admin.js las pasa al input y dispara este change
             input.addEventListener('change', () => editar([...input.files]));
 
             document.querySelectorAll('[data-diseno]').forEach(tarjeta => {

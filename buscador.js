@@ -1,6 +1,3 @@
-// Buscador de productos. Se inyecta solo en el header de cada página (lupa) y,
-// en el catálogo, como barra visible arriba de los filtros. Usa los productos
-// que Store ya cargó, así que no hace pedidos extra al servidor.
 (function () {
   'use strict';
 
@@ -9,7 +6,6 @@
   const STOP = new Set(['de', 'del', 'la', 'las', 'el', 'los', 'y', 'e', 'con', 'para', 'en', 'un', 'una',
     'n', 'nro', 'no', 'num', 'numero', 'por', 'a', 'al', 'o']);
 
-  // Grupos de palabras que el cliente usa para lo mismo. Todo en forma "raíz" (ver raiz()).
   const SINONIMOS = [
     ['maceta', 'macetero', 'jardinera', 'matera'],
     ['lampara', 'luz', 'aplique', 'plafon', 'farol'],
@@ -25,20 +21,16 @@
     ['bola', 'esfera', 'bocha'],
   ];
 
-  // ---------- Normalización ----------
-
   function normalizar(texto) {
     return String(texto || '')
       .toLowerCase()
-      .replace(/n\s*[°º]\s*/g, ' ')          // "N°106" / "Nº 106" -> " 106"
+      .replace(/n\s*[°º]\s*/g, ' ')
       .normalize('NFD').replace(/[̀-ͯ]/g, '')
       .replace(/[^a-z0-9\s]/g, ' ')
       .replace(/\s+/g, ' ')
       .trim();
   }
 
-  // Singulariza de forma simple. Se aplica igual a la búsqueda y a los productos,
-  // así que lo importante es que sea consistente, no que sea gramaticalmente perfecto.
   function raiz(palabra) {
     if (/^\d+$/.test(palabra) || palabra.length <= 3) return palabra;
     if (palabra.endsWith('ces')) return palabra.slice(0, -3) + 'z';
@@ -72,16 +64,15 @@
 
   const esNumero = s => /^\d+$/.test(s);
 
-  // Qué tan bien una palabra buscada coincide con una palabra del producto (0 = nada, 1 = exacta).
   function coincidencia(buscada, palabra) {
     if (buscada === palabra) return 1;
-    if (esNumero(buscada) || esNumero(palabra)) return 0; // los números tienen que ser exactos
-    if (buscada.length >= 2 && palabra.startsWith(buscada)) return 0.8; // "chim" -> "chimenea"
-    if (buscada.length >= 4 && palabra.includes(buscada)) return 0.6;   // "relieve" -> "bajorelieve"
+    if (esNumero(buscada) || esNumero(palabra)) return 0;
+    if (buscada.length >= 2 && palabra.startsWith(buscada)) return 0.8;
+    if (buscada.length >= 4 && palabra.includes(buscada)) return 0.6;
     if (palabra.length >= 5 && buscada.startsWith(palabra)) return 0.6;
     if (buscada.length >= 4 && Math.abs(buscada.length - palabra.length) <= 2) {
       const tolerancia = buscada.length >= 7 ? 2 : 1;
-      if (levenshtein(buscada, palabra) <= tolerancia) return 0.5;    // errores de tipeo
+      if (levenshtein(buscada, palabra) <= tolerancia) return 0.5;
     }
     return 0;
   }
@@ -95,8 +86,6 @@
     });
     return lista;
   }
-
-  // ---------- Índice ----------
 
   let indice = null;
   let indiceTamanio = -1;
@@ -129,9 +118,6 @@
     return indice;
   }
 
-  // Suma lo mejor de cada campo: una pieza que coincide en título Y categoría
-  // (un macetero en "Maceteros") queda arriba de una que solo lo nombra.
-  // Con minimo = 0.6 se ignoran las coincidencias por error de tipeo.
   function puntuarToken(entrada, token, minimo) {
     const vars = variantes(token);
     return entrada.campos.reduce((total, campo) => {
@@ -153,14 +139,11 @@
     const frase = ' ' + tokens.join(' ') + ' ';
     const entradas = construirIndice();
 
-    // La tolerancia a errores de tipeo se usa solo para palabras que no aparecen
-    // bien escritas en ningún producto ("chimnea" sí, "pina" no: existe "Piña").
     const minimos = tokens.map(t => entradas.some(e => puntuarToken(e, t, 0.6) > 0) ? 0.6 : 0.01);
 
     const evaluados = entradas.map(entrada => {
       const puntajes = tokens.map((t, i) => puntuarToken(entrada, t, minimos[i]));
       let total = puntajes.reduce((a, b) => a + b, 0);
-      // Bonus si la frase entera aparece tal cual en el título (ej. "marmol negro")
       if (tokens.length > 1 && entrada.tituloRaiz.includes(frase)) total += 2;
       return { entrada, total, aciertos: puntajes.filter(p => p > 0).length };
     });
@@ -168,7 +151,6 @@
     let resultados = evaluados.filter(r => r.aciertos === tokens.length);
     let aproximado = false;
 
-    // Si ningún producto cumple con todas las palabras, mostramos los que más se acercan.
     if (!resultados.length) {
       resultados = evaluados.filter(r => r.aciertos > 0);
       aproximado = resultados.length > 0;
@@ -195,8 +177,6 @@
     Store.getProductos().forEach(p => { cuenta[p.categoria] = (cuenta[p.categoria] || 0) + 1; });
     return cuenta;
   }
-
-  // ---------- UI ----------
 
   const ICONO_LUPA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><line x1="20.5" y1="20.5" x2="16" y2="16"></line></svg>';
 
@@ -232,8 +212,6 @@
     chips = panel.querySelector('.bq-chips');
 
     panel.querySelectorAll('[data-bq-cerrar]').forEach(el => el.addEventListener('click', cerrar));
-    // Varios eventos por robustez: algunos teclados móviles/autocompletado no
-    // disparan todos. Si el texto no cambió, render() no se repite.
     let ultimoTexto = null;
     const programar = () => {
       clearTimeout(temporizador);
@@ -279,7 +257,6 @@
     return a;
   }
 
-  // Resalta en el título las palabras que coincidieron con la búsqueda.
   function tituloResaltado(titulo, tokens) {
     const frag = document.createDocumentFragment();
     titulo.split(/(\s+)/).forEach(parte => {
@@ -298,8 +275,6 @@
     return frag;
   }
 
-  // Las miniaturas se crean una sola vez por producto y se reutilizan entre búsquedas:
-  // así cada tecla no vuelve a decodificar las fotos grandes.
   const miniaturas = new Map();
   function miniatura(p) {
     let img = miniaturas.get(p.id);
@@ -416,7 +391,6 @@
   }
 
   function crearDisparadores() {
-    // Desktop: último ítem del menú
     const navList = document.querySelector('.main-nav .nav-list');
     if (navList) {
       const li = document.createElement('li');
@@ -424,7 +398,6 @@
       navList.appendChild(li);
     }
 
-    // Mobile: al lado del menú hamburguesa
     const toggle = document.querySelector('.header-inner .nav-toggle');
     if (toggle) {
       const btn = document.createElement('button');
@@ -435,7 +408,6 @@
       toggle.parentNode.insertBefore(btn, toggle);
     }
 
-    // Catálogo: barra visible arriba de los filtros
     const filtros = document.getElementById('catalog-filters');
     if (filtros) {
       const barra = document.createElement('button');
@@ -457,6 +429,5 @@
 
   document.addEventListener('DOMContentLoaded', crearDisparadores);
 
-  // Expuesto para probar la lógica desde la consola
   window.BuscadorMartineau = { buscar, normalizar, raiz, abrir };
 })();

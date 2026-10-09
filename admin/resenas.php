@@ -27,7 +27,6 @@ $pagina_activa = 'resenas.php';
     <link rel="stylesheet" href="admin.css?v=17">
 </head>
 <body>
-    <!-- Sidebar Toggle Móvil -->
     <button class="sidebar-toggle" aria-label="Menú">
         <svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
@@ -35,7 +34,6 @@ $pagina_activa = 'resenas.php';
     <div class="admin-layout">
         <?php require __DIR__ . '/sidebar.php'; ?>
 
-        <!-- Main Content -->
         <main class="admin-main">
             <div class="admin-topbar">
                 <h1>Reseñas</h1>
@@ -47,7 +45,6 @@ $pagina_activa = 'resenas.php';
                 </div>
             </div>
 
-            <!-- Flash Messages -->
             <?php if ($msg): ?>
                 <div class="alert <?= flash_alert_class($msg['type']) ?>">
                     <?= e($msg['text']) ?>
@@ -132,7 +129,6 @@ $pagina_activa = 'resenas.php';
         </main>
     </div>
 
-    <!-- MODAL: Crear/Editar Reseña -->
     <div class="modal-overlay" id="modal-resena">
         <div class="modal" style="max-width: 560px;">
             <div class="modal-header">
@@ -177,7 +173,6 @@ $pagina_activa = 'resenas.php';
         </div>
     </div>
 
-    <!-- Copia local: la política de seguridad del panel solo deja cargar scripts del propio sitio -->
     <script src="vendor/Sortable.min.js?v=1.15.7"></script>
     <script src="admin.js?v=25"></script>
 </body>

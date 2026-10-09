@@ -22,7 +22,7 @@ try {
     }
 
     foreach ($filas as $i => $fila) {
-        $num = $i + 2; // +1 por índice base 0, +1 por la fila de encabezado
+        $num = $i + 2;
         $nombre = trim($fila['nombre'] ?? '');
         $tipo = mb_strtolower(trim($fila['tipo'] ?? ''), 'UTF-8');
 

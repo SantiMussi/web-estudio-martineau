@@ -23,7 +23,6 @@ try {
     }
 
     if ($id) {
-        // Edición: el tipo no se toca (evita dejar productos/proyectos apuntando a una categoría del tipo equivocado).
         $stmt = $pdo->prepare('SELECT id FROM categorias WHERE id = :id');
         $stmt->execute(['id' => $id]);
         if (!$stmt->fetch()) {
