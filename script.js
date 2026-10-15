@@ -570,10 +570,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
             mqCompacto.addEventListener('change', () => renderPagination(ultimoTotal));
 
+            let actualizarEtiqueta = () => {};
+            if (filterWrapper && filterBtns.length > 1) {
+                const toggle = document.createElement('button');
+                toggle.type = 'button';
+                toggle.className = 'filters-toggle';
+                toggle.setAttribute('aria-expanded', 'false');
+                toggle.innerHTML = '<span class="filters-toggle-label"></span><svg class="filters-toggle-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M2 4l4 4 4-4"/></svg>';
+                filterWrapper.prepend(toggle);
+                const etiqueta = toggle.querySelector('.filters-toggle-label');
+
+                actualizarEtiqueta = () => {
+                    const activo = Array.from(filterBtns).find(b => b.classList.contains('active'));
+                    etiqueta.textContent = activo ? activo.textContent : '';
+                };
+                const abrir = (abierto) => {
+                    filterWrapper.classList.toggle('is-open', abierto);
+                    toggle.setAttribute('aria-expanded', abierto);
+                };
+                toggle.addEventListener('click', () => abrir(!filterWrapper.classList.contains('is-open')));
+                document.addEventListener('click', (e) => {
+                    if (!filterWrapper.contains(e.target)) abrir(false);
+                });
+                filterBtns.forEach(b => b.addEventListener('click', () => abrir(false)));
+                actualizarEtiqueta();
+            }
+
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
                     filterBtns.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
+                    actualizarEtiqueta();
                     currentFilter = btn.getAttribute('data-filter');
                     currentPage = 1;
                     syncFilterState();
