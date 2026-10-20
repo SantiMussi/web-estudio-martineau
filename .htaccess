@@ -1,6 +1,7 @@
 RewriteEngine On
 
 DirectoryIndex index.php index.html
+ErrorDocument 404 /404.html
 
 RewriteCond %{HTTP_HOST} ^www\.armartineau\.com\.ar$ [NC]
 RewriteRule ^ https://armartineau.com.ar%{REQUEST_URI} [L,R=301]
@@ -19,6 +20,7 @@ RewriteRule ^ /%1 [L,R=301]
 RewriteRule ^(producto|proyecto)/([a-z0-9-]+)/?$ $1.php?slug=$2 [NC,L,QSA]
 RewriteRule ^(producto|proyecto)$ $1.php [NC,L]
 RewriteRule ^sitemap\.xml$ sitemap.php [NC,L]
+RewriteRule ^404$ - [R=404,L]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([^\.]+)$ $1.html [NC,L]
